@@ -238,7 +238,7 @@ Step 3 使用 streaming，WebSocket 消息格式：
 
 ### P0 简化
 
-P0 阶段：Step 1 仅手动选择文体，Step 2 用硬编码 10-20 条术语测试，Step 4 跳过，Step 5 仅基础风险标注。实质上 P0 = Step 3 核心转译 + 简化版 Step 5。
+P0 阶段：Step 1 仅手动选择文体，Step 2 用硬编码 10-20 条术语测试，Step 4 跳过。Step 5 仅做最基础的风险词标注（LLM 返回 risk_annotations 列表），不含接受度评分（acceptance_score 返回 -1）。实质上 P0 = Step 3 核心转译 + 简化版 Step 5（仅风险词标注，无评分）。
 
 ---
 
