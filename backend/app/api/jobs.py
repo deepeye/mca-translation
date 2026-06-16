@@ -3,6 +3,7 @@ import uuid
 
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy import select
+from sqlalchemy.orm.attributes import flag_modified
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.api.deps import get_current_user
@@ -159,6 +160,7 @@ async def accept_risk(
     ann["accepted_suggestion"] = body.suggestion
     result.translated_text = text
     result.risk_annotations = _recalculate_offsets(text, annotations)
+    flag_modified(result, "risk_annotations")
     await db.commit()
     await db.refresh(result)
     return _build_job_response(job, [result])
@@ -179,6 +181,7 @@ async def dismiss_risk(
         raise HTTPException(status_code=400, detail="Invalid risk_index")
     annotations[risk_index]["status"] = "dismissed"
     result.risk_annotations = annotations
+    flag_modified(result, "risk_annotations")
     await db.commit()
     await db.refresh(result)
     return _build_job_response(job, [result])
@@ -210,6 +213,7 @@ async def revert_risk(
     del ann["accepted_suggestion"]
     result.translated_text = text
     result.risk_annotations = _recalculate_offsets(text, annotations)
+    flag_modified(result, "risk_annotations")
     await db.commit()
     await db.refresh(result)
     return _build_job_response(job, [result])
@@ -264,6 +268,7 @@ async def accept_all_risks(
             ann["accepted_suggestion"] = suggestion
             result.translated_text = text
             result.risk_annotations = _recalculate_offsets(text, annotations)
+            flag_modified(result, "risk_annotations")
 
         await db.commit()
         await db.refresh(result)
