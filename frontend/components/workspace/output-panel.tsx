@@ -10,6 +10,7 @@ import { ResultActions } from "./result-actions";
 
 export function OutputPanel() {
   const languages = useWorkspaceStore((s) => s.languages);
+  const jobId = useWorkspaceStore((s) => s.currentJobId);
   const [activeLang, setActiveLang] = useState(languages[0] || "en-GB");
   const result = useTranslationStore((s) => s.results[activeLang]);
 
@@ -22,7 +23,7 @@ export function OutputPanel() {
     <div className="flex h-full flex-col gap-3">
       <LanguageTabs activeLang={activeLang} onSwitch={setActiveLang} />
       <TranslationResult language={activeLang} />
-      <RiskDetailList language={activeLang} />
+      <RiskDetailList language={activeLang} jobId={jobId} />
       <div className="flex items-center justify-between">
         <span className="text-xs text-muted-foreground">
           {result?.status === "completed" && "转译完成"}
