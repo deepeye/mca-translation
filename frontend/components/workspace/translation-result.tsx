@@ -8,20 +8,31 @@ const RISK_MARK_STYLES: Record<string, { border: string; bg: string; bgHighlight
   high: { border: "#EF4444", bg: "rgba(239,68,68,0.08)", bgHighlight: "rgba(239,68,68,0.20)" },
   medium: { border: "#EA580C", bg: "rgba(234,88,12,0.06)", bgHighlight: "rgba(234,88,12,0.16)" },
   low: { border: "#EAB308", bg: "rgba(234,179,8,0.06)", bgHighlight: "rgba(234,179,8,0.16)" },
+  accepted: { border: "#22C55E", bg: "rgba(34,197,94,0.08)", bgHighlight: "rgba(34,197,94,0.20)" },
+  dismissed: { border: "#9CA3AF", bg: "rgba(156,163,175,0.06)", bgHighlight: "rgba(156,163,175,0.16)" },
 };
 
 function locateRisks(text: string, annotations: RiskAnnotation[]): RiskSpan[] {
   const usedOffsets = new Set<number>();
-  return annotations
-    .map((a, index) => {
-      const offset = text.indexOf(a.phrase);
-      if (offset === -1) return null;
-      if (usedOffsets.has(offset)) return null;
-      usedOffsets.add(offset);
-      return { index, phrase: a.phrase, offset, length: a.phrase.length, risk_level: a.risk_level, risk_type: a.risk_type, explanation: a.explanation };
-    })
-    .filter((s): s is RiskSpan => s !== null)
-    .sort((a, b) => a.offset - b.offset);
+  const spans: RiskSpan[] = [];
+  annotations.forEach((a, index) => {
+    const status = a.status || "open";
+    const searchPhrase = status === "accepted" && a.accepted_suggestion ? a.accepted_suggestion : a.phrase;
+    const offset = a.offset != null && a.offset >= 0 ? a.offset : text.indexOf(searchPhrase);
+    if (offset === -1 || usedOffsets.has(offset)) return;
+    usedOffsets.add(offset);
+    spans.push({
+      index,
+      phrase: searchPhrase,
+      offset,
+      length: searchPhrase.length,
+      risk_level: a.risk_level,
+      risk_type: a.risk_type,
+      explanation: a.explanation,
+      status,
+    });
+  });
+  return spans.sort((a, b) => a.offset - b.offset);
 }
 
 export function TranslationResult({ language }: { language: string }) {
@@ -78,8 +89,12 @@ export function TranslationResult({ language }: { language: string }) {
         parts.push(<span key={`t-${cursor}`}>{result.translatedText.slice(cursor, span.offset)}</span>);
       }
 
-      const style = RISK_MARK_STYLES[span.risk_level] || RISK_MARK_STYLES.medium;
+      const markStyleKey = span.status === "accepted" ? "accepted"
+        : span.status === "dismissed" ? "dismissed"
+        : span.risk_level;
+      const style = RISK_MARK_STYLES[markStyleKey] || RISK_MARK_STYLES.medium;
       const isHighlighted = highlightedIndex === span.index;
+      const borderStyle = span.status === "dismissed" ? "3px dashed" : "3px solid";
 
       parts.push(
         <RiskAnnotationPopover key={`m-${span.index}`} annotation={span}>
@@ -87,7 +102,7 @@ export function TranslationResult({ language }: { language: string }) {
             ref={(el) => { if (el) markRefs.current.set(span.index, el); }}
             className="cursor-pointer rounded-sm pr-1 pl-1.5 transition-colors duration-150"
             style={{
-              borderLeft: `3px solid ${style.border}`,
+              borderLeft: `${borderStyle} ${style.border}`,
               background: isHighlighted ? style.bgHighlight : style.bg,
               fontWeight: isHighlighted ? 600 : 500,
               color: "inherit",
