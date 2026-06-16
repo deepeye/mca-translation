@@ -32,6 +32,8 @@ async def create_job(
         genre=body.genre,
         strategy=body.strategy,
         target_languages=body.target_languages,
+        cultural_sphere=body.cultural_sphere,
+        audience_type=body.audience_type,
         status="pending",
     )
     db.add(job)
@@ -340,6 +342,7 @@ def _build_job_response(job: TranslationJob, results: list[TranslationResult]) -
                 translated_text=r.translated_text,
                 acceptance_score=r.acceptance_score,
                 risk_annotations=r.risk_annotations,
+                cultural_adaptation=r.cultural_adaptation,
                 created_at=r.created_at,
             )
             for r in results

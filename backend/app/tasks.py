@@ -69,9 +69,12 @@ async def _run_translation(job_id: str):
                         genre=job.genre,
                         strategy=job.strategy,
                         target_language=lang,
+                        cultural_sphere=job.cultural_sphere,
+                        audience_type=job.audience_type,
                     )
                     tr.translated_text = output["translated_text"]
                     tr.risk_annotations = output["risk_annotations"]
+                    tr.cultural_adaptation = output["cultural_adaptation"]
                     tr.acceptance_score = output["acceptance_score"]
                     tr.status = "completed"
                     await db.commit()
