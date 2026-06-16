@@ -2,7 +2,10 @@
 
 输入源文本+文化圈+受众+文体；调用 LLM 识别文化负载词并产出本土化约束。
 任何失败（白名单不命中、LLM 异常、JSON 解析失败、字段验证失败）都返回 None，
-让上层管线降级（继续主翻译，不注入文化约束）。
+让上层管线降级：主翻译照常进行，不再注入术语级约束（culture_loaded_terms /
+cultural_notes / taboo_warnings）。注意：若上层已选定 cultural_sphere，主翻译
+prompt 仍会注入文化圈/受众特征段（见 build_translation_system_prompt），只是
+缺少术语级约束——这保证译文仍符合目标文化语境，只是没有了逐词适配建议。
 """
 
 from __future__ import annotations
