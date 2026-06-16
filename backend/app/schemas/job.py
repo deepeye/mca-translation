@@ -1,7 +1,22 @@
 import uuid
 from datetime import datetime
+from typing import Literal, Optional
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
+
+
+class CulturalLoadedTerm(BaseModel):
+    term: str
+    culture_gap: Literal["low", "medium", "high"]
+    adaptation_strategy: Literal["literal", "explanatory", "analogical", "reconstruction"]
+    suggested_rendering: str
+    reason: str
+
+
+class CulturalPreprocessResult(BaseModel):
+    culture_loaded_terms: list[CulturalLoadedTerm] = Field(default_factory=list)
+    cultural_notes: list[str] = Field(default_factory=list)
+    taboo_warnings: list[str] = Field(default_factory=list)
 
 
 class CreateJobRequest(BaseModel):
@@ -9,6 +24,8 @@ class CreateJobRequest(BaseModel):
     genre: str  # political | news | policy | brand
     strategy: str = "semantic_equivalence"
     target_languages: list[str]  # BCP-47 codes
+    cultural_sphere: Optional[str] = None
+    audience_type: Optional[str] = None
 
 
 class TranslationResultResponse(BaseModel):
@@ -18,6 +35,7 @@ class TranslationResultResponse(BaseModel):
     translated_text: str | None
     acceptance_score: int
     risk_annotations: list | None
+    cultural_adaptation: Optional[CulturalPreprocessResult] = None
     created_at: datetime
 
 
