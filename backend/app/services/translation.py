@@ -49,6 +49,16 @@ class TranslationPipeline:
                 content = content.split("\n", 1)[1].rsplit("```", 1)[0]
             annotations = json.loads(content)
             if isinstance(annotations, list):
+                # Add offset and status fields
+                used_offsets = set()
+                for ann in annotations:
+                    offset = translated_text.find(ann.get("phrase", ""))
+                    if offset == -1 or offset in used_offsets:
+                        ann["offset"] = -1
+                    else:
+                        used_offsets.add(offset)
+                        ann["offset"] = offset
+                    ann.setdefault("status", "open")
                 return annotations
             return []
         except (json.JSONDecodeError, KeyError) as e:
