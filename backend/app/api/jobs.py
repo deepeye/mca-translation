@@ -179,7 +179,9 @@ async def dismiss_risk(
     annotations = result.risk_annotations or []
     if risk_index < 0 or risk_index >= len(annotations):
         raise HTTPException(status_code=400, detail="Invalid risk_index")
-    annotations[risk_index]["status"] = "dismissed"
+    # Toggle: if already dismissed, restore to open (undo dismiss)
+    current_status = annotations[risk_index].get("status", "open")
+    annotations[risk_index]["status"] = "dismissed" if current_status != "dismissed" else "open"
     result.risk_annotations = annotations
     flag_modified(result, "risk_annotations")
     await db.commit()
