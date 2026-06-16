@@ -32,3 +32,21 @@ Translation ({target_language}):
 {translated_text}
 
 Return ONLY the JSON array, no other text."""
+
+SUGGESTION_PROMPT = """You are a cultural adaptation expert. Given the original Chinese text, its translation, and a specific risky expression identified in the translation, suggest 1-2 culturally appropriate replacement phrases that would reduce the risk for the target audience.
+
+For each suggestion, provide:
+- text: the replacement phrase (in the target language)
+- reason: a brief explanation of why this replacement is better
+
+Original Chinese:
+{source_text}
+
+Translation ({target_language}):
+{translated_text}
+
+Risky expression: "{phrase}"
+Risk type: {risk_type}
+Risk explanation: {explanation}
+
+Return a JSON array of suggestions. Return ONLY the JSON array, no other text."""
