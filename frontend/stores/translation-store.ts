@@ -7,6 +7,9 @@ export interface RiskAnnotation {
   risk_level: "low" | "medium" | "high";
   risk_type: string;
   explanation: string;
+  status: "open" | "accepted" | "dismissed";
+  accepted_suggestion?: string;
+  offset?: number;
 }
 
 export interface RiskSpan {
@@ -17,6 +20,7 @@ export interface RiskSpan {
   risk_level: "low" | "medium" | "high";
   risk_type: string;
   explanation: string;
+  status?: "open" | "accepted" | "dismissed";
 }
 
 interface LangResult {
@@ -32,6 +36,10 @@ interface TranslationState {
   setResult: (lang: string, result: Partial<LangResult>) => void;
   appendText: (lang: string, delta: string) => void;
   resetAll: () => void;
+  acceptRisk: (lang: string, riskIndex: number, suggestion: string, translatedText: string, annotations: RiskAnnotation[]) => void;
+  dismissRisk: (lang: string, riskIndex: number, annotations: RiskAnnotation[]) => void;
+  revertRisk: (lang: string, riskIndex: number, translatedText: string, annotations: RiskAnnotation[]) => void;
+  setAnnotations: (lang: string, annotations: RiskAnnotation[]) => void;
 }
 
 export const useTranslationStore = create<TranslationState>((set) => ({
@@ -48,4 +56,28 @@ export const useTranslationStore = create<TranslationState>((set) => ({
       return { results: { ...s.results, [lang]: { ...existing, translatedText: existing.translatedText + delta, status: "streaming" } } };
     }),
   resetAll: () => set({ results: {} }),
+  acceptRisk: (lang, riskIndex, suggestion, translatedText, annotations) =>
+    set((s) => {
+      const defaults: LangResult = { status: "idle", translatedText: "", riskAnnotations: [], acceptanceScore: -1, highlightedIndex: null };
+      const existing = s.results[lang] || defaults;
+      return { results: { ...s.results, [lang]: { ...existing, translatedText, riskAnnotations: annotations } } };
+    }),
+  dismissRisk: (lang, riskIndex, annotations) =>
+    set((s) => {
+      const defaults: LangResult = { status: "idle", translatedText: "", riskAnnotations: [], acceptanceScore: -1, highlightedIndex: null };
+      const existing = s.results[lang] || defaults;
+      return { results: { ...s.results, [lang]: { ...existing, riskAnnotations: annotations } } };
+    }),
+  revertRisk: (lang, riskIndex, translatedText, annotations) =>
+    set((s) => {
+      const defaults: LangResult = { status: "idle", translatedText: "", riskAnnotations: [], acceptanceScore: -1, highlightedIndex: null };
+      const existing = s.results[lang] || defaults;
+      return { results: { ...s.results, [lang]: { ...existing, translatedText, riskAnnotations: annotations } } };
+    }),
+  setAnnotations: (lang, annotations) =>
+    set((s) => {
+      const defaults: LangResult = { status: "idle", translatedText: "", riskAnnotations: [], acceptanceScore: -1, highlightedIndex: null };
+      const existing = s.results[lang] || defaults;
+      return { results: { ...s.results, [lang]: { ...existing, riskAnnotations: annotations } } };
+    }),
 }));

@@ -1,7 +1,7 @@
 "use client";
 
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import type { RiskAnnotation } from "@/stores/translation-store";
+import type { RiskSpan } from "@/stores/translation-store";
 
 const RISK_STYLES: Record<string, { label: string; badgeBg: string; badgeText: string }> = {
   high: { label: "高风险", badgeBg: "#FEE2E2", badgeText: "#DC2626" },
@@ -10,7 +10,7 @@ const RISK_STYLES: Record<string, { label: string; badgeBg: string; badgeText: s
 };
 
 interface RiskAnnotationPopoverProps {
-  annotation: RiskAnnotation;
+  annotation: RiskSpan;
   children: React.ReactNode;
 }
 
