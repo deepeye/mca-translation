@@ -5,6 +5,7 @@ from app.llm.bailian import bailian_client
 from app.llm.cultural_profiles import AUDIENCE_TYPE_GUIDELINES, CULTURAL_SPHERE_PROFILES
 from app.llm.prompts import RISK_ANNOTATION_PROMPT, STRATEGY_DESCRIPTIONS, TRANSLATION_SYSTEM_PROMPT
 from app.schemas.job import CulturalPreprocessResult
+from app.services.cultural import cultural_preprocess
 
 logger = logging.getLogger(__name__)
 
@@ -76,24 +77,65 @@ def build_translation_system_prompt(
 class TranslationPipeline:
     """P0 translation pipeline: main translation + basic risk annotation."""
 
-    async def translate(self, source_text: str, genre: str, strategy: str, target_language: str) -> dict:
-        """Run the P0 pipeline. Returns {translated_text, risk_annotations}."""
-        # Step 3: Main translation
-        translated_text = await self._main_translation(source_text, genre, strategy, target_language)
+    async def translate(
+        self,
+        source_text: str,
+        genre: str,
+        strategy: str,
+        target_language: str,
+        cultural_sphere: str | None = None,
+        audience_type: str | None = None,
+    ) -> dict:
+        """Run the pipeline. Returns {translated_text, risk_annotations, cultural_adaptation, acceptance_score}."""
+        # Step 1: cultural preprocessing (optional, graceful fallback to None)
+        cultural_result = None
+        if cultural_sphere:
+            cultural_result = await cultural_preprocess(
+                text=source_text,
+                cultural_sphere=cultural_sphere,
+                audience_type=audience_type or "general_public",
+                genre=genre,
+                llm_client=bailian_client,
+            )
 
-        # Step 5 (simplified): Basic risk annotation
+        # Step 2: main translation
+        translated_text = await self._main_translation(
+            source_text=source_text,
+            genre=genre,
+            strategy=strategy,
+            target_language=target_language,
+            cultural_constraints=cultural_result,
+            cultural_sphere=cultural_sphere,
+            audience_type=audience_type,
+        )
+
+        # Step 3: risk annotation (unchanged)
         risk_annotations = await self._risk_annotation(source_text, translated_text, target_language)
 
         return {
             "translated_text": translated_text,
             "risk_annotations": risk_annotations,
-            "acceptance_score": -1,  # P0: not computed
+            "cultural_adaptation": cultural_result.model_dump() if cultural_result else None,
+            "acceptance_score": -1,
         }
 
-    async def _main_translation(self, source_text: str, genre: str, strategy: str, target_language: str) -> str:
-        strategy_desc = STRATEGY_DESCRIPTIONS.get(strategy, STRATEGY_DESCRIPTIONS["semantic_equivalence"])
-        system_prompt = TRANSLATION_SYSTEM_PROMPT.format(
-            target_language=target_language, genre=genre, strategy_description=strategy_desc
+    async def _main_translation(
+        self,
+        source_text: str,
+        genre: str,
+        strategy: str,
+        target_language: str,
+        cultural_constraints: CulturalPreprocessResult | None = None,
+        cultural_sphere: str | None = None,
+        audience_type: str | None = None,
+    ) -> str:
+        system_prompt = build_translation_system_prompt(
+            target_language=target_language,
+            genre=genre,
+            strategy=strategy,
+            cultural_constraints=cultural_constraints,
+            cultural_sphere=cultural_sphere,
+            audience_type=audience_type,
         )
         messages = [
             {"role": "system", "content": system_prompt},
