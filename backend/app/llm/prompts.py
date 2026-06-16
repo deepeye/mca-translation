@@ -50,3 +50,44 @@ SUGGESTION_PROMPT = """你是一位文化适配专家。请根据原文中文、
 风险解释：{explanation}
 
 返回 JSON 数组格式的建议数组。只返回 JSON 数组，不要包含其他文本。"""
+
+CULTURAL_PREPROCESS_PROMPT = """你是一位资深的国际传播专家，擅长跨文化内容适配。请阅读下面的中文源文本，并基于目标文化圈与受众类型，识别文本中可能造成跨文化障碍的"文化负载词"。
+
+目标文化圈特征：
+{cultural_sphere_profile}
+
+目标受众类型：
+{audience_type_guideline}
+
+文体：{genre}
+
+任务要求：
+1. 识别源文本中的文化负载词或短语（最多 10 个）。"文化负载词"指那些在目标文化圈中缺少直接对应概念、容易引起误解、或需要额外背景才能理解的中文表达。
+2. 对每个识别出的词，给出以下字段：
+   - term：原文中的中文词或短语，必须与原文片段完全一致
+   - culture_gap："low" | "medium" | "high"，表示与目标文化圈的认知差异程度
+   - adaptation_strategy："literal"（直译，文化距离低）| "explanatory"（解释型翻译，需补充背景）| "analogical"（类比翻译，目标文化有相近概念）| "reconstruction"（场景重构，需要重新组织表达）
+   - suggested_rendering：建议的目标语译法或译文片段
+   - reason：用简体中文一句话说明为什么需要这种适配
+3. 给出 cultural_notes：1-3 条目标文化圈下的整体表达注意事项（中文）
+4. 给出 taboo_warnings：0-3 条目标文化圈下应避免的表达或叙事框架（中文），无则返回空数组
+
+输出严格 JSON，不要包含任何其他文字、解释、markdown 代码围栏：
+
+{{
+  "culture_loaded_terms": [
+    {{
+      "term": "...",
+      "culture_gap": "low|medium|high",
+      "adaptation_strategy": "literal|explanatory|analogical|reconstruction",
+      "suggested_rendering": "...",
+      "reason": "..."
+    }}
+  ],
+  "cultural_notes": ["..."],
+  "taboo_warnings": ["..."]
+}}
+
+源文本：
+{source_text}
+"""
