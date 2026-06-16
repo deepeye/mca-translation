@@ -9,6 +9,12 @@ const RISK_STYLES: Record<string, { label: string; badgeBg: string; badgeText: s
   low: { label: "低风险", badgeBg: "#FEF9C3", badgeText: "#A16207" },
 };
 
+const RISK_TYPE_LABELS: Record<string, string> = {
+  cognitive_bias: "认知偏差",
+  negative_association: "负面联想",
+  ambiguity: "歧义",
+};
+
 interface RiskAnnotationPopoverProps {
   annotation: RiskSpan;
   children: React.ReactNode;
@@ -29,7 +35,7 @@ export function RiskAnnotationPopover({ annotation, children }: RiskAnnotationPo
             {style.label}
           </span>
           <span className="inline-flex items-center rounded bg-[#F1F5F9] px-1.5 py-0.5 text-[10px] text-[#475569]">
-            {annotation.risk_type}
+            {RISK_TYPE_LABELS[annotation.risk_type] ?? annotation.risk_type}
           </span>
         </div>
         <p className="text-xs leading-relaxed text-[#334155] line-clamp-3">
