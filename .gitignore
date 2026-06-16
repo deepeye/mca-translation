@@ -1,0 +1,15 @@
+# Backend
+backend/.env
+backend/__pycache__/
+backend/*.pyc
+backend/uploads/
+
+# Frontend
+frontend/node_modules/
+frontend/.next/
+frontend/.env.local
+
+# Infrastructure
+.superpowers/
+.spec-workflow/
+design-system/
