@@ -38,3 +38,29 @@ class JobListItem(BaseModel):
     genre: str
     target_languages: list[str]
     created_at: datetime
+
+
+class Suggestion(BaseModel):
+    text: str
+    reason: str
+
+
+class SuggestionResponse(BaseModel):
+    suggestions: list[Suggestion]
+
+
+class AcceptRiskRequest(BaseModel):
+    suggestion: str
+    lang: str
+
+
+class DismissRiskRequest(BaseModel):
+    lang: str
+
+
+class RevertRiskRequest(BaseModel):
+    lang: str
+
+
+class AcceptAllRequest(BaseModel):
+    lang: str
