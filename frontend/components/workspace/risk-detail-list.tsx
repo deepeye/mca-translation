@@ -12,6 +12,12 @@ const RISK_BADGE_STYLES: Record<string, { label: string; badgeBg: string; badgeT
   low: { label: "低风险", badgeBg: "#FEF9C3", badgeText: "#A16207", borderColor: "#FDE68A" },
 };
 
+const RISK_TYPE_LABELS: Record<string, string> = {
+  cognitive_bias: "认知偏差",
+  negative_association: "负面联想",
+  ambiguity: "歧义",
+};
+
 const STATUS_STYLES: Record<string, { borderColor: string; bg: string }> = {
   open: { borderColor: "#E2E8F0", bg: "white" },
   accepted: { borderColor: "#86EFAC", bg: "#F0FDF4" },
@@ -162,7 +168,7 @@ function RiskDetailCard({
         </span>
         <span className="text-xs font-medium text-[#134E4A]">&ldquo;{annotation.phrase}&rdquo;</span>
         <span className="inline-flex items-center rounded bg-[#F1F5F9] px-1.5 py-0.5 text-[9px] text-[#475569]">
-          {annotation.risk_type}
+          {RISK_TYPE_LABELS[annotation.risk_type] ?? annotation.risk_type}
         </span>
 
         {/* Status badge + actions */}
