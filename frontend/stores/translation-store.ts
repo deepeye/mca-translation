@@ -2,10 +2,20 @@ import { create } from "zustand";
 
 export type ResultStatus = "idle" | "streaming" | "completed" | "failed" | "partial";
 
-interface RiskAnnotation {
+export interface RiskAnnotation {
   phrase: string;
   risk_level: "low" | "medium" | "high";
-  risk_type: "cognitive_bias" | "negative_association" | "ambiguity";
+  risk_type: string;
+  explanation: string;
+}
+
+export interface RiskSpan {
+  index: number;
+  phrase: string;
+  offset: number;
+  length: number;
+  risk_level: "low" | "medium" | "high";
+  risk_type: string;
   explanation: string;
 }
 
@@ -14,6 +24,7 @@ interface LangResult {
   translatedText: string;
   riskAnnotations: RiskAnnotation[];
   acceptanceScore: number;
+  highlightedIndex: number | null;
 }
 
 interface TranslationState {
@@ -27,11 +38,11 @@ export const useTranslationStore = create<TranslationState>((set) => ({
   results: {},
   setResult: (lang, result) =>
     set((s) => ({
-      results: { ...s.results, [lang]: { status: "idle", translatedText: "", riskAnnotations: [], acceptanceScore: -1, ...result } },
+      results: { ...s.results, [lang]: { status: "idle", translatedText: "", riskAnnotations: [], acceptanceScore: -1, highlightedIndex: null, ...result } },
     })),
   appendText: (lang, delta) =>
     set((s) => {
-      const existing = s.results[lang] || { status: "streaming" as ResultStatus, translatedText: "", riskAnnotations: [], acceptanceScore: -1 };
+      const existing = s.results[lang] || { status: "streaming" as ResultStatus, translatedText: "", riskAnnotations: [], acceptanceScore: -1, highlightedIndex: null };
       return { results: { ...s.results, [lang]: { ...existing, translatedText: existing.translatedText + delta, status: "streaming" } } };
     }),
   resetAll: () => set({ results: {} }),
