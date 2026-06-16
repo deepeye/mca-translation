@@ -57,18 +57,12 @@ export function TranslationResult({ language }: { language: string }) {
     return () => window.removeEventListener("scroll-to-risk-mark", handler);
   }, [language]);
 
-  if (!result) {
-    return <div className="flex h-full items-center justify-center text-sm text-muted-foreground">请在左侧选择目标语言并开始转译</div>;
-  }
-  if (result.status === "idle") {
-    return <div className="flex h-full items-center justify-center text-sm text-muted-foreground">等待转译...</div>;
-  }
-  if (result.status === "failed") {
-    return <div className="flex h-full items-center justify-center text-sm text-danger">转译失败，请重试</div>;
-  }
-
   // Build segmented text with <mark> tags for risk phrases
+  // Must be called before any early returns (Rules of Hooks)
   const content = useMemo(() => {
+    if (!result) return null;
+    if (result.status === "idle") return null;
+    if (result.status === "failed") return null;
     if (!result.translatedText && result.status === "streaming") {
       return <span>正在生成...</span>;
     }
@@ -114,7 +108,18 @@ export function TranslationResult({ language }: { language: string }) {
     }
 
     return parts;
-  }, [result.translatedText, result.status, spans, highlightedIndex, handleMarkHover, handleMarkLeave]);
+  }, [result, spans, highlightedIndex, handleMarkHover, handleMarkLeave]);
+
+  // Render placeholder states
+  if (!result) {
+    return <div className="flex h-full items-center justify-center text-sm text-muted-foreground">请在左侧选择目标语言并开始转译</div>;
+  }
+  if (result.status === "idle") {
+    return <div className="flex h-full items-center justify-center text-sm text-muted-foreground">等待转译...</div>;
+  }
+  if (result.status === "failed") {
+    return <div className="flex h-full items-center justify-center text-sm text-danger">转译失败，请重试</div>;
+  }
 
   return (
     <div className="h-full overflow-y-auto whitespace-pre-wrap rounded-md border border-border bg-white p-3 text-sm leading-relaxed text-foreground">
