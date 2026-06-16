@@ -4,7 +4,9 @@ import uuid
 
 from app.celery_app import celery_app
 from app.core.config import settings
+from app.llm.bailian import bailian_client
 from app.models.job import TranslationJob, TranslationResult
+from app.services.cultural import cultural_preprocess
 from app.services.translation import pipeline
 
 logger = logging.getLogger(__name__)
@@ -46,6 +48,20 @@ async def _run_translation(job_id: str):
             await db.commit()
 
             all_completed = True
+
+            # Cultural preprocessing is language-agnostic (the preprocess prompt
+            # takes sphere+audience+genre, no target language), so run it once per
+            # job and reuse the result across all target languages.
+            cultural_constraints = None
+            if job.cultural_sphere:
+                cultural_constraints = await cultural_preprocess(
+                    text=job.source_text,
+                    cultural_sphere=job.cultural_sphere,
+                    audience_type=job.audience_type or "general_public",
+                    genre=job.genre,
+                    llm_client=bailian_client,
+                )
+
             for lang in job.target_languages:
                 try:
                     tr_result = await db.execute(
@@ -71,6 +87,7 @@ async def _run_translation(job_id: str):
                         target_language=lang,
                         cultural_sphere=job.cultural_sphere,
                         audience_type=job.audience_type,
+                        cultural_constraints=cultural_constraints,
                     )
                     tr.translated_text = output["translated_text"]
                     tr.risk_annotations = output["risk_annotations"]

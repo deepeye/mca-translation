@@ -9,6 +9,11 @@ from app.services.cultural import cultural_preprocess
 
 logger = logging.getLogger(__name__)
 
+# Sentinel distinguishing "caller did not pass cultural_constraints" (→ run
+# preprocess internally) from "caller passed None" (→ preprocess already ran
+# upstream and returned nothing). Lets multi-language jobs run preprocess once.
+_CULTURAL_CONSTRAINTS_NOT_PROVIDED = object()
+
 
 def build_translation_system_prompt(
     *,
@@ -85,18 +90,29 @@ class TranslationPipeline:
         target_language: str,
         cultural_sphere: str | None = None,
         audience_type: str | None = None,
+        cultural_constraints: object = _CULTURAL_CONSTRAINTS_NOT_PROVIDED,
     ) -> dict:
-        """Run the pipeline. Returns {translated_text, risk_annotations, cultural_adaptation, acceptance_score}."""
-        # Step 1: cultural preprocessing (optional, graceful fallback to None)
-        cultural_result = None
-        if cultural_sphere:
-            cultural_result = await cultural_preprocess(
-                text=source_text,
-                cultural_sphere=cultural_sphere,
-                audience_type=audience_type or "general_public",
-                genre=genre,
-                llm_client=bailian_client,
-            )
+        """Run the pipeline. Returns {translated_text, risk_annotations, cultural_adaptation, acceptance_score}.
+
+        ``cultural_constraints`` may be a pre-computed ``CulturalPreprocessResult`` or
+        ``None``. When the caller passes it (even ``None``), the internal preprocess
+        step is skipped — use this to run preprocess once for a multi-language job
+        and reuse the result across languages. When omitted, preprocess runs here.
+        """
+        # Step 1: cultural preprocessing (optional, graceful fallback to None).
+        # Skipped when the caller already ran it and passed the result in.
+        if cultural_constraints is _CULTURAL_CONSTRAINTS_NOT_PROVIDED:
+            cultural_result = None
+            if cultural_sphere:
+                cultural_result = await cultural_preprocess(
+                    text=source_text,
+                    cultural_sphere=cultural_sphere,
+                    audience_type=audience_type or "general_public",
+                    genre=genre,
+                    llm_client=bailian_client,
+                )
+        else:
+            cultural_result = cultural_constraints  # type: ignore[assignment]
 
         # Step 2: main translation
         translated_text = await self._main_translation(
