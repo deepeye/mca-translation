@@ -3,6 +3,7 @@
 import { useMemo, useRef, useCallback, useEffect } from "react";
 import { useTranslationStore, type RiskAnnotation, type RiskSpan } from "@/stores/translation-store";
 import { RiskAnnotationPopover } from "./risk-annotation-popover";
+import { CulturalAdaptationPanel } from "./cultural-adaptation-panel";
 
 const RISK_MARK_STYLES: Record<string, { border: string; bg: string; bgHighlight: string }> = {
   high: { border: "#EF4444", bg: "rgba(239,68,68,0.08)", bgHighlight: "rgba(239,68,68,0.20)" },
@@ -137,8 +138,9 @@ export function TranslationResult({ language }: { language: string }) {
   }
 
   return (
-    <div className="h-full overflow-y-auto whitespace-pre-wrap rounded-md border border-border bg-white p-3 text-sm leading-relaxed text-foreground">
-      {content}
+    <div className="h-full overflow-y-auto rounded-md border border-border bg-white p-3 text-sm leading-relaxed text-foreground">
+      <CulturalAdaptationPanel language={language} />
+      <div className="whitespace-pre-wrap">{content}</div>
     </div>
   );
 }
