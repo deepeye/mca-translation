@@ -1,6 +1,8 @@
 "use client";
 
 import { GenreSelector } from "./genre-selector";
+import { CultureSphereSelector } from "./culture-sphere-selector";
+import { AudienceTypeSelector } from "./audience-type-selector";
 import { TextEditor } from "./text-editor";
 import { StrategySelector } from "./strategy-selector";
 import { useWorkspaceStore } from "@/stores/workspace-store";
@@ -37,6 +39,8 @@ export function InputPanel() {
         genre: store.input.genre,
         strategy: store.input.strategy,
         target_languages: store.languages,
+        cultural_sphere: store.input.culturalSphere,
+        audience_type: store.input.audienceType,
       });
       store.setCurrentJobId(data.id);
 
@@ -69,6 +73,7 @@ export function InputPanel() {
             translatedText: r.translated_text || "",
             riskAnnotations: r.risk_annotations || [],
             acceptanceScore: r.acceptance_score,
+            culturalAdaptation: r.cultural_adaptation || null,
           });
         }
         if (data.status === "completed" || data.status === "failed" || data.status === "partial") {
@@ -97,6 +102,8 @@ export function InputPanel() {
   return (
     <div className="flex h-full flex-col gap-3">
       <GenreSelector />
+      <CultureSphereSelector />
+      <AudienceTypeSelector />
       <TextEditor />
       <StrategySelector />
       <div className="flex flex-wrap gap-1.5">
