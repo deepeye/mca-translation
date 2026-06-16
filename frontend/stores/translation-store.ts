@@ -23,12 +23,29 @@ export interface RiskSpan {
   status?: "open" | "accepted" | "dismissed";
 }
 
+export type AdaptationStrategy = "literal" | "explanatory" | "analogical" | "reconstruction";
+
+export interface CulturalLoadedTerm {
+  term: string;
+  culture_gap: "low" | "medium" | "high";
+  adaptation_strategy: AdaptationStrategy;
+  suggested_rendering: string;
+  reason: string;
+}
+
+export interface CulturalAdaptation {
+  culture_loaded_terms: CulturalLoadedTerm[];
+  cultural_notes: string[];
+  taboo_warnings: string[];
+}
+
 interface LangResult {
   status: ResultStatus;
   translatedText: string;
   riskAnnotations: RiskAnnotation[];
   acceptanceScore: number;
   highlightedIndex: number | null;
+  culturalAdaptation: CulturalAdaptation | null;
 }
 
 interface TranslationState {
@@ -46,37 +63,37 @@ export const useTranslationStore = create<TranslationState>((set) => ({
   results: {},
   setResult: (lang, result) =>
     set((s) => {
-      const defaults: LangResult = { status: "idle", translatedText: "", riskAnnotations: [], acceptanceScore: -1, highlightedIndex: null };
+      const defaults: LangResult = { status: "idle", translatedText: "", riskAnnotations: [], acceptanceScore: -1, highlightedIndex: null, culturalAdaptation: null };
       const existing = s.results[lang] || defaults;
       return { results: { ...s.results, [lang]: { ...existing, ...result } } };
     }),
   appendText: (lang, delta) =>
     set((s) => {
-      const existing = s.results[lang] || { status: "streaming" as ResultStatus, translatedText: "", riskAnnotations: [], acceptanceScore: -1, highlightedIndex: null };
+      const existing = s.results[lang] || { status: "streaming" as ResultStatus, translatedText: "", riskAnnotations: [], acceptanceScore: -1, highlightedIndex: null, culturalAdaptation: null };
       return { results: { ...s.results, [lang]: { ...existing, translatedText: existing.translatedText + delta, status: "streaming" } } };
     }),
   resetAll: () => set({ results: {} }),
   acceptRisk: (lang, riskIndex, suggestion, translatedText, annotations) =>
     set((s) => {
-      const defaults: LangResult = { status: "idle", translatedText: "", riskAnnotations: [], acceptanceScore: -1, highlightedIndex: null };
+      const defaults: LangResult = { status: "idle", translatedText: "", riskAnnotations: [], acceptanceScore: -1, highlightedIndex: null, culturalAdaptation: null };
       const existing = s.results[lang] || defaults;
       return { results: { ...s.results, [lang]: { ...existing, translatedText, riskAnnotations: annotations } } };
     }),
   dismissRisk: (lang, riskIndex, annotations) =>
     set((s) => {
-      const defaults: LangResult = { status: "idle", translatedText: "", riskAnnotations: [], acceptanceScore: -1, highlightedIndex: null };
+      const defaults: LangResult = { status: "idle", translatedText: "", riskAnnotations: [], acceptanceScore: -1, highlightedIndex: null, culturalAdaptation: null };
       const existing = s.results[lang] || defaults;
       return { results: { ...s.results, [lang]: { ...existing, riskAnnotations: annotations } } };
     }),
   revertRisk: (lang, riskIndex, translatedText, annotations) =>
     set((s) => {
-      const defaults: LangResult = { status: "idle", translatedText: "", riskAnnotations: [], acceptanceScore: -1, highlightedIndex: null };
+      const defaults: LangResult = { status: "idle", translatedText: "", riskAnnotations: [], acceptanceScore: -1, highlightedIndex: null, culturalAdaptation: null };
       const existing = s.results[lang] || defaults;
       return { results: { ...s.results, [lang]: { ...existing, translatedText, riskAnnotations: annotations } } };
     }),
   setAnnotations: (lang, annotations) =>
     set((s) => {
-      const defaults: LangResult = { status: "idle", translatedText: "", riskAnnotations: [], acceptanceScore: -1, highlightedIndex: null };
+      const defaults: LangResult = { status: "idle", translatedText: "", riskAnnotations: [], acceptanceScore: -1, highlightedIndex: null, culturalAdaptation: null };
       const existing = s.results[lang] || defaults;
       return { results: { ...s.results, [lang]: { ...existing, riskAnnotations: annotations } } };
     }),
