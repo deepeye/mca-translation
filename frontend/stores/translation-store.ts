@@ -37,9 +37,11 @@ interface TranslationState {
 export const useTranslationStore = create<TranslationState>((set) => ({
   results: {},
   setResult: (lang, result) =>
-    set((s) => ({
-      results: { ...s.results, [lang]: { status: "idle", translatedText: "", riskAnnotations: [], acceptanceScore: -1, highlightedIndex: null, ...result } },
-    })),
+    set((s) => {
+      const defaults: LangResult = { status: "idle", translatedText: "", riskAnnotations: [], acceptanceScore: -1, highlightedIndex: null };
+      const existing = s.results[lang] || defaults;
+      return { results: { ...s.results, [lang]: { ...existing, ...result } } };
+    }),
   appendText: (lang, delta) =>
     set((s) => {
       const existing = s.results[lang] || { status: "streaming" as ResultStatus, translatedText: "", riskAnnotations: [], acceptanceScore: -1, highlightedIndex: null };
