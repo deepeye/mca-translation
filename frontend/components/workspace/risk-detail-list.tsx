@@ -31,7 +31,7 @@ interface Suggestion {
 
 function mapAnnotations(raw: Record<string, unknown>[]): RiskAnnotation[] {
   return raw.map((a) => ({
-    phrase: a.phrase as string,
+    phrase: (a.phrase || a.span_text) as string,
     risk_level: a.risk_level as "low" | "medium" | "high",
     risk_type: a.risk_type as string,
     explanation: a.explanation as string,

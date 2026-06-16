@@ -17,7 +17,7 @@ function locateRisks(text: string, annotations: RiskAnnotation[]): RiskSpan[] {
   const spans: RiskSpan[] = [];
   annotations.forEach((a, index) => {
     const status = a.status || "open";
-    const searchPhrase = status === "accepted" && a.accepted_suggestion ? a.accepted_suggestion : a.phrase;
+    const searchPhrase = status === "accepted" && a.accepted_suggestion ? a.accepted_suggestion : a.phrase || "";
     const offset = a.offset != null && a.offset >= 0 ? a.offset : text.indexOf(searchPhrase);
     if (offset === -1 || usedOffsets.has(offset)) return;
     usedOffsets.add(offset);
