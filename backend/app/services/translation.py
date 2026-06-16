@@ -52,6 +52,9 @@ class TranslationPipeline:
                 # Add offset and status fields
                 used_offsets = set()
                 for ann in annotations:
+                    # Normalize: ensure "phrase" key exists (LLM may output "span_text")
+                    if "phrase" not in ann and "span_text" in ann:
+                        ann["phrase"] = ann.pop("span_text")
                     offset = translated_text.find(ann.get("phrase", ""))
                     if offset == -1 or offset in used_offsets:
                         ann["offset"] = -1

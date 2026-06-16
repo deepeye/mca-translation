@@ -125,7 +125,7 @@ async def get_suggestions(
         source_text=job.source_text,
         translated_text=result.translated_text,
         target_language=lang,
-        phrase=ann["phrase"],
+        phrase=ann.get("phrase") or ann.get("span_text", ""),
         risk_type=ann.get("risk_type", ""),
         explanation=ann.get("explanation", ""),
     )

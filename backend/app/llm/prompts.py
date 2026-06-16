@@ -18,7 +18,7 @@ STRATEGY_DESCRIPTIONS = {
 RISK_ANNOTATION_PROMPT = """你是一位文化风险分析师。请根据下面的原文中文和其译文，识别译文中可能在目标受众中引起误解、负面联想或认知偏差的表达。
 
 对每个风险，请提供：
-- 译文中对应的原文短语（span text）
+- phrase：译文中对应的风险短语
 - risk_level："low"、"medium" 或 "high"
 - risk_type："cognitive_bias"、"negative_association" 或 "ambiguity"
 - explanation：一句话解释风险原因，请用简体中文撰写
