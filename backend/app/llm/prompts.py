@@ -49,4 +49,4 @@ SUGGESTION_PROMPT = """你是一位文化适配专家。请根据原文中文、
 风险类型：{risk_type}
 风险解释：{explanation}
 
-返回 JSON 数格式的建议数组。只返回 JSON 数组，不要包含其他文本。"""
+返回 JSON 数组格式的建议数组。只返回 JSON 数组，不要包含其他文本。"""
