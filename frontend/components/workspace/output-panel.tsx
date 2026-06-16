@@ -5,7 +5,7 @@ import { useWorkspaceStore } from "@/stores/workspace-store";
 import { useTranslationStore } from "@/stores/translation-store";
 import { LanguageTabs } from "./language-tabs";
 import { TranslationResult } from "./translation-result";
-import { RiskSummary } from "./risk-summary";
+import { RiskDetailList } from "./risk-detail-list";
 import { ResultActions } from "./result-actions";
 
 export function OutputPanel() {
@@ -22,7 +22,7 @@ export function OutputPanel() {
     <div className="flex h-full flex-col gap-3">
       <LanguageTabs activeLang={activeLang} onSwitch={setActiveLang} />
       <TranslationResult language={activeLang} />
-      <RiskSummary language={activeLang} />
+      <RiskDetailList language={activeLang} />
       <div className="flex items-center justify-between">
         <span className="text-xs text-muted-foreground">
           {result?.status === "completed" && "转译完成"}
