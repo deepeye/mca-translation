@@ -24,6 +24,7 @@ export interface ReviewResult {
   review_id: string;
   mode: ReviewMode;
   overall_score: number;
+  translated_text: string;
   target_language: string;
   audience_baseline: string;
   categories: ReviewCategory[];
