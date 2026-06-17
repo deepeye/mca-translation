@@ -116,7 +116,7 @@ class ReviewService:
                 summary=data.get("summary", ""),
                 created_at=datetime.utcnow(),
             )
-        except (json.JSONDecodeError, KeyError, ValueError) as e:
+        except Exception as e:
             logger.warning(f"Review parsing failed: {e}")
             return ReviewResult(
                 review_id=uuid.uuid4(),
