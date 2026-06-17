@@ -53,6 +53,7 @@ export function StrategySelector() {
                   <label
                     className={`flex items-center gap-1.5 ${disabled ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}`}
                     title={disabled ? "与当前文体（品牌传播）冲突，不可选" : undefined}
+                    onClick={() => { if (!disabled) setStrategy(s.value); }}
                   >
                     <span
                       className={`inline-block h-3.5 w-3.5 rounded-full border-2 transition-all duration-200 ${
@@ -60,7 +61,6 @@ export function StrategySelector() {
                           ? "border-teal bg-teal"
                           : "border-muted-foreground/30"
                       }`}
-                      onClick={() => { if (!disabled) setStrategy(s.value); }}
                     />
                     <span className="font-heading">{s.label}</span>
                   </label> as React.ReactElement
