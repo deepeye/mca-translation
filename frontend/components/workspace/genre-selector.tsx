@@ -1,6 +1,7 @@
 "use client";
 
 import { Genre, useWorkspaceStore } from "@/stores/workspace-store";
+import { getDisabledGenres } from "@/lib/translation-conflicts";
 
 const GENRES: { value: Genre; label: string }[] = [
   { value: "political", label: "政治话语" },
@@ -11,21 +12,32 @@ const GENRES: { value: Genre; label: string }[] = [
 
 export function GenreSelector() {
   const genre = useWorkspaceStore((s) => s.input.genre);
+  const strategy = useWorkspaceStore((s) => s.input.strategy);
   const setGenre = useWorkspaceStore((s) => s.setGenre);
+  const disabledGenres = getDisabledGenres(strategy);
 
   return (
     <div className="flex gap-1.5">
-      {GENRES.map((g) => (
-        <button
-          key={g.value}
-          onClick={() => setGenre(g.value)}
-          className={`cursor-pointer rounded px-2.5 py-1 text-xs transition-colors ${
-            genre === g.value ? "bg-teal text-white" : "bg-muted text-muted-foreground hover:bg-teal-lightest"
-          }`}
-        >
-          {g.label}
-        </button>
-      ))}
+      {GENRES.map((g) => {
+        const disabled = disabledGenres.includes(g.value);
+        return (
+          <button
+            key={g.value}
+            onClick={() => { if (!disabled) setGenre(g.value); }}
+            disabled={disabled}
+            title={disabled ? "与当前翻译策略（直译参考）冲突，不可选" : undefined}
+            className={`rounded px-2.5 py-1 text-xs transition-all duration-200 border-l-2 ${
+              disabled
+                ? "opacity-50 cursor-not-allowed bg-muted text-muted-foreground border-l-transparent"
+                : genre === g.value
+                  ? "cursor-pointer active:scale-[0.95] bg-teal-lightest text-teal border-l-teal font-medium"
+                  : "cursor-pointer active:scale-[0.95] bg-muted text-muted-foreground border-l-transparent hover:bg-teal-lightest hover:text-foreground"
+            }`}
+          >
+            {g.label}
+          </button>
+        );
+      })}
     </div>
   );
 }
