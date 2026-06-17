@@ -20,7 +20,7 @@ export function OutputPanel() {
   }
 
   return (
-    <div className="flex h-full flex-col gap-3">
+    <div className="flex h-full flex-col gap-4">
       <LanguageTabs activeLang={activeLang} onSwitch={setActiveLang} />
       <TranslationResult language={activeLang} />
       <RiskDetailList language={activeLang} jobId={jobId} />

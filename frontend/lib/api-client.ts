@@ -59,7 +59,6 @@ class ApiClient {
     source_text?: string;
     translated_text: string;
     target_language: string;
-    genre?: string;
     cultural_sphere?: string;
     audience_type?: string;
   }) {

@@ -15,7 +15,7 @@ export function LanguageTabs({ activeLang, onSwitch }: { activeLang: string; onS
         <button
           key={code}
           onClick={() => onSwitch(code)}
-          className={`cursor-pointer rounded px-2.5 py-1 text-xs transition-colors ${
+          className={`cursor-pointer rounded px-2.5 py-1 text-xs transition-all duration-200 active:scale-[0.95] ${
             activeLang === code ? "bg-teal text-white" : "bg-muted text-muted-foreground hover:bg-teal-lightest"
           }`}
         >

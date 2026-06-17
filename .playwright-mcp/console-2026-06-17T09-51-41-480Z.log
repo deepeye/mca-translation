@@ -1,0 +1,20 @@
+[    1465ms] [INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ http://localhost:3000/_next/static/chunks/0k5d_next_dist_1qmvpb9._.js:2477
+[    1477ms] [VERBOSE] [DOM] Input elements should have autocomplete attributes (suggested: "current-password"): (More info: https://goo.gl/9p2vKq) %o @ http://localhost:3000/login:0
+[    1523ms] [LOG] [HMR] connected @ http://localhost:3000/_next/static/chunks/0k5d_next_dist_1qmvpb9._.js:2477
+[    1633ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/0k5d_next_dist_1qmvpb9._.js:2477
+[    1636ms] [LOG] [Fast Refresh] done in 103ms @ http://localhost:3000/_next/static/chunks/0k5d_next_dist_1qmvpb9._.js:2477
+[   11846ms] [WARNING] Detected `scroll-behavior: smooth` on the `<html>` element. To disable smooth scrolling during route transitions, add `data-scroll-behavior="smooth"` to your <html> element. Learn more: https://nextjs.org/docs/messages/missing-data-scroll-behavior @ http://localhost:3000/_next/static/chunks/0k5d_next_dist_1qmvpb9._.js:2477
+[   11876ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/0k5d_next_dist_1qmvpb9._.js:2477
+[   11900ms] [LOG] [Fast Refresh] done in 125ms @ http://localhost:3000/_next/static/chunks/0k5d_next_dist_1qmvpb9._.js:2477
+[  172916ms] [ERROR] Base UI: A component that acts as a button expected a native <button> because the `nativeButton` prop is true. Rendering a non-<button> removes native button semantics, which can impact forms and accessibility. Use a real <button> in the `render` prop, or set `nativeButton` to `false`.
+    at PopoverTrigger (http://localhost:3000/_next/static/chunks/_1k1vczc._.js:1422:375)
+    at RiskAnnotationPopover (http://localhost:3000/_next/static/chunks/_1k1vczc._.js:1547:376)
+    at TranslationResult.useMemo[content] (http://localhost:3000/_next/static/chunks/_1k1vczc._.js:2040:391)
+    at updateMemo (http://localhost:3000/_next/static/chunks/0k5d_next_dist_compiled_react-dom_1ep3e0o._.js:5413:21)
+    at Object.useMemo (http://localhost:3000/_next/static/chunks/0k5d_next_dist_compiled_react-dom_1ep3e0o._.js:15465:24)
+    at exports.useMemo (http://localhost:3000/_next/static/chunks/0k5d_next_dist_compiled_1-s7kk0._.js:1742:36)
+    at TranslationResult (http://localhost:3000/_next/static/chunks/_1k1vczc._.js:2001:355)
+    at OutputPanel (http://localhost:3000/_next/static/chunks/_1k1vczc._.js:3076:376)
+    at WorkspacePage (about://React/Server/file:///Users/felixwang/devspace/cc-project/mca-translation/frontend/.next/dev/server/chunks/ssr/%5Broot-of-the-server%5D__1b1itl7._.js?4:129:439) @ http://localhost:3000/_next/static/chunks/0k5d_next_dist_1qmvpb9._.js:3318
+[  395517ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/0k5d_next_dist_1qmvpb9._.js:2477
+[  395598ms] [LOG] [Fast Refresh] done in 175ms @ http://localhost:3000/_next/static/chunks/0k5d_next_dist_1qmvpb9._.js:2477

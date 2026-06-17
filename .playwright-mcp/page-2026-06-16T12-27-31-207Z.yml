@@ -1,0 +1,41 @@
+- generic [active] [ref=e1]:
+  - button "Open Next.js Dev Tools" [ref=e19] [cursor=pointer]:
+    - img [ref=e20]
+  - alert [ref=e23]
+  - generic [ref=e24]:
+    - banner [ref=e25]:
+      - link "CulturalBridge" [ref=e26] [cursor=pointer]:
+        - /url: /workspace
+      - navigation [ref=e27]:
+        - link "工作台" [ref=e28] [cursor=pointer]:
+          - /url: /workspace
+      - button "Sign out" [ref=e30] [cursor=pointer]
+    - main [ref=e31]:
+      - generic [ref=e32]:
+        - generic [ref=e34]:
+          - generic [ref=e35]:
+            - button "政治话语" [ref=e36] [cursor=pointer]
+            - button "新闻稿" [ref=e37] [cursor=pointer]
+            - button "政策文件" [ref=e38] [cursor=pointer]
+            - button "品牌传播" [ref=e39] [cursor=pointer]
+          - generic [ref=e40]:
+            - textbox "将中文文本粘贴至此，或上传文件 支持 .txt .docx .pdf（< 10MB）" [ref=e41]:
+              - /placeholder: "将中文文本粘贴至此，或上传文件\n支持 .txt .docx .pdf（< 10MB）"
+            - generic [ref=e42]: 0 / 10000
+          - generic [ref=e43]:
+            - generic [ref=e46] [cursor=pointer]: 信息等值
+            - generic [ref=e49] [cursor=pointer]: 受众优先
+            - generic [ref=e52] [cursor=pointer]: 直译参考
+          - generic [ref=e53]:
+            - button "英语(英)" [ref=e54] [cursor=pointer]
+            - button "德语" [ref=e55] [cursor=pointer]
+            - button "日语" [ref=e56] [cursor=pointer]
+            - button "西班牙语" [ref=e57] [cursor=pointer]
+            - button "法语" [ref=e58] [cursor=pointer]
+          - button "开始转译" [disabled]
+        - generic [ref=e60]:
+          - button "英语(英)" [ref=e62] [cursor=pointer]
+          - generic [ref=e63]: 请在左侧选择目标语言并开始转译
+          - generic [ref=e65]:
+            - button "复制" [disabled]
+            - button "导出 .txt" [disabled]

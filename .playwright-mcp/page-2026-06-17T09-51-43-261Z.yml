@@ -1,0 +1,13 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e5]:
+    - heading "CulturalBridge" [level=1] [ref=e6]
+    - paragraph [ref=e7]: Sign in to continue
+    - generic [ref=e8]:
+      - generic [ref=e9]:
+        - generic [ref=e10]: Username
+        - textbox "Username" [ref=e11]
+      - generic [ref=e12]:
+        - generic [ref=e13]: Password
+        - textbox "Password" [ref=e14]
+      - button "Sign in" [ref=e15]
+  - alert [ref=e16]

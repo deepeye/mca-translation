@@ -1,0 +1,53 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e6] [cursor=pointer]:
+    - button "Open Next.js Dev Tools" [ref=e7]:
+      - img [ref=e8]
+    - generic [ref=e55]:
+      - button "Open issues overlay" [ref=e56]:
+        - generic [ref=e57]:
+          - generic [ref=e58]: "0"
+          - generic [ref=e59]: "1"
+        - generic [ref=e60]: Issue
+      - button "Collapse issues badge" [ref=e61]:
+        - img [ref=e62]
+  - alert [ref=e11]
+  - generic [ref=e12]:
+    - banner [ref=e13]:
+      - link "CulturalBridge" [ref=e14] [cursor=pointer]:
+        - /url: /workspace
+      - navigation [ref=e15]:
+        - link "工作台" [ref=e16] [cursor=pointer]:
+          - /url: /workspace
+      - button "Sign out" [ref=e18] [cursor=pointer]
+    - main [ref=e19]:
+      - generic [ref=e20]:
+        - generic [ref=e22]:
+          - generic [ref=e23]:
+            - button "政治话语" [ref=e24] [cursor=pointer]
+            - button "新闻稿" [ref=e25] [cursor=pointer]
+            - button "政策文件" [ref=e26] [cursor=pointer]
+            - button "品牌传播" [ref=e27] [cursor=pointer]
+          - generic [ref=e28]:
+            - textbox "将中文文本粘贴至此，或上传文件 支持 .txt .docx .pdf（< 10MB）" [ref=e29]:
+              - /placeholder: "将中文文本粘贴至此，或上传文件\n支持 .txt .docx .pdf（< 10MB）"
+              - text: 6月15日，中核集团旗下中国原子能工业有限公司所属核工业理化工程研究院（以下简称“核理化院”）正式公布在量子信息新材料领域取得重大突破，经过四年的研发，该院科研团队实现丰度超99.99%的硅-28自主量产，这标志着一项此前长期被国外封锁的核心技术壁垒——高丰度同位素分离技术被成功攻克。核理化院副院长刘成业告诉《环球时报》记者：“对于国家‘十五五’规划布局而言，高丰度硅-28自主量产将为量子计算芯片、先进制程半导体等前沿领域提供关键的材料支撑，避免核心环节受制于人。”
+            - generic [ref=e30]: 237 / 10000
+          - generic [ref=e31]:
+            - generic [ref=e34] [cursor=pointer]: 信息等值
+            - generic [ref=e37] [cursor=pointer]: 受众优先
+            - generic [ref=e40] [cursor=pointer]: 直译参考
+          - generic [ref=e41]:
+            - button "英语(英)" [ref=e42] [cursor=pointer]
+            - button "德语" [ref=e43] [cursor=pointer]
+            - button "日语" [ref=e44] [cursor=pointer]
+            - button "西班牙语" [ref=e45] [cursor=pointer]
+            - button "法语" [ref=e46] [cursor=pointer]
+          - button "转译中..." [disabled]
+        - generic [ref=e49]:
+          - button "英语(英)" [ref=e51] [cursor=pointer]
+          - generic [ref=e52]: 等待转译...
+          - generic [ref=e53]:
+            - generic [ref=e64]: 等待中
+            - generic [ref=e54]:
+              - button "复制" [disabled]
+              - button "导出 .txt" [disabled]

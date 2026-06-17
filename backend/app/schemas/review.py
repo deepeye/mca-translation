@@ -24,8 +24,8 @@ class ReviewCategory(BaseModel):
 
 class ReviewRequest(BaseModel):
     mode: Literal["dual", "single"]
-    source_text: Optional[str] = None
-    translated_text: str
+    source_text: Optional[str] = Field(None, max_length=10000)
+    translated_text: str = Field(..., max_length=10000)
     target_language: str
     genre: Optional[str] = None
     cultural_sphere: Optional[str] = None

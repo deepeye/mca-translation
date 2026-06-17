@@ -1,0 +1,129 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e18] [cursor=pointer]:
+    - button "Open Next.js Dev Tools" [ref=e19]:
+      - img [ref=e20]
+    - generic [ref=e80]:
+      - button "Open issues overlay" [ref=e81]:
+        - generic [ref=e82]:
+          - generic [ref=e83]: "0"
+          - generic [ref=e84]: "1"
+        - generic [ref=e85]: Issue
+      - button "Collapse issues badge" [ref=e86]:
+        - img [ref=e87]
+  - alert [ref=e23]
+  - generic [ref=e24]:
+    - banner [ref=e25]:
+      - link "CulturalBridge" [ref=e26] [cursor=pointer]:
+        - /url: /workspace
+      - navigation [ref=e27]:
+        - link "工作台" [ref=e28] [cursor=pointer]:
+          - /url: /workspace
+      - button "Sign out" [ref=e30] [cursor=pointer]
+    - main [ref=e31]:
+      - generic [ref=e32]:
+        - generic [ref=e34]:
+          - generic [ref=e35]:
+            - button "政治话语" [ref=e36] [cursor=pointer]
+            - button "新闻稿" [ref=e37] [cursor=pointer]
+            - button "政策文件" [ref=e38] [cursor=pointer]
+            - button "品牌传播" [ref=e39] [cursor=pointer]
+          - generic [ref=e40]:
+            - generic [ref=e41]: 文化圈
+            - combobox "美国、英国、加拿大、澳大利亚" [ref=e42] [cursor=pointer]:
+              - option "欧美英语圈" [selected]
+              - option "欧洲大陆"
+              - option "伊斯兰中东"
+              - option "东亚儒家"
+              - option "拉美"
+              - option "俄语圈"
+              - option "南亚"
+              - option "非洲"
+            - generic [ref=e43]: 美国、英国、加拿大、澳大利亚
+          - generic [ref=e44]:
+            - generic [ref=e45]: 受众
+            - button "公众" [ref=e46] [cursor=pointer]
+            - button "媒体" [ref=e47] [cursor=pointer]
+            - button "政府" [ref=e48] [cursor=pointer]
+            - button "学术" [ref=e49] [cursor=pointer]
+            - button "企业" [ref=e50] [cursor=pointer]
+            - button "海外华人" [ref=e51] [cursor=pointer]
+          - generic [ref=e52]:
+            - textbox "将中文文本粘贴至此，或上传文件 支持 .txt .docx .pdf（< 10MB）" [ref=e53]:
+              - /placeholder: "将中文文本粘贴至此，或上传文件\n支持 .txt .docx .pdf（< 10MB）"
+              - text: 共同富裕不是平均主义，而是更有质量、更可持续的发展。
+            - generic [ref=e54]: 26 / 10000
+          - generic [ref=e55]:
+            - generic [ref=e58] [cursor=pointer]: 信息等值
+            - generic [ref=e61] [cursor=pointer]: 受众优先
+            - generic [ref=e64] [cursor=pointer]: 直译参考
+          - generic [ref=e65]:
+            - button "英语(英)" [ref=e66] [cursor=pointer]
+            - button "德语" [ref=e67] [cursor=pointer]
+            - button "日语" [ref=e68] [cursor=pointer]
+            - button "西班牙语" [ref=e69] [cursor=pointer]
+            - button "法语" [ref=e70] [cursor=pointer]
+          - button "开始转译" [ref=e78]
+        - generic [ref=e72]:
+          - button "英语(英)" [ref=e74] [cursor=pointer]
+          - generic [ref=e75]:
+            - button "▾ 文化适配说明（识别 3 个文化负载词、3 条注意事项、2 条禁忌） 展开" [ref=e90] [cursor=pointer]:
+              - generic [ref=e91]:
+                - text: ▾ 文化适配说明
+                - generic [ref=e92]: （识别 3 个文化负载词、3 条注意事项、2 条禁忌）
+              - generic [ref=e93]: 展开
+            - generic [ref=e94]:
+              - text: A society where economic opportunity and upward mobility are broadly shared —
+              - mark [ref=e95] [cursor=pointer]: not guaranteed equally
+              - text: ", but made genuinely accessible through fair rules, strong public investment in education and infrastructure, and policies that"
+              - mark [ref=e96] [cursor=pointer]: prevent extreme wealth concentration
+              - text: — is not about
+              - mark [ref=e97] [cursor=pointer]: one-size-fits-all equal pay or equal outcomes regardless of effort or contribution
+              - text: . Instead, it is about growth that lifts living standards for most people — not just GDP numbers, but better wages, cleaner air, stable jobs, and stronger communities.
+          - generic [ref=e98]:
+            - generic [ref=e99]:
+              - generic [ref=e100]:
+                - text: 风险标注：3 处表达在目标受众中存在认知风险
+                - generic [ref=e101]: 1 高风险
+                - generic [ref=e102]: 2 中风险
+              - button "一键采纳全部建议" [ref=e103]:
+                - img
+                - text: 一键采纳全部建议
+            - generic [ref=e104]:
+              - generic [ref=e105]:
+                - generic [ref=e106]:
+                  - generic [ref=e107]: 中风险
+                  - generic [ref=e108]: “not guaranteed equally”
+                  - generic [ref=e109]: 歧义
+                  - button "忽略" [ref=e111]:
+                    - img [ref=e112]
+                - paragraph [ref=e115]: 该短语易被误解为否定‘机会均等’原则，而原文强调的是反对平均主义而非否定公平保障；英语中‘not guaranteed equally’语法模糊，可能被读作‘不以同等程度保障’，引发对制度公平性的质疑。
+                - button "查看替代方案" [ref=e117]:
+                  - img
+                  - text: 查看替代方案
+              - generic [ref=e118]:
+                - generic [ref=e119]:
+                  - generic [ref=e120]: 高风险
+                  - generic [ref=e121]: “one-size-fits-all equal pay or equal outcomes regardless of effort or contribution”
+                  - generic [ref=e122]: 负面联想
+                  - button "忽略" [ref=e124]:
+                    - img [ref=e125]
+                - paragraph [ref=e128]: 将‘共同富裕’的误读具象化为‘一刀切的同工同酬’和‘无视努力与贡献的均等结果’，虽意在澄清，但过度强化了西方语境中对‘平等’的刻板批判，可能触发受众对政策本质的污名化联想（如暗示中国曾推行极端平均主义）。
+                - button "查看替代方案" [ref=e130]:
+                  - img
+                  - text: 查看替代方案
+              - generic [ref=e131]:
+                - generic [ref=e132]:
+                  - generic [ref=e133]: 中风险
+                  - generic [ref=e134]: “prevent extreme wealth concentration”
+                  - generic [ref=e135]: 认知偏差
+                  - button "忽略" [ref=e137]:
+                    - img [ref=e138]
+                - paragraph [ref=e141]: 该表述隐含‘财富集中必然有害’的价值预设，易激活英语读者对‘劫富济贫’的刻板认知，而原文未提及财富再分配手段，仅强调发展质量与可持续性，存在归因偏差风险。
+                - button "查看替代方案" [ref=e143]:
+                  - img
+                  - text: 查看替代方案
+          - generic [ref=e76]:
+            - generic [ref=e79]: 转译完成
+            - generic [ref=e77]:
+              - button "复制" [ref=e144]
+              - button "导出 .txt" [ref=e145]

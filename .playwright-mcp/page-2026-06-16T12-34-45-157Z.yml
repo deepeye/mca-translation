@@ -1,0 +1,90 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - banner [ref=e3]:
+      - link "CulturalBridge" [ref=e4] [cursor=pointer]:
+        - /url: /workspace
+      - navigation [ref=e5]:
+        - link "工作台" [ref=e6] [cursor=pointer]:
+          - /url: /workspace
+      - button "Sign out" [ref=e8] [cursor=pointer]
+    - main [ref=e9]:
+      - generic [ref=e10]:
+        - generic [ref=e12]:
+          - generic [ref=e13]:
+            - button "政治话语" [ref=e14] [cursor=pointer]
+            - button "新闻稿" [ref=e15] [cursor=pointer]
+            - button "政策文件" [ref=e16] [cursor=pointer]
+            - button "品牌传播" [ref=e17] [cursor=pointer]
+          - generic [ref=e18]:
+            - textbox "将中文文本粘贴至此，或上传文件 支持 .txt .docx .pdf（< 10MB）" [ref=e19]:
+              - /placeholder: "将中文文本粘贴至此，或上传文件\n支持 .txt .docx .pdf（< 10MB）"
+              - text: 中国积极推进一带一路倡议，加强与沿线国家的经贸合作，推动构建人类命运共同体。这是中国特色社会主义的重要实践。
+            - generic [ref=e20]: 54 / 10000
+          - generic [ref=e21]:
+            - generic [ref=e24] [cursor=pointer]: 信息等值
+            - generic [ref=e27] [cursor=pointer]: 受众优先
+            - generic [ref=e30] [cursor=pointer]: 直译参考
+          - generic [ref=e31]:
+            - button "英语(英)" [ref=e32] [cursor=pointer]
+            - button "德语" [ref=e33] [cursor=pointer]
+            - button "日语" [ref=e34] [cursor=pointer]
+            - button "西班牙语" [ref=e35] [cursor=pointer]
+            - button "法语" [ref=e36] [cursor=pointer]
+          - button "开始转译" [ref=e54]
+        - generic [ref=e38]:
+          - button "英语(英)" [ref=e40] [cursor=pointer]
+          - generic [ref=e41]:
+            - text: China is actively promoting the Belt and Road Initiative, strengthening economic and trade cooperation with countries along the route, and advancing the building of
+            - mark [ref=e56] [cursor=pointer]: a community with a shared future for mankind
+            - text: . This is an important practice of
+            - mark [ref=e57] [cursor=pointer]: socialism with Chinese characteristics
+            - text: .
+          - generic [ref=e58]:
+            - generic [ref=e59]:
+              - generic [ref=e60]:
+                - text: 风险标注：2 处表达在目标受众中存在认知风险
+                - generic [ref=e61]: 1 高风险
+                - generic [ref=e62]: 1 中风险
+              - button "一键采纳全部建议" [ref=e63]:
+                - img
+                - text: 一键采纳全部建议
+            - generic [ref=e64]:
+              - generic [ref=e65]:
+                - generic [ref=e66]:
+                  - generic [ref=e67]: 中风险
+                  - generic [ref=e68]: “a community with a shared future for mankind”
+                  - generic [ref=e69]: 认知偏差
+                  - button "忽略" [ref=e71]:
+                    - img [ref=e72]
+                - paragraph [ref=e75]: 该短语在英语语境中缺乏明确政治哲学参照系，易被西方受众误读为模糊的乌托邦式口号或隐含意识形态输出意图，而非基于多边主义与共同发展的务实倡议。
+                - button "查看替代方案" [ref=e77]:
+                  - img
+                  - text: 查看替代方案
+              - generic [ref=e78]:
+                - generic [ref=e79]:
+                  - generic [ref=e80]: 高风险
+                  - generic [ref=e81]: “socialism with Chinese characteristics”
+                  - generic [ref=e82]: 负面联想
+                  - button "忽略" [ref=e84]:
+                    - img [ref=e85]
+                - paragraph [ref=e88]: 在部分英语国家（尤其英美）受众中，'socialism'一词常触发对计划经济、政治集权等历史负面联想，且未加限定语境，易掩盖其在中国语境中作为发展道路表述的特定内涵。
+                - button "查看替代方案" [ref=e90]:
+                  - img
+                  - text: 查看替代方案
+          - generic [ref=e42]:
+            - generic [ref=e55]: 转译完成
+            - generic [ref=e43]:
+              - button "复制" [ref=e91]
+              - button "导出 .txt" [ref=e92]
+  - generic [ref=e48] [cursor=pointer]:
+    - button "Open Next.js Dev Tools" [ref=e49]:
+      - img [ref=e50]
+    - generic [ref=e93]:
+      - button "Open issues overlay" [ref=e94]:
+        - generic [ref=e95]:
+          - generic [ref=e96]: "0"
+          - generic [ref=e97]: "1"
+        - generic [ref=e98]: Issue
+      - button "Collapse issues badge" [ref=e99]:
+        - img [ref=e100]
+  - alert [ref=e53]

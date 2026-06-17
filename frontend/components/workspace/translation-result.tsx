@@ -6,11 +6,11 @@ import { RiskAnnotationPopover } from "./risk-annotation-popover";
 import { CulturalAdaptationPanel } from "./cultural-adaptation-panel";
 
 const RISK_MARK_STYLES: Record<string, { border: string; bg: string; bgHighlight: string }> = {
-  high: { border: "#EF4444", bg: "rgba(239,68,68,0.08)", bgHighlight: "rgba(239,68,68,0.20)" },
-  medium: { border: "#EA580C", bg: "rgba(234,88,12,0.06)", bgHighlight: "rgba(234,88,12,0.16)" },
-  low: { border: "#EAB308", bg: "rgba(234,179,8,0.06)", bgHighlight: "rgba(234,179,8,0.16)" },
-  accepted: { border: "#22C55E", bg: "rgba(34,197,94,0.08)", bgHighlight: "rgba(34,197,94,0.20)" },
-  dismissed: { border: "#9CA3AF", bg: "rgba(156,163,175,0.06)", bgHighlight: "rgba(156,163,175,0.16)" },
+  high: { border: "var(--color-risk-high)", bg: "var(--color-risk-high-bg)", bgHighlight: "var(--color-risk-high-bg-highlight)" },
+  medium: { border: "var(--color-risk-medium)", bg: "var(--color-risk-medium-bg)", bgHighlight: "var(--color-risk-medium-bg-highlight)" },
+  low: { border: "var(--color-risk-low)", bg: "var(--color-risk-low-bg)", bgHighlight: "var(--color-risk-low-bg-highlight)" },
+  accepted: { border: "var(--color-risk-accepted)", bg: "var(--color-risk-accepted-bg)", bgHighlight: "var(--color-risk-accepted-bg-highlight)" },
+  dismissed: { border: "var(--color-risk-dismissed)", bg: "var(--color-risk-dismissed-bg)", bgHighlight: "var(--color-risk-dismissed-bg-highlight)" },
 };
 
 function locateRisks(text: string, annotations: RiskAnnotation[]): RiskSpan[] {

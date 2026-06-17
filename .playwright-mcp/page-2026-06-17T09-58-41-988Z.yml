@@ -1,0 +1,62 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - banner [ref=e3]:
+      - link "CulturalBridge" [ref=e4] [cursor=pointer]:
+        - /url: /workspace
+      - navigation [ref=e5]:
+        - link "工作台" [ref=e6] [cursor=pointer]:
+          - /url: /workspace
+      - button "Sign out" [ref=e8] [cursor=pointer]
+    - main [ref=e9]:
+      - generic [ref=e10]:
+        - generic [ref=e12]:
+          - generic [ref=e13]:
+            - button "政治话语" [ref=e14] [cursor=pointer]
+            - button "新闻稿" [ref=e15] [cursor=pointer]
+            - button "政策文件" [ref=e16] [cursor=pointer]
+            - button "品牌传播" [ref=e17] [cursor=pointer]
+          - generic [ref=e18]:
+            - generic [ref=e19]: 文化圈
+            - generic [ref=e20]:
+              - combobox "美国、英国、加拿大、澳大利亚" [ref=e21] [cursor=pointer]:
+                - option "欧美英语圈" [selected]
+                - option "欧洲大陆"
+                - option "伊斯兰中东"
+                - option "东亚儒家"
+                - option "拉美"
+                - option "俄语圈"
+                - option "南亚"
+                - option "非洲"
+              - generic [ref=e22]: 美国、英国、加拿大、澳大利亚
+          - generic [ref=e23]:
+            - generic [ref=e24]: 受众
+            - generic [ref=e25]:
+              - button "公众" [ref=e26] [cursor=pointer]
+              - button "媒体" [ref=e27] [cursor=pointer]
+              - button "政府" [ref=e28] [cursor=pointer]
+              - button "学术" [ref=e29] [cursor=pointer]
+              - button "企业" [ref=e30] [cursor=pointer]
+              - button "海外华人" [ref=e31] [cursor=pointer]
+          - generic [ref=e32]:
+            - textbox "将中文文本粘贴至此，或上传文件 支持 .txt .docx .pdf（< 10MB）" [ref=e33]:
+              - /placeholder: "将中文文本粘贴至此，或上传文件\n支持 .txt .docx .pdf（< 10MB）"
+            - generic [ref=e34]: 0 / 10000
+          - generic [ref=e35]:
+            - generic [ref=e38] [cursor=pointer]: 信息等值
+            - generic [ref=e41] [cursor=pointer]: 受众优先
+            - generic [ref=e44] [cursor=pointer]: 直译参考
+          - generic [ref=e45]:
+            - button "英语(英)" [ref=e46] [cursor=pointer]
+            - button "德语" [ref=e47] [cursor=pointer]
+            - button "日语" [ref=e48] [cursor=pointer]
+            - button "西班牙语" [ref=e49] [cursor=pointer]
+            - button "法语" [ref=e50] [cursor=pointer]
+          - button "开始转译" [disabled]
+        - generic [ref=e52]:
+          - button "英语(英)" [ref=e54] [cursor=pointer]
+          - generic [ref=e55]: 请在左侧选择目标语言并开始转译
+          - generic [ref=e57]:
+            - button "复制" [disabled]
+            - button "导出 .txt" [disabled]
+  - button "Open Next.js Dev Tools" [ref=e63] [cursor=pointer]:
+    - img [ref=e64]

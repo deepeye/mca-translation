@@ -13,7 +13,7 @@ const MARK_STYLES: Record<string, { border: string; bg: string; bgHover: string 
 };
 
 function buildSpans(translatedText: string, issues: { index: number; category: string; span: { start: number; end: number; text: string } | null }[]) {
-  const valid = issues
+  return issues
     .filter((i) => i.span && i.span.start >= 0 && i.span.end > i.span.start)
     .map((i) => ({
       index: i.index,
@@ -23,17 +23,6 @@ function buildSpans(translatedText: string, issues: { index: number; category: s
       text: i.span!.text,
     }))
     .sort((a, b) => a.start - b.start);
-
-  // Remove overlapping spans (keep first)
-  const deduped: typeof valid = [];
-  let lastEnd = -1;
-  for (const span of valid) {
-    if (span.start >= lastEnd) {
-      deduped.push(span);
-      lastEnd = span.end;
-    }
-  }
-  return deduped;
 }
 
 export function ReviewResultPanel() {
@@ -117,7 +106,7 @@ export function ReviewResultPanel() {
         </mark>
       );
 
-      cursor = span.end;
+      cursor = Math.max(cursor, span.end);
     }
 
     if (cursor < text.length) {

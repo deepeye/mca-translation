@@ -1,0 +1,115 @@
+- generic [ref=e1]:
+  - generic [active]:
+    - generic [ref=e70]:
+      - generic [ref=e71]:
+        - generic [ref=e72]:
+          - navigation [ref=e73]:
+            - button "previous" [disabled] [ref=e74]:
+              - img "previous" [ref=e75]
+            - generic [ref=e77]:
+              - generic [ref=e78]: 1/
+              - text: "1"
+            - button "next" [disabled] [ref=e79]:
+              - img "next" [ref=e80]
+          - img
+        - generic [ref=e82]:
+          - generic [ref=e83]:
+            - img [ref=e84]
+            - generic "Latest available version is detected (16.2.9)." [ref=e86]: Next.js 16.2.9
+            - generic [ref=e87]: Turbopack
+          - img
+      - dialog "Runtime TypeError" [ref=e89]:
+        - generic [ref=e92]:
+          - generic [ref=e93]:
+            - generic [ref=e94]:
+              - generic [ref=e96]: Runtime TypeError
+              - generic [ref=e97]:
+                - button "Copy Error Info" [ref=e98] [cursor=pointer]:
+                  - img [ref=e99]
+                - button "No related documentation found" [disabled] [ref=e101]:
+                  - img [ref=e102]
+                - button "Attach Node.js inspector" [ref=e104] [cursor=pointer]:
+                  - img [ref=e105]
+            - generic [ref=e114]: Cannot read properties of undefined (reading 'length')
+          - generic [ref=e115]:
+            - generic [ref=e116]:
+              - paragraph [ref=e118]:
+                - img [ref=e120]
+                - generic [ref=e123]: components/workspace/translation-result.tsx (28:28) @ <unknown>
+                - button "Open in editor" [ref=e124] [cursor=pointer]:
+                  - img [ref=e126]
+              - generic [ref=e129]:
+                - generic [ref=e130]: "26 | phrase: searchPhrase,"
+                - generic [ref=e131]: 27 | offset,
+                - generic [ref=e132]: "> 28 | length: searchPhrase.length,"
+                - generic [ref=e133]: "| ^"
+                - generic [ref=e134]: "29 | risk_level: a.risk_level,"
+                - generic [ref=e135]: "30 | risk_type: a.risk_type,"
+                - generic [ref=e136]: "31 | explanation: a.explanation,"
+            - generic [ref=e137]:
+              - generic [ref=e138]:
+                - paragraph [ref=e139]:
+                  - text: Call Stack
+                  - generic [ref=e140]: "23"
+                - button "Show 16 ignore-listed frame(s)" [ref=e141] [cursor=pointer]:
+                  - text: Show 16 ignore-listed frame(s)
+                  - img [ref=e142]
+              - generic [ref=e144]:
+                - generic [ref=e145]:
+                  - text: <unknown>
+                  - button "Open <unknown> in editor" [ref=e146] [cursor=pointer]:
+                    - img [ref=e147]
+                - text: components/workspace/translation-result.tsx (28:28)
+              - generic [ref=e149]:
+                - generic [ref=e150]: Array.forEach
+                - text: <anonymous>
+              - generic [ref=e151]:
+                - generic [ref=e152]:
+                  - text: locateRisks
+                  - button "Open locateRisks in editor" [ref=e153] [cursor=pointer]:
+                    - img [ref=e154]
+                - text: components/workspace/translation-result.tsx (18:15)
+              - generic [ref=e156]:
+                - generic [ref=e157]:
+                  - text: TranslationResult.useMemo[spans]
+                  - button "Open TranslationResult.useMemo[spans] in editor" [ref=e158] [cursor=pointer]:
+                    - img [ref=e159]
+                - text: components/workspace/translation-result.tsx (45:21)
+              - generic [ref=e161]:
+                - generic [ref=e162]:
+                  - text: TranslationResult
+                  - button "Open TranslationResult in editor" [ref=e163] [cursor=pointer]:
+                    - img [ref=e164]
+                - text: components/workspace/translation-result.tsx (44:24)
+              - generic [ref=e166]:
+                - generic [ref=e167]:
+                  - text: OutputPanel
+                  - button "Open OutputPanel in editor" [ref=e168] [cursor=pointer]:
+                    - img [ref=e169]
+                - text: components/workspace/output-panel.tsx (25:7)
+              - generic [ref=e171]:
+                - generic [ref=e172]:
+                  - text: WorkspacePage
+                  - button "Open WorkspacePage in editor" [ref=e173] [cursor=pointer]:
+                    - img [ref=e174]
+                - text: app/(main)/workspace/page.tsx (11:9)
+        - generic [ref=e176]: "1"
+        - generic [ref=e177]: "2"
+    - generic [ref=e18] [cursor=pointer]:
+      - button "Open Next.js Dev Tools" [ref=e19]:
+        - img [ref=e20]
+      - generic [ref=e178]:
+        - button "Open issues overlay" [ref=e179]:
+          - generic [ref=e180]:
+            - generic [ref=e181]: "0"
+            - generic [ref=e182]: "1"
+          - generic [ref=e183]: Issue
+        - button "Collapse issues badge" [ref=e184]:
+          - img [ref=e185]
+  - generic [ref=e188]:
+    - img [ref=e189]
+    - heading "This page couldn’t load" [level=1] [ref=e191]
+    - paragraph [ref=e192]: Reload to try again, or go back.
+    - generic [ref=e193]:
+      - button "Reload" [ref=e195] [cursor=pointer]
+      - button "Back" [ref=e196] [cursor=pointer]

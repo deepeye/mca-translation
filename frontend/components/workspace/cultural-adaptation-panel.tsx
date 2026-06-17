@@ -41,7 +41,7 @@ export function CulturalAdaptationPanel({ language }: { language: string }) {
         onClick={() => setOpen((v) => !v)}
         className="flex w-full cursor-pointer items-center justify-between px-3 py-2 text-xs text-foreground hover:bg-muted"
       >
-        <span>
+        <span className="font-heading tracking-tight">
           ▾ 文化适配说明
           <span className="ml-2 text-muted-foreground">
             （识别 {totalTerms} 个文化负载词

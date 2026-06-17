@@ -9,7 +9,7 @@
   --color-foreground: var(--foreground);
   --font-sans: "Plus Jakarta Sans", system-ui, sans-serif;
   --font-mono: var(--font-geist-mono);
-  --font-heading: var(--font-sans);
+  --font-heading: var(--font-playfair-display), "Playfair Display", Georgia, serif;
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -56,6 +56,31 @@
   --color-terracotta-dark: #9A3412;
   --color-danger: #EF4444;
   --color-success: #10B981;
+  /* Risk level colors */
+  --color-risk-high: #EF4444;
+  --color-risk-high-bg: rgba(239,68,68,0.08);
+  --color-risk-high-bg-highlight: rgba(239,68,68,0.20);
+  --color-risk-high-text: #DC2626;
+  --color-risk-high-border: #FCA5A5;
+  --color-risk-medium: #EA580C;
+  --color-risk-medium-bg: rgba(234,88,12,0.06);
+  --color-risk-medium-bg-highlight: rgba(234,88,12,0.16);
+  --color-risk-medium-text: #C2410C;
+  --color-risk-medium-border: #FDBA74;
+  --color-risk-low: #EAB308;
+  --color-risk-low-bg: rgba(234,179,8,0.06);
+  --color-risk-low-bg-highlight: rgba(234,179,8,0.16);
+  --color-risk-low-text: #A16207;
+  --color-risk-low-border: #FDE68A;
+  --color-risk-accepted: #22C55E;
+  --color-risk-accepted-bg: rgba(34,197,94,0.08);
+  --color-risk-accepted-bg-highlight: rgba(34,197,94,0.20);
+  --color-risk-accepted-border: #86EFAC;
+  --color-risk-dismissed: #9CA3AF;
+  --color-risk-dismissed-bg: rgba(156,163,175,0.06);
+  --color-risk-dismissed-bg-highlight: rgba(156,163,175,0.16);
+  --color-risk-dismissed-border: #D1D5DB;
+  --color-risk-dismissed-text: #64748B;
 }
 
 :root {
@@ -99,5 +124,8 @@
   }
   body {
     @apply bg-background text-foreground;
+  }
+  html {
+    scroll-behavior: smooth;
   }
 }

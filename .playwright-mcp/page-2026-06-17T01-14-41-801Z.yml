@@ -1,0 +1,62 @@
+- generic [active] [ref=e1]:
+  - button "Open Next.js Dev Tools" [ref=e19] [cursor=pointer]:
+    - img [ref=e20]
+  - alert [ref=e23]
+  - generic [ref=e24]:
+    - banner [ref=e25]:
+      - link "CulturalBridge" [ref=e26] [cursor=pointer]:
+        - /url: /workspace
+      - navigation [ref=e27]:
+        - link "工作台" [ref=e28] [cursor=pointer]:
+          - /url: /workspace
+      - button "Sign out" [ref=e30] [cursor=pointer]
+    - main [ref=e31]:
+      - generic [ref=e32]:
+        - generic [ref=e34]:
+          - generic [ref=e35]:
+            - button "政治话语" [ref=e36] [cursor=pointer]
+            - button "新闻稿" [ref=e37] [cursor=pointer]
+            - button "政策文件" [ref=e38] [cursor=pointer]
+            - button "品牌传播" [ref=e39] [cursor=pointer]
+          - generic [ref=e40]:
+            - generic [ref=e41]: 文化圈
+            - combobox "美国、英国、加拿大、澳大利亚" [ref=e42] [cursor=pointer]:
+              - option "欧美英语圈" [selected]
+              - option "欧洲大陆"
+              - option "伊斯兰中东"
+              - option "东亚儒家"
+              - option "拉美"
+              - option "俄语圈"
+              - option "南亚"
+              - option "非洲"
+            - generic [ref=e43]: 美国、英国、加拿大、澳大利亚
+          - generic [ref=e44]:
+            - generic [ref=e45]: 受众
+            - button "公众" [ref=e46] [cursor=pointer]
+            - button "媒体" [ref=e47] [cursor=pointer]
+            - button "政府" [ref=e48] [cursor=pointer]
+            - button "学术" [ref=e49] [cursor=pointer]
+            - button "企业" [ref=e50] [cursor=pointer]
+            - button "海外华人" [ref=e51] [cursor=pointer]
+          - generic [ref=e52]:
+            - textbox "将中文文本粘贴至此，或上传文件 支持 .txt .docx .pdf（< 10MB）" [ref=e53]:
+              - /placeholder: "将中文文本粘贴至此，或上传文件\n支持 .txt .docx .pdf（< 10MB）"
+              - text: 共同富裕不是平均主义，而是更有质量、更可持续的发展。
+            - generic [ref=e54]: 26 / 10000
+          - generic [ref=e55]:
+            - generic [ref=e58] [cursor=pointer]: 信息等值
+            - generic [ref=e61] [cursor=pointer]: 受众优先
+            - generic [ref=e64] [cursor=pointer]: 直译参考
+          - generic [ref=e65]:
+            - button "英语(英)" [ref=e66] [cursor=pointer]
+            - button "德语" [ref=e67] [cursor=pointer]
+            - button "日语" [ref=e68] [cursor=pointer]
+            - button "西班牙语" [ref=e69] [cursor=pointer]
+            - button "法语" [ref=e70] [cursor=pointer]
+          - button "开始转译" [ref=e78]
+        - generic [ref=e72]:
+          - button "英语(英)" [ref=e74] [cursor=pointer]
+          - generic [ref=e75]: 请在左侧选择目标语言并开始转译
+          - generic [ref=e77]:
+            - button "复制" [disabled]
+            - button "导出 .txt" [disabled]

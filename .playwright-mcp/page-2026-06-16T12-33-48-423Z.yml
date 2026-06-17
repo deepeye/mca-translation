@@ -1,0 +1,42 @@
+- generic [ref=e1]:
+  - generic [ref=e2]:
+    - banner [ref=e3]:
+      - link "CulturalBridge" [ref=e4] [cursor=pointer]:
+        - /url: /workspace
+      - navigation [ref=e5]:
+        - link "工作台" [ref=e6] [cursor=pointer]:
+          - /url: /workspace
+      - button "Sign out" [ref=e8] [cursor=pointer]
+    - main [ref=e9]:
+      - generic [ref=e10]:
+        - generic [ref=e12]:
+          - generic [ref=e13]:
+            - button "政治话语" [ref=e14] [cursor=pointer]
+            - button "新闻稿" [ref=e15] [cursor=pointer]
+            - button "政策文件" [ref=e16] [cursor=pointer]
+            - button "品牌传播" [ref=e17] [cursor=pointer]
+          - generic [ref=e18]:
+            - textbox "将中文文本粘贴至此，或上传文件 支持 .txt .docx .pdf（< 10MB）" [ref=e19]:
+              - /placeholder: "将中文文本粘贴至此，或上传文件\n支持 .txt .docx .pdf（< 10MB）"
+              - text: 中国积极推进一带一路倡议，加强与沿线国家的经贸合作，推动构建人类命运共同体。这是中国特色社会主义的重要实践。
+            - generic [ref=e20]: 54 / 10000
+          - generic [ref=e21]:
+            - generic [ref=e24] [cursor=pointer]: 信息等值
+            - generic [ref=e27] [cursor=pointer]: 受众优先
+            - generic [ref=e30] [cursor=pointer]: 直译参考
+          - generic [ref=e31]:
+            - button "英语(英)" [active] [ref=e32] [cursor=pointer]
+            - button "德语" [ref=e33] [cursor=pointer]
+            - button "日语" [ref=e34] [cursor=pointer]
+            - button "西班牙语" [ref=e35] [cursor=pointer]
+            - button "法语" [ref=e36] [cursor=pointer]
+          - button "开始转译" [ref=e54]
+        - generic [ref=e38]:
+          - button "英语(英)" [ref=e40] [cursor=pointer]
+          - generic [ref=e41]: 请在左侧选择目标语言并开始转译
+          - generic [ref=e43]:
+            - button "复制" [disabled]
+            - button "导出 .txt" [disabled]
+  - button "Open Next.js Dev Tools" [ref=e49] [cursor=pointer]:
+    - img [ref=e50]
+  - alert [ref=e53]

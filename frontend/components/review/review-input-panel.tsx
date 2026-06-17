@@ -56,7 +56,6 @@ export function ReviewInputPanel() {
         source_text: store.mode === "dual" ? store.sourceText : undefined,
         translated_text: store.translatedText,
         target_language: store.targetLanguage,
-        genre: store.genre,
         cultural_sphere: store.culturalSphere,
         audience_type: store.audienceType,
       });

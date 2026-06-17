@@ -1,0 +1,85 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e6] [cursor=pointer]:
+    - button "Open Next.js Dev Tools" [ref=e7]:
+      - img [ref=e8]
+    - generic [ref=e55]:
+      - button "Open issues overlay" [ref=e56]:
+        - generic [ref=e57]:
+          - generic [ref=e58]: "0"
+          - generic [ref=e59]: "1"
+        - generic [ref=e60]: Issue
+      - button "Collapse issues badge" [ref=e61]:
+        - img [ref=e62]
+  - alert [ref=e11]
+  - generic [ref=e12]:
+    - banner [ref=e13]:
+      - link "CulturalBridge" [ref=e14] [cursor=pointer]:
+        - /url: /workspace
+      - navigation [ref=e15]:
+        - link "工作台" [ref=e16] [cursor=pointer]:
+          - /url: /workspace
+      - button "Sign out" [ref=e18] [cursor=pointer]
+    - main [ref=e19]:
+      - generic [ref=e20]:
+        - generic [ref=e22]:
+          - generic [ref=e23]:
+            - button "政治话语" [ref=e24] [cursor=pointer]
+            - button "新闻稿" [ref=e25] [cursor=pointer]
+            - button "政策文件" [ref=e26] [cursor=pointer]
+            - button "品牌传播" [ref=e27] [cursor=pointer]
+          - generic [ref=e28]:
+            - textbox "将中文文本粘贴至此，或上传文件 支持 .txt .docx .pdf（< 10MB）" [ref=e29]:
+              - /placeholder: "将中文文本粘贴至此，或上传文件\n支持 .txt .docx .pdf（< 10MB）"
+              - text: 6月15日，中核集团旗下中国原子能工业有限公司所属核工业理化工程研究院（以下简称“核理化院”）正式公布在量子信息新材料领域取得重大突破，经过四年的研发，该院科研团队实现丰度超99.99%的硅-28自主量产，这标志着一项此前长期被国外封锁的核心技术壁垒——高丰度同位素分离技术被成功攻克。核理化院副院长刘成业告诉《环球时报》记者：“对于国家‘十五五’规划布局而言，高丰度硅-28自主量产将为量子计算芯片、先进制程半导体等前沿领域提供关键的材料支撑，避免核心环节受制于人。”
+            - generic [ref=e30]: 237 / 10000
+          - generic [ref=e31]:
+            - generic [ref=e34] [cursor=pointer]: 信息等值
+            - generic [ref=e37] [cursor=pointer]: 受众优先
+            - generic [ref=e40] [cursor=pointer]: 直译参考
+          - generic [ref=e41]:
+            - button "英语(英)" [ref=e42] [cursor=pointer]
+            - button "德语" [ref=e43] [cursor=pointer]
+            - button "日语" [ref=e44] [cursor=pointer]
+            - button "西班牙语" [ref=e45] [cursor=pointer]
+            - button "法语" [ref=e46] [cursor=pointer]
+          - button "开始转译" [ref=e47]
+        - generic [ref=e49]:
+          - button "英语(英)" [ref=e51] [cursor=pointer]
+          - generic [ref=e52]:
+            - text: On 15 June, the Nuclear Physics and Chemistry Institute (NPCI), affiliated with China National Nuclear Corporation's China Atomic Energy Industry Corporation, officially announced a significant breakthrough in the field of quantum information new materials. After four years of research and development, the institute's scientific team has achieved the independent mass production of silicon-28 with an abundance exceeding 99.99%. This marks the successful overcoming of a core technological barrier—high-abundance isotope separation technology—that
+            - mark [ref=e65] [cursor=pointer]: had long been subject to foreign export restrictions
+            - text: ". Liu Chengye, Deputy Director of NPCI, told the Global Times: \"For the national '15th Five-Year Plan' layout, the independent mass production of high-abundance silicon-28 will provide crucial material support for frontier areas such as quantum computing chips and advanced process semiconductors,"
+            - mark [ref=e66] [cursor=pointer]: avoiding being constrained by others in key stages
+            - text: ."
+          - generic [ref=e67]:
+            - generic [ref=e69]:
+              - text: 风险标注：2 处表达在目标受众中存在认知风险
+              - generic [ref=e71]: 1 中风险
+              - generic [ref=e111]: 1 已采纳
+            - generic [ref=e73]:
+              - generic [ref=e74]:
+                - generic [ref=e75]:
+                  - generic [ref=e76]: 高风险
+                  - generic [ref=e77]: “had long been under foreign control”
+                  - generic [ref=e78]: negative_association
+                  - generic [ref=e112]: 已采纳：had long been under foreign control → had long been subject to foreign export restrictions
+                - paragraph [ref=e84]: The phrase 'under foreign control' inaccurately implies that the technology was actively governed or administered by foreign entities, rather than being subject to export restrictions or technological embargoes; this risks evoking colonial or hegemonic connotations and may fuel geopolitical suspicion or backlash in Western audiences.
+                - button "回退" [ref=e114]:
+                  - img
+                  - text: 回退
+              - generic [ref=e87]:
+                - generic [ref=e88]:
+                  - generic [ref=e89]: 中风险
+                  - generic [ref=e90]: “avoiding being constrained by others in key stages”
+                  - generic [ref=e91]: ambiguity
+                  - button "忽略" [ref=e93]:
+                    - img [ref=e94]
+                - paragraph [ref=e97]: The vague, passive phrasing 'constrained by others' lacks specificity about the nature of the constraint (e.g., export controls, IP licensing, supply chain dependency), potentially inviting misinterpretation as a veiled accusation of deliberate obstruction rather than a neutral description of technical access limitations.
+                - button "查看替代方案" [ref=e99]:
+                  - img
+                  - text: 查看替代方案
+          - generic [ref=e53]:
+            - generic [ref=e64]: 转译完成
+            - generic [ref=e54]:
+              - button "复制" [ref=e100]
+              - button "导出 .txt" [ref=e101]
