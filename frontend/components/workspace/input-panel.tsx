@@ -10,6 +10,7 @@ import { useTranslationStore } from "@/stores/translation-store";
 import { apiClient } from "@/lib/api-client";
 import { wsClient } from "@/lib/ws-client";
 import { Button } from "@/components/ui/button";
+import { isLiteralMode } from "@/lib/translation-conflicts";
 
 const AVAILABLE_LANGUAGES = [
   { code: "en-GB", label: "英语(英)" },
@@ -34,13 +35,14 @@ export function InputPanel() {
     }
 
     try {
+      const literalMode = isLiteralMode(store.input.strategy);
       const data = await apiClient.post("/api/jobs", {
         source_text: store.input.text,
         genre: store.input.genre,
         strategy: store.input.strategy,
         target_languages: store.languages,
-        cultural_sphere: store.input.culturalSphere,
-        audience_type: store.input.audienceType,
+        cultural_sphere: literalMode ? null : store.input.culturalSphere,
+        audience_type: literalMode ? null : store.input.audienceType,
       });
       store.setCurrentJobId(data.id);
 
@@ -100,7 +102,7 @@ export function InputPanel() {
   }
 
   return (
-    <div className="flex h-full flex-col gap-3">
+    <div className="flex h-full flex-col gap-4">
       <GenreSelector />
       <CultureSphereSelector />
       <AudienceTypeSelector />
@@ -111,7 +113,7 @@ export function InputPanel() {
           <button
             key={l.code}
             onClick={() => toggleLanguage(l.code)}
-            className={`cursor-pointer rounded px-2.5 py-1 text-xs transition-colors ${
+            className={`cursor-pointer rounded px-2.5 py-1 text-xs transition-all duration-200 active:scale-[0.95] ${
               store.languages.includes(l.code) ? "bg-terracotta text-white" : "bg-muted text-muted-foreground hover:bg-teal-lightest"
             }`}
           >
