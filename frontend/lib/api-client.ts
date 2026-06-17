@@ -63,8 +63,7 @@ class ApiClient {
     cultural_sphere?: string;
     audience_type?: string;
   }) {
-    const res = await this.request("/api/reviews", { method: "POST", body: JSON.stringify(body) });
-    return res.json();
+    return this.post("/api/reviews", body);
   }
 
   async get(path: string) {
