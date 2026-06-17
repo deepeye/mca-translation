@@ -54,6 +54,19 @@ class ApiClient {
     return res.json();
   }
 
+  async postReview(body: {
+    mode: "dual" | "single";
+    source_text?: string;
+    translated_text: string;
+    target_language: string;
+    genre?: string;
+    cultural_sphere?: string;
+    audience_type?: string;
+  }) {
+    const res = await this.request("/api/reviews", { method: "POST", body: JSON.stringify(body) });
+    return res.json();
+  }
+
   async get(path: string) {
     const res = await this.request(path, { method: "GET" });
     return res.json();
