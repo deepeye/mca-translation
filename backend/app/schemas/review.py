@@ -36,6 +36,7 @@ class ReviewResult(BaseModel):
     review_id: uuid.UUID
     mode: Literal["dual", "single"]
     overall_score: int = Field(..., ge=0, le=100)
+    translated_text: str
     target_language: str
     audience_baseline: str
     categories: list[ReviewCategory]
