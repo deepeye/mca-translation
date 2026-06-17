@@ -69,8 +69,10 @@ CULTURAL_PREPROCESS_PROMPT = """你是一位资深的国际传播专家，擅长
    - adaptation_strategy："literal"（直译，文化距离低）| "explanatory"（解释型翻译，需补充背景）| "analogical"（类比翻译，目标文化有相近概念）| "reconstruction"（场景重构，需要重新组织表达）
    - suggested_rendering：建议的目标语译法或译文片段
    - reason：用简体中文一句话说明为什么需要这种适配
-3. 给出 cultural_notes：1-3 条目标文化圈下的整体表达注意事项（中文）
-4. 给出 taboo_warnings：0-3 条目标文化圈下应避免的表达或叙事框架（中文），无则返回空数组
+3. 给出 cultural_notes：1-3 条目标文化圈下的整体表达注意事项（必须用简体中文撰写）
+4. 给出 taboo_warnings：0-3 条目标文化圈下应避免的表达或叙事框架（必须用简体中文撰写），无则返回空数组
+
+重要：以上 reason、cultural_notes、taboo_warnings 三个字段的所有文本都必须使用简体中文表达，不得使用繁体中文、英文或其他语言。
 
 输出严格 JSON，不要包含任何其他文字、解释、markdown 代码围栏：
 
@@ -91,3 +93,64 @@ CULTURAL_PREPROCESS_PROMPT = """你是一位资深的国际传播专家，擅长
 源文本：
 {source_text}
 """
+
+DUAL_REVIEW_PROMPT = """你是一位资深国际传播审校专家。请对照下面的中文原文和外文译文，从以下四个维度进行审校分析，指出译文中的问题并给出修改建议。
+
+审校维度：
+1. 术语准确性（terminology）：政治话语专有术语、政策文件固定译法是否准确、是否缺少必要的注释
+2. 文化适配（cultural）：译文表达在目标受众文化中是否会产生负面联想或误读
+3. 表达清晰度（clarity）：是否存在歧义、术语堆砌、过度直译导致难以理解
+4. 叙事逻辑（narrative）：段落结构、因果链、论证顺序是否与原文一致（允许因受众偏好微调，但需标注）
+
+输出要求：
+- 以 JSON 格式返回
+- overall_score：总体评分（0-100）
+- summary：一段中文摘要（100字以内），概括主要问题和建议
+- categories：按四个维度分类，每个维度包含 name（"术语准确性"/"文化适配"/"表达清晰度"/"叙事逻辑"）、score（0-100）和 issues 列表
+- 每个 issue 必须包含：
+  - category：分类标识（terminology / cultural / clarity / narrative）
+  - severity："low"、"medium"、"high"
+  - span：{"start": 字符偏移, "end": 字符偏移, "text": "译文中的对应文本"}
+  - original：译文中需要修改的原文片段
+  - suggestion：修改建议
+  - explanation：为什么需要修改（中文，50字以内）
+  - source_reference：对应的中文原文片段（如有）
+
+原文中文：
+{source_text}
+
+译文（{target_language}）：
+{translated_text}
+
+目标受众：{audience}（{cultural_sphere}文化圈）
+
+只返回 JSON，不要包含其他文本。"""
+
+SINGLE_REVIEW_PROMPT = """你是一位资深国际传播审校专家。请对下面的外文译文进行独立诊断，假设该译文已经发布给目标受众，请评估其传播效果和潜在风险。
+
+诊断维度：
+1. 受众接受度（cultural）：目标受众是否会产生误读、负面联想或认知偏差
+2. 表达清晰度（clarity）：是否存在歧义、术语滥用、句子过长、逻辑跳跃
+3. 传播效果优化（narrative）：如何调整表达以提升说服力和可读性
+4. 文化风险（terminology）：哪些表达在目标文化中是高风险的，建议如何规避
+
+输出要求：
+- 以 JSON 格式返回，结构与双模式相同
+- 单模式时 source_reference 字段可为 null
+- overall_score：总体评分（0-100），基于受众接受度和表达清晰度综合评估
+- categories：按四个维度分类，每个维度包含 name、score（0-100）和 issues 列表
+- 每个 issue 必须包含：
+  - category：cultural / clarity / narrative / terminology
+  - severity："low"、"medium"、"high"
+  - span：{"start": 字符偏移, "end": 字符偏移, "text": "译文中的对应文本"}
+  - original：译文中需要修改的片段
+  - suggestion：修改建议
+  - explanation：为什么需要修改（中文，50字以内）
+  - source_reference：null
+
+译文（{target_language}）：
+{translated_text}
+
+目标受众：{audience}（{cultural_sphere}文化圈）
+
+只返回 JSON，不要包含其他文本。"""
