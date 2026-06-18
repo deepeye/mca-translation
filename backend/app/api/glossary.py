@@ -30,6 +30,8 @@ async def create_entry(
     user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
 ):
+    # TODO: Implement proper admin role check when RBAC is available
+    raise HTTPException(status_code=403, detail="System glossary management is restricted")
     embeddings = await bailian_client.embed([body.source_term])
     embedding = embeddings[0] if embeddings else None
 
@@ -79,6 +81,8 @@ async def update_entry(
     user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
 ):
+    # TODO: Implement proper admin role check when RBAC is available
+    raise HTTPException(status_code=403, detail="System glossary management is restricted")
     entry = await db.get(GlossaryEntry, entry_id)
     if not entry:
         raise HTTPException(status_code=404, detail="Entry not found")
@@ -105,6 +109,8 @@ async def delete_entry(
     user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
 ):
+    # TODO: Implement proper admin role check when RBAC is available
+    raise HTTPException(status_code=403, detail="System glossary management is restricted")
     entry = await db.get(GlossaryEntry, entry_id)
     if not entry:
         raise HTTPException(status_code=404, detail="Entry not found")
@@ -196,7 +202,7 @@ async def detect_terms(
         trans = {}
         for lang in ["en-GB", "de-DE", "ja-JP", "es-ES", "fr-FR"]:
             t = get_term_translation(term, lang)
-            if t["rendering"]:
+            if t["preferred"]:
                 trans[lang] = t
         items.append(_DetectedTermItem(
             source_term=term.source_term,

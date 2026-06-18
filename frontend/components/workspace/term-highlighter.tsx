@@ -75,7 +75,7 @@ export function TermHighlighter({ text, containerClassName = "" }: TermHighlight
               )}
               {term.translations["en-GB"] && (
                 <div className="mt-1 text-xs text-teal-700">
-                  英语：{term.translations["en-GB"].rendering}
+                  英语：{term.translations["en-GB"].preferred}
                 </div>
               )}
             </div>

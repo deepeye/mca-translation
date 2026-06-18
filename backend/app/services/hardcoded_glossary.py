@@ -251,7 +251,7 @@ def get_term_translation(
     """
     lang_entry = term.translations.get(language)
     if lang_entry is None:
-        return {"rendering": "", "notes": "", "alternatives": []}
+        return {"preferred": "", "notes": "", "alternatives": []}
 
     rendering = lang_entry.get("rendering", "")
     notes = lang_entry.get("notes", "")
@@ -260,7 +260,7 @@ def get_term_translation(
     if strategy == "audience_first" and alternatives:
         rendering = alternatives[-1]
 
-    return {"rendering": rendering, "notes": notes, "alternatives": alternatives}
+    return {"preferred": rendering, "notes": notes, "alternatives": alternatives}
 
 
 def format_glossary_block(
@@ -286,7 +286,7 @@ def format_glossary_block(
     lines: list[str] = ["<glossary_terms>"]
     for term in filtered:
         info = get_term_translation(term, language, strategy)
-        rendering = info["rendering"]
+        rendering = info["preferred"]
         notes = info["notes"]
         alternatives = info["alternatives"]
 

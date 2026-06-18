@@ -51,20 +51,20 @@ def test_get_term_translation_audience_first():
     term = _term_by_source["以人民为中心"]
     info = get_term_translation(term, "en-GB", strategy="audience_first")
     # audience_first 取最后一个备选作为简化版本
-    assert info["rendering"] == "people-first"
+    assert info["preferred"] == "people-first"
     assert info["alternatives"] == ["people-first"]
 
 
 def test_get_term_translation_semantic_default():
     term = _term_by_source["以人民为中心"]
     info = get_term_translation(term, "en-GB")
-    assert info["rendering"] == "people-centered"
+    assert info["preferred"] == "people-centered"
 
 
 def test_get_term_translation_unknown_language():
     term = _term_by_source["以人民为中心"]
     info = get_term_translation(term, "fr-FR")
-    assert info["rendering"] == ""
+    assert info["preferred"] == ""
     assert info["alternatives"] == []
 
 

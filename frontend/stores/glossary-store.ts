@@ -4,7 +4,7 @@ export interface DetectedTerm {
   source_term: string;
   term_type: string;
   risk_notes: string;
-  translations: Record<string, { rendering: string; notes: string; alternatives: string[] }>;
+  translations: Record<string, { preferred: string; notes: string; alternatives: string[] }>;
 }
 
 interface GlossaryState {
