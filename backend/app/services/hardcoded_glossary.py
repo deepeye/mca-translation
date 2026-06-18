@@ -8,7 +8,7 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 
 
 @dataclass
@@ -224,7 +224,10 @@ _all_source_terms: list[str] = [term.source_term for term in _HARDCODED_TERMS]
 
 
 def find_terms_in_text(text: str) -> list[GlossaryTerm]:
-    """对源文本做子串匹配，返回所有命中的术语条目（按词典顺序）。"""
+    """对源文本做子串匹配，返回所有命中的术语条目（按术语定义顺序）。
+
+    注意：子串匹配可能在无关上下文中产生误报（例如"小康"可能出现在非政治语境中）。
+    """
     if not text:
         return []
     return [
@@ -288,8 +291,7 @@ def format_glossary_block(
         alternatives = info["alternatives"]
 
         parts: list[str] = [
-            f"  <term source=\"{term.source_term}\" rendering=\"{rendering}\" "
-            f"type=\"{term.term_type}\">"
+            f'  <term source="{term.source_term}" rendering="{rendering}" type="{term.term_type}">'
         ]
         if alternatives:
             parts.append("    <alternatives>")

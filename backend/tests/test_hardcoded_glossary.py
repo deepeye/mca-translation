@@ -4,6 +4,7 @@ from app.services.hardcoded_glossary import (
     find_terms_in_text,
     format_glossary_block,
     get_term_translation,
+    _term_by_source,
 )
 
 
@@ -33,6 +34,8 @@ def test_format_glossary_block():
     assert "<glossary_terms>" in block
     assert "</glossary_terms>" in block
     assert "Five-sphere Overall Plan" in block
+    assert block.count("<glossary_terms>") == 1
+    assert 'type="political_discourse"' in block
 
 
 def test_format_glossary_block_filters_genre():
@@ -45,8 +48,6 @@ def test_format_glossary_block_filters_genre():
 
 
 def test_get_term_translation_audience_first():
-    from app.services.hardcoded_glossary import _term_by_source
-
     term = _term_by_source["以人民为中心"]
     info = get_term_translation(term, "en-GB", strategy="audience_first")
     # audience_first 取最后一个备选作为简化版本
@@ -55,16 +56,12 @@ def test_get_term_translation_audience_first():
 
 
 def test_get_term_translation_semantic_default():
-    from app.services.hardcoded_glossary import _term_by_source
-
     term = _term_by_source["以人民为中心"]
     info = get_term_translation(term, "en-GB")
     assert info["rendering"] == "people-centered"
 
 
 def test_get_term_translation_unknown_language():
-    from app.services.hardcoded_glossary import _term_by_source
-
     term = _term_by_source["以人民为中心"]
     info = get_term_translation(term, "fr-FR")
     assert info["rendering"] == ""
