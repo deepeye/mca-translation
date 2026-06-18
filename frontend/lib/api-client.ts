@@ -65,6 +65,10 @@ class ApiClient {
     return this.post("/api/reviews", body);
   }
 
+  async detectTerms(text: string) {
+    return this.post("/api/glossary/detect", { text });
+  }
+
   async get(path: string) {
     const res = await this.request(path, { method: "GET" });
     return res.json();
