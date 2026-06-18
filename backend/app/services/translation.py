@@ -1,12 +1,15 @@
 import json
 import logging
+import uuid
+
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.llm.bailian import bailian_client
 from app.llm.cultural_profiles import AUDIENCE_TYPE_GUIDELINES, CULTURAL_SPHERE_PROFILES
 from app.llm.prompts import RISK_ANNOTATION_PROMPT, STRATEGY_DESCRIPTIONS, TRANSLATION_SYSTEM_PROMPT
 from app.schemas.job import CulturalPreprocessResult
 from app.services.cultural import cultural_preprocess
-from app.services.hardcoded_glossary import find_terms_in_text, format_glossary_block
+from app.services.glossary_rag import retrieve_glossary_terms
 
 logger = logging.getLogger(__name__)
 
@@ -24,7 +27,6 @@ def build_translation_system_prompt(
     cultural_constraints: CulturalPreprocessResult | None = None,
     cultural_sphere: str | None = None,
     audience_type: str | None = None,
-    source_text: str | None = None,
 ) -> str:
     """构建主翻译的 system prompt。可选注入 <cultural_constraints> 段。"""
     strategy_desc = STRATEGY_DESCRIPTIONS.get(strategy, STRATEGY_DESCRIPTIONS["semantic_equivalence"])
@@ -80,15 +82,6 @@ def build_translation_system_prompt(
         cultural_block = "\n".join(parts)
         result = f"{base}\n\n{cultural_block}\n"
 
-    # Build glossary block (hardcoded terms)
-    glossary_block = ""
-    if source_text:
-        matched_terms = find_terms_in_text(source_text)
-        if matched_terms:
-            glossary_block = format_glossary_block(matched_terms, target_language, genre, strategy)
-
-    if glossary_block:
-        result += f"\n{glossary_block}\n"
     return result
 
 
@@ -103,6 +96,8 @@ class TranslationPipeline:
         target_language: str,
         cultural_sphere: str | None = None,
         audience_type: str | None = None,
+        db: AsyncSession | None = None,
+        user_id: uuid.UUID | None = None,
         cultural_constraints: object = _CULTURAL_CONSTRAINTS_NOT_PROVIDED,
     ) -> dict:
         """Run the pipeline. Returns {translated_text, risk_annotations, cultural_adaptation, acceptance_score}.
@@ -127,6 +122,26 @@ class TranslationPipeline:
         else:
             cultural_result = cultural_constraints  # type: ignore[assignment]
 
+        # RAG glossary retrieval (Phase 2)
+        glossary_block = ""
+        if db and user_id:
+            rag_terms = await retrieve_glossary_terms(
+                db=db,
+                user_id=user_id,
+                source_text=source_text,
+                language=target_language,
+                genre=genre,
+                top_k=5,
+            )
+            if rag_terms:
+                glossary_block = self._format_rag_glossary_block(rag_terms, target_language, strategy)
+        else:
+            # Fallback to hardcoded (Phase 1)
+            from app.services.hardcoded_glossary import find_terms_in_text, format_glossary_block
+            matched_terms = find_terms_in_text(source_text)
+            if matched_terms:
+                glossary_block = format_glossary_block(matched_terms, target_language, genre, strategy)
+
         # Step 2: main translation
         translated_text = await self._main_translation(
             source_text=source_text,
@@ -136,6 +151,7 @@ class TranslationPipeline:
             cultural_constraints=cultural_result,
             cultural_sphere=cultural_sphere,
             audience_type=audience_type,
+            glossary_block=glossary_block,
         )
 
         # Step 3: risk annotation (unchanged)
@@ -157,6 +173,7 @@ class TranslationPipeline:
         cultural_constraints: CulturalPreprocessResult | None = None,
         cultural_sphere: str | None = None,
         audience_type: str | None = None,
+        glossary_block: str = "",
     ) -> str:
         system_prompt = build_translation_system_prompt(
             target_language=target_language,
@@ -165,14 +182,41 @@ class TranslationPipeline:
             cultural_constraints=cultural_constraints,
             cultural_sphere=cultural_sphere,
             audience_type=audience_type,
-            source_text=source_text,
         )
+        if glossary_block:
+            system_prompt += f"\n\n{glossary_block}\n"
         messages = [
             {"role": "system", "content": system_prompt},
             {"role": "user", "content": source_text},
         ]
         result = await bailian_client.chat(model="qwen-max", messages=messages)
         return result["content"]
+
+    def _format_rag_glossary_block(self, terms: list[dict], language: str, strategy: str) -> str:
+        if not terms:
+            return ""
+        lines = ["<glossary_terms>"]
+        lines.append("以下政治话语/文化隐喻有标准译法参考，请优先使用：")
+        for t in terms:
+            trans = t.get("translations", {}).get(language, {})
+            if not trans:
+                continue
+            rendering = trans.get("preferred", "")
+            alternatives = trans.get("alternatives", [])
+            notes = trans.get("notes", "")
+            if strategy == "audience_first" and alternatives:
+                rendering = alternatives[-1]
+            lines.append(f'\n  「{t["source_term"]}」({t["term_type"]})')
+            lines.append(f'    推荐译法："{rendering}"')
+            if alternatives:
+                lines.append(f'    备选：{", ".join(f"\"{a}\"" for a in alternatives)}')
+            if notes:
+                lines.append(f'    备注：{notes}')
+            if t.get("risk_notes"):
+                lines.append(f'    ⚠ 风险：{t["risk_notes"]}')
+            lines.append(f'    来源：{"用户术语库" if t["source"] == "user_glossary" else "系统知识库"}')
+        lines.append("</glossary_terms>")
+        return "\n".join(lines)
 
     async def _risk_annotation(self, source_text: str, translated_text: str, target_language: str) -> list:
         prompt = RISK_ANNOTATION_PROMPT.format(

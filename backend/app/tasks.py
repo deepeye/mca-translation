@@ -88,6 +88,8 @@ async def _run_translation(job_id: str):
                         cultural_sphere=job.cultural_sphere,
                         audience_type=job.audience_type,
                         cultural_constraints=cultural_constraints,
+                        db=db,
+                        user_id=job.user_id,
                     )
                     tr.translated_text = output["translated_text"]
                     tr.risk_annotations = output["risk_annotations"]
