@@ -57,5 +57,26 @@ class BailianClient:
                         if content:
                             yield content
 
+    async def embed(self, texts: list[str], model: str = "text-embedding-v3") -> list[list[float]]:
+        """Call DashScope embedding API. Returns list of embedding vectors."""
+        headers = {
+            "Authorization": f"Bearer {self.api_key}",
+            "Content-Type": "application/json",
+        }
+        payload = {
+            "model": model,
+            "input": {
+                "texts": texts,
+            },
+        }
+        async with httpx.AsyncClient(timeout=30.0) as client:
+            resp = await client.post(f"{self.base_url}/embeddings", json=payload, headers=headers)
+            resp.raise_for_status()
+            data = resp.json()
+            embeddings = []
+            for item in data.get("output", {}).get("embeddings", []):
+                embeddings.append(item["embedding"])
+            return embeddings
+
 
 bailian_client = BailianClient()
