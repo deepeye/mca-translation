@@ -80,7 +80,7 @@ def build_translation_system_prompt(
         cultural_block = "\n".join(parts)
         result = f"{base}\n\n{cultural_block}\n"
 
-    # Build glossary block (Phase 1: hardcoded terms)
+    # Build glossary block (hardcoded terms)
     glossary_block = ""
     if source_text:
         matched_terms = find_terms_in_text(source_text)
@@ -207,7 +207,11 @@ class TranslationPipeline:
             return []
 
     async def translate_stream(self, source_text: str, genre: str, strategy: str, target_language: str):
-        """Stream main translation. Yields text chunks."""
+        """Stream main translation. Yields text chunks.
+
+        Note: Stream path intentionally does not inject glossary terms or cultural
+        constraints to keep latency low. If full adaptation is needed, use translate().
+        """
         strategy_desc = STRATEGY_DESCRIPTIONS.get(strategy, STRATEGY_DESCRIPTIONS["semantic_equivalence"])
         system_prompt = TRANSLATION_SYSTEM_PROMPT.format(
             target_language=target_language, genre=genre, strategy_description=strategy_desc
