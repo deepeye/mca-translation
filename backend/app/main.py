@@ -4,6 +4,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.api.auth import router as auth_router
+from app.api.glossary import router as glossary_router
 from app.api.jobs import router as jobs_router
 from app.api.reviews import router as reviews_router
 from app.api.upload import router as upload_router
@@ -18,6 +19,7 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(title="CulturalBridge API", version="0.1.0", lifespan=lifespan)
 app.include_router(auth_router)
+app.include_router(glossary_router)
 app.include_router(jobs_router)
 app.include_router(reviews_router)
 app.include_router(upload_router)
