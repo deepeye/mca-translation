@@ -69,6 +69,44 @@ class ApiClient {
     return this.post("/api/glossary/detect", { text });
   }
 
+  async listGlossaryEntries(q?: string) {
+    const query = q ? `?q=${encodeURIComponent(q)}` : "";
+    return this.get(`/api/glossary/entries${query}`);
+  }
+
+  async createGlossaryEntry(body: {
+    source_term: string;
+    term_type: string;
+    translations: Record<string, { preferred: string; alternatives: string[]; notes: string }>;
+    risk_notes?: string;
+    applicable_genres?: string[];
+  }) {
+    return this.post("/api/glossary/entries", body);
+  }
+
+  async deleteGlossaryEntry(id: string) {
+    return this.delete(`/api/glossary/entries/${id}`);
+  }
+
+  async listUserGlossaryEntries(q?: string) {
+    const query = q ? `?q=${encodeURIComponent(q)}` : "";
+    return this.get(`/api/glossary/user-entries${query}`);
+  }
+
+  async createUserGlossaryEntry(body: {
+    source_term: string;
+    term_type: string;
+    translations: Record<string, { preferred: string; alternatives: string[]; notes: string }>;
+    risk_notes?: string;
+    applicable_genres?: string[];
+  }) {
+    return this.post("/api/glossary/user-entries", body);
+  }
+
+  async deleteUserGlossaryEntry(id: string) {
+    return this.delete(`/api/glossary/user-entries/${id}`);
+  }
+
   async get(path: string) {
     const res = await this.request(path, { method: "GET" });
     return res.json();
