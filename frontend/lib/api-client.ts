@@ -70,7 +70,9 @@ class ApiClient {
   }
 
   async listGlossaryEntries(q?: string) {
-    const query = q ? `?q=${encodeURIComponent(q)}` : "";
+    const params = new URLSearchParams();
+    if (q) params.set("q", q);
+    const query = params.toString() ? `?${params.toString()}` : "";
     return this.get(`/api/glossary/entries${query}`);
   }
 
@@ -88,8 +90,12 @@ class ApiClient {
     return this.delete(`/api/glossary/entries/${id}`);
   }
 
-  async listUserGlossaryEntries(q?: string) {
-    const query = q ? `?q=${encodeURIComponent(q)}` : "";
+  async listUserGlossaryEntries(q?: string, offset?: number, limit?: number) {
+    const params = new URLSearchParams();
+    if (q) params.set("q", q);
+    if (offset !== undefined) params.set("offset", String(offset));
+    if (limit !== undefined) params.set("limit", String(limit));
+    const query = params.toString() ? `?${params.toString()}` : "";
     return this.get(`/api/glossary/user-entries${query}`);
   }
 

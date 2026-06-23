@@ -4,6 +4,11 @@ import { useEffect, useState } from "react";
 import { apiClient } from "@/lib/api-client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import {
+  DEFAULT_TERM_TYPE_LABEL,
+  SYSTEM_GLOSSARY_TERM_TYPE_LABELS,
+  SYSTEM_GLOSSARY_TERM_TYPE_ORDER,
+} from "@/lib/glossary-categories";
 
 interface GlossaryEntry {
   id: string;
@@ -14,6 +19,8 @@ interface GlossaryEntry {
   applicable_genres: string[];
 }
 
+const USER_PAGE_SIZE = 10;
+
 export default function GlossaryPage() {
   const [systemEntries, setSystemEntries] = useState<GlossaryEntry[]>([]);
   const [userEntries, setUserEntries] = useState<GlossaryEntry[]>([]);
@@ -22,15 +29,20 @@ export default function GlossaryPage() {
   const [newTerm, setNewTerm] = useState("");
   const [newTranslation, setNewTranslation] = useState("");
 
+  // User entries pagination
+  const [userOffset, setUserOffset] = useState(0);
+  const [hasMoreUser, setHasMoreUser] = useState(false);
+
   async function loadEntries() {
     setLoading(true);
     try {
       const [sys, usr] = await Promise.all([
         apiClient.listGlossaryEntries(search),
-        apiClient.listUserGlossaryEntries(search),
+        apiClient.listUserGlossaryEntries(search, userOffset, USER_PAGE_SIZE),
       ]);
       setSystemEntries(sys || []);
       setUserEntries(usr || []);
+      setHasMoreUser((usr || []).length >= USER_PAGE_SIZE);
     } catch (err) {
       console.error("Failed to load glossary:", err);
     } finally {
@@ -39,8 +51,12 @@ export default function GlossaryPage() {
   }
 
   useEffect(() => {
-    loadEntries();
+    setUserOffset(0);
   }, [search]);
+
+  useEffect(() => {
+    loadEntries();
+  }, [search, userOffset]);
 
   async function handleAddUserEntry() {
     if (!newTerm.trim() || !newTranslation.trim()) return;
@@ -58,6 +74,7 @@ export default function GlossaryPage() {
       });
       setNewTerm("");
       setNewTranslation("");
+      setUserOffset(0);
       loadEntries();
     } catch (err) {
       console.error("Failed to add entry:", err);
@@ -72,6 +89,19 @@ export default function GlossaryPage() {
       console.error("Failed to delete entry:", err);
     }
   }
+
+  const userPageNum = Math.floor(userOffset / USER_PAGE_SIZE) + 1;
+  const groupedSystemEntries = Object.entries(
+    systemEntries.reduce<Record<string, GlossaryEntry[]>>((groups, entry) => {
+      const key = entry.term_type || "other_specialized";
+      groups[key] = groups[key] ? [...groups[key], entry] : [entry];
+      return groups;
+    }, {}),
+  ).sort(([a], [b]) => {
+    const aIndex = SYSTEM_GLOSSARY_TERM_TYPE_ORDER.indexOf(a as (typeof SYSTEM_GLOSSARY_TERM_TYPE_ORDER)[number]);
+    const bIndex = SYSTEM_GLOSSARY_TERM_TYPE_ORDER.indexOf(b as (typeof SYSTEM_GLOSSARY_TERM_TYPE_ORDER)[number]);
+    return (aIndex === -1 ? Number.MAX_SAFE_INTEGER : aIndex) - (bIndex === -1 ? Number.MAX_SAFE_INTEGER : bIndex);
+  });
 
   return (
     <div className="mx-auto max-w-4xl p-6">
@@ -111,28 +141,49 @@ export default function GlossaryPage() {
         {userEntries.length === 0 ? (
           <p className="text-sm text-muted-foreground">暂无自定义术语</p>
         ) : (
-          <div className="space-y-2">
-            {userEntries.map((entry) => (
-              <div key={entry.id} className="flex items-center justify-between rounded border border-border p-3">
-                <div>
-                  <span className="font-medium">{entry.source_term}</span>
-                  {entry.translations["en-GB"] && (
-                    <span className="ml-2 text-sm text-teal-700">
-                      → {entry.translations["en-GB"].preferred}
-                    </span>
-                  )}
+          <>
+            <div className="space-y-2">
+              {userEntries.map((entry) => (
+                <div key={entry.id} className="flex items-center justify-between rounded border border-border p-3">
+                  <div>
+                    <span className="font-medium">{entry.source_term}</span>
+                    {entry.translations["en-GB"] && (
+                      <span className="ml-2 text-sm text-teal-700">
+                        → {entry.translations["en-GB"].preferred}
+                      </span>
+                    )}
+                  </div>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => handleDeleteUserEntry(entry.id)}
+                    className="text-red-500 hover:text-red-700"
+                  >
+                    删除
+                  </Button>
                 </div>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => handleDeleteUserEntry(entry.id)}
-                  className="text-red-500 hover:text-red-700"
-                >
-                  删除
-                </Button>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+            <div className="mt-4 flex items-center justify-center gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setUserOffset((p) => Math.max(0, p - USER_PAGE_SIZE))}
+                disabled={userOffset === 0}
+              >
+                上一页
+              </Button>
+              <span className="text-sm text-muted-foreground">第 {userPageNum} 页</span>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setUserOffset((p) => p + USER_PAGE_SIZE)}
+                disabled={!hasMoreUser}
+              >
+                下一页
+              </Button>
+            </div>
+          </>
         )}
       </div>
 
@@ -141,22 +192,31 @@ export default function GlossaryPage() {
         {systemEntries.length === 0 ? (
           <p className="text-sm text-muted-foreground">系统知识库为空</p>
         ) : (
-          <div className="space-y-2">
-            {systemEntries.map((entry) => (
-              <div key={entry.id} className="rounded border border-border p-3">
-                <span className="font-medium">{entry.source_term}</span>
-                <span className="ml-2 rounded bg-muted px-1.5 py-0.5 text-xs text-muted-foreground">
-                  {entry.term_type}
-                </span>
-                {entry.translations["en-GB"] && (
-                  <div className="mt-1 text-sm text-teal-700">
-                    英语：{entry.translations["en-GB"].preferred}
-                  </div>
-                )}
-                {entry.risk_notes && (
-                  <div className="mt-1 text-xs text-orange-600">⚠ {entry.risk_notes}</div>
-                )}
-              </div>
+          <div className="space-y-6">
+            {groupedSystemEntries.map(([termType, entries]) => (
+              <section key={termType}>
+                <h3 className="mb-3 text-base font-semibold text-teal-800">
+                  {SYSTEM_GLOSSARY_TERM_TYPE_LABELS[termType] || DEFAULT_TERM_TYPE_LABEL}
+                </h3>
+                <div className="space-y-2">
+                  {entries.map((entry) => (
+                    <div key={entry.id} className="rounded border border-border p-3">
+                      <span className="font-medium">{entry.source_term}</span>
+                      <span className="ml-2 rounded bg-muted px-1.5 py-0.5 text-xs text-muted-foreground">
+                        {SYSTEM_GLOSSARY_TERM_TYPE_LABELS[entry.term_type] || DEFAULT_TERM_TYPE_LABEL}
+                      </span>
+                      {entry.translations["en-GB"] && (
+                        <div className="mt-1 text-sm text-teal-700">
+                          英语：{entry.translations["en-GB"].preferred}
+                        </div>
+                      )}
+                      {entry.risk_notes && (
+                        <div className="mt-1 text-xs text-orange-600">⚠ {entry.risk_notes}</div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </section>
             ))}
           </div>
         )}

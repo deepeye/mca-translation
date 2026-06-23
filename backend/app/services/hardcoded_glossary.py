@@ -174,7 +174,7 @@ _HARDCODED_TERMS: list[GlossaryTerm] = [
                 "notes": "前者为官方标准译法",
             },
         },
-        term_type="cultural_metaphor",
+        term_type="historical_culture",
         applicable_genres=["political", "policy", "news", "brand"],
     ),
     GlossaryTerm(
@@ -186,7 +186,7 @@ _HARDCODED_TERMS: list[GlossaryTerm] = [
                 "notes": "",
             },
         },
-        term_type="cultural_metaphor",
+        term_type="historical_culture",
         applicable_genres=["political", "policy", "news"],
     ),
     GlossaryTerm(
@@ -198,7 +198,7 @@ _HARDCODED_TERMS: list[GlossaryTerm] = [
                 "notes": "",
             },
         },
-        term_type="cultural_metaphor",
+        term_type="historical_culture",
         applicable_genres=["political", "news"],
     ),
     GlossaryTerm(
@@ -210,7 +210,7 @@ _HARDCODED_TERMS: list[GlossaryTerm] = [
                 "notes": "首次出现建议 xiaokang 加括号解释",
             },
         },
-        term_type="cultural_metaphor",
+        term_type="historical_culture",
         applicable_genres=["political", "policy", "news"],
     ),
 ]

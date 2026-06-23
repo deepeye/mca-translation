@@ -3,6 +3,12 @@
 import { useEffect, useRef, useCallback } from "react";
 import { useGlossaryStore } from "@/stores/glossary-store";
 import { apiClient } from "@/lib/api-client";
+import {
+  DEFAULT_TERM_TYPE_BADGE_CLASS,
+  DEFAULT_TERM_TYPE_LABEL,
+  SYSTEM_GLOSSARY_TERM_TYPE_LABELS,
+  TERM_TYPE_BADGE_CLASS,
+} from "@/lib/glossary-categories";
 
 interface TermHighlighterProps {
   text: string;
@@ -48,40 +54,38 @@ export function TermHighlighter({ text, containerClassName = "" }: TermHighlight
 
   return (
     <div className={`flex flex-wrap gap-1.5 ${containerClassName}`}>
-      {detectedTerms.map((term) => (
-        <div
-          key={term.source_term}
-          className="relative"
-          onMouseEnter={() => setHoveredTerm(term.source_term)}
-          onMouseLeave={() => setHoveredTerm(null)}
-        >
-          <span
-            className={`inline-flex cursor-default items-center rounded px-1.5 py-0.5 text-xs font-medium transition-colors ${
-              term.term_type === "political_discourse"
-                ? "bg-blue-100 text-blue-700"
-                : "bg-orange-100 text-orange-700"
-            }`}
+      {detectedTerms.map((term) => {
+        const badgeClass = TERM_TYPE_BADGE_CLASS[term.term_type] || DEFAULT_TERM_TYPE_BADGE_CLASS;
+        const label = SYSTEM_GLOSSARY_TERM_TYPE_LABELS[term.term_type] || DEFAULT_TERM_TYPE_LABEL;
+        return (
+          <div
+            key={term.source_term}
+            className="relative"
+            onMouseEnter={() => setHoveredTerm(term.source_term)}
+            onMouseLeave={() => setHoveredTerm(null)}
           >
-            {term.source_term}
-          </span>
-          {hoveredTerm === term.source_term && (
-            <div className="absolute bottom-full left-0 z-50 mb-1 w-64 rounded-md border border-border bg-white p-2 shadow-lg">
-              <div className="text-xs font-semibold text-foreground">{term.source_term}</div>
-              <div className="mt-1 text-xs text-muted-foreground">
-                {term.term_type === "political_discourse" ? "政治话语" : "文化隐喻"}
+            <span
+              className={`inline-flex cursor-default items-center rounded px-1.5 py-0.5 text-xs font-medium transition-colors ${badgeClass}`}
+            >
+              {term.source_term}
+            </span>
+            {hoveredTerm === term.source_term && (
+              <div className="absolute bottom-full left-0 z-50 mb-1 w-64 rounded-md border border-border bg-white p-2 shadow-lg">
+                <div className="text-xs font-semibold text-foreground">{term.source_term}</div>
+                <div className="mt-1 text-xs text-muted-foreground">{label}</div>
+                {term.risk_notes && (
+                  <div className="mt-1 text-xs text-orange-600">⚠ {term.risk_notes}</div>
+                )}
+                {term.translations["en-GB"] && (
+                  <div className="mt-1 text-xs text-teal-700">
+                    英语：{term.translations["en-GB"].preferred}
+                  </div>
+                )}
               </div>
-              {term.risk_notes && (
-                <div className="mt-1 text-xs text-orange-600">⚠ {term.risk_notes}</div>
-              )}
-              {term.translations["en-GB"] && (
-                <div className="mt-1 text-xs text-teal-700">
-                  英语：{term.translations["en-GB"].preferred}
-                </div>
-              )}
-            </div>
-          )}
-        </div>
-      ))}
+            )}
+          </div>
+        );
+      })}
     </div>
   );
 }

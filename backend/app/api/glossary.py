@@ -55,7 +55,7 @@ async def list_entries(
     user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
 ):
-    stmt = select(GlossaryEntry).order_by(GlossaryEntry.created_at.desc()).limit(100)
+    stmt = select(GlossaryEntry).order_by(GlossaryEntry.created_at.desc()).limit(50)
     if q:
         stmt = stmt.where(GlossaryEntry.source_term.ilike(f"%{q}%"))
     result = await db.execute(stmt)
@@ -126,8 +126,11 @@ async def create_user_entry(
     user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
 ):
-    embeddings = await bailian_client.embed([body.source_term])
-    embedding = embeddings[0] if embeddings else None
+    try:
+        embeddings = await bailian_client.embed([body.source_term])
+        embedding = embeddings[0] if embeddings else None
+    except Exception:
+        embedding = None
 
     entry = UserGlossaryEntry(
         user_id=user.id,
@@ -147,6 +150,8 @@ async def create_user_entry(
 @router.get("/user-entries", response_model=list[UserGlossaryEntryResponse])
 async def list_user_entries(
     q: str = "",
+    offset: int = 0,
+    limit: int = 10,
     user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
 ):
@@ -157,6 +162,7 @@ async def list_user_entries(
     )
     if q:
         stmt = stmt.where(UserGlossaryEntry.source_term.ilike(f"%{q}%"))
+    stmt = stmt.offset(offset).limit(limit)
     result = await db.execute(stmt)
     return result.scalars().all()
 
