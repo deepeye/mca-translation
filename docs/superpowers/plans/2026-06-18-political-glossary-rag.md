@@ -786,6 +786,8 @@ git commit -m "feat(frontend): add input area term highlighter with hover toolti
 - Create: `frontend/components/workspace/translation-decision-badge.tsx`
 - Modify: `frontend/components/workspace/translation-result.tsx`
 
+> 注：该任务已放弃。组件曾创建但从未集成，已于死代码清理中删除。
+
 - [x] **Step 1: Read translation-result.tsx to understand current structure**
 
 ```bash
@@ -857,7 +859,7 @@ export function TranslationDecisionBadge({
 }
 ```
 
-- [ ] **Step 3: Integrate badges into translation result** (组件已创建但未集成进 translation-result.tsx — 孤立死代码)
+- [ ] **Step 3: Integrate badges into translation result** (功能已放弃 — 组件作为死代码已删除，不再集成)
 
 This requires modifying `frontend/components/workspace/translation-result.tsx` to detect glossary terms in the translated text and render badges. Since the exact file content was not read in full, here's the integration pattern:
 
