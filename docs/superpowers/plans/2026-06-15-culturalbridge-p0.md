@@ -647,7 +647,7 @@ async def test_user(client):
         return user
 ```
 
-- [x] **Step 7: Create test_auth.py** (已创建 — 4 个 JWT 单测通过；密码哈希测试因 passlib/bcrypt 不兼容暂略，登录端点测试待 DB fixture 补齐)
+- [x] **Step 7: Create test_auth.py** (已创建 — 6 个单测通过：2 密码哈希 + 4 JWT；登录端点测试待 DB fixture 补齐。修复了 passlib/bcrypt 不兼容：锁定 bcrypt==4.0.1)
 
 ```python
 # backend/tests/test_auth.py

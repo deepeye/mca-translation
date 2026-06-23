@@ -1,16 +1,26 @@
-"""JWT 安全工具的单元测试。
+"""JWT 与密码哈希安全工具的单元测试。
 
-只覆盖 app.core.security 中 create_access_token / decode_access_token 的纯逻辑，
-不触碰数据库，因此无需 Postgres 即可运行。
-
-密码哈希（get_password_hash / verify_password）未覆盖：当前环境 passlib 1.7.4
-与 bcrypt 5.0.0 不兼容，哈希调用本身会抛错（影响真实登录），待依赖修复后补测。
+只覆盖 app.core.security 中的纯函数，不触碰数据库，因此无需 Postgres 即可运行。
 端点级登录测试（需 DB + client/test_user fixture）待 conftest 补齐后再加。
 """
 from datetime import timedelta
 
 from app.core import security
 from app.core.config import settings
+
+
+def test_password_hash_roundtrip():
+    password = "s3cret-pwd-123"
+    hashed = security.get_password_hash(password)
+
+    assert hashed != password
+    assert security.verify_password(password, hashed) is True
+
+
+def test_verify_password_rejects_wrong_password():
+    hashed = security.get_password_hash("correct-password")
+
+    assert security.verify_password("wrong-password", hashed) is False
 
 
 def test_create_and_decode_access_token_roundtrip():
