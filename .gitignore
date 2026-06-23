@@ -1,7 +1,8 @@
 # Backend
 backend/.env
-backend/__pycache__/
-backend/*.pyc
+backend/.venv/
+__pycache__/
+*.pyc
 backend/uploads/
 
 # Frontend
@@ -13,3 +14,11 @@ frontend/.env.local
 .superpowers/
 .spec-workflow/
 design-system/
+
+# Tooling / session artifacts
+.playwright-mcp/
+.DS_Store
+
+# Local data & screenshots (not source)
+docs/重要表述中英文对照_全部.xlsx
+/*.png
