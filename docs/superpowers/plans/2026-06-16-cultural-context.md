@@ -1,6 +1,6 @@
 # 文化语境适配 实施计划
 
-> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
+> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [x]`) syntax for tracking.
 
 **Goal:** 在现有翻译流程中引入"文化语境"维度（8 个文化圈 + 6 个受众类型），新增 LLM 预处理步骤识别文化负载词并注入主翻译 prompt，同时保持向后兼容。
 
@@ -62,7 +62,7 @@
 
 后端目前没有测试基础设施。后续多个任务采用 TDD，必须先准备好 pytest 环境。
 
-- [ ] **Step 1: 在 requirements.txt 末尾追加 pytest 依赖**
+- [x] **Step 1: 在 requirements.txt 末尾追加 pytest 依赖**
 
 修改 `backend/requirements.txt`，在文件末尾追加两行：
 
@@ -71,7 +71,7 @@ pytest==8.3.4
 pytest-asyncio==0.25.0
 ```
 
-- [ ] **Step 2: 写 backend/pyproject.toml**
+- [x] **Step 2: 写 backend/pyproject.toml**
 
 ```toml
 [tool.pytest.ini_options]
@@ -80,12 +80,12 @@ testpaths = ["tests"]
 pythonpath = ["."]
 ```
 
-- [ ] **Step 3: 写 backend/tests/__init__.py（空文件即可）**
+- [x] **Step 3: 写 backend/tests/__init__.py（空文件即可）**
 
 ```python
 ```
 
-- [ ] **Step 4: 写 backend/tests/conftest.py**
+- [x] **Step 4: 写 backend/tests/conftest.py**
 
 ```python
 """pytest 共享配置。
@@ -100,13 +100,13 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 ```
 
-- [ ] **Step 5: 安装新依赖**
+- [x] **Step 5: 安装新依赖**
 
 ```bash
 cd backend && source .venv/bin/activate && pip install -r requirements.txt
 ```
 
-- [ ] **Step 6: 运行 pytest 确认环境就绪（应输出 "no tests ran"）**
+- [x] **Step 6: 运行 pytest 确认环境就绪（应输出 "no tests ran"）**
 
 ```bash
 cd backend && source .venv/bin/activate && pytest
@@ -114,7 +114,7 @@ cd backend && source .venv/bin/activate && pytest
 
 预期：退出码 5（no tests collected），不是 import 错误。
 
-- [ ] **Step 7: Commit**
+- [x] **Step 7: Commit**
 
 ```bash
 git add backend/requirements.txt backend/pyproject.toml backend/tests/__init__.py backend/tests/conftest.py
@@ -131,7 +131,7 @@ git commit -m "test: add pytest scaffolding for backend"
 
 定义 8 个文化圈和 6 个受众类型的硬编码描述。后续预处理 prompt 和主翻译 prompt 都会引用这个表。
 
-- [ ] **Step 1: 写失败的测试**
+- [x] **Step 1: 写失败的测试**
 
 `backend/tests/test_cultural_profiles.py`：
 
@@ -177,7 +177,7 @@ def test_audience_type_guidelines_cover_all_keys():
         assert isinstance(value, str) and len(value.strip()) >= 20, key
 ```
 
-- [ ] **Step 2: 运行测试确认失败**
+- [x] **Step 2: 运行测试确认失败**
 
 ```bash
 cd backend && pytest tests/test_cultural_profiles.py -v
@@ -185,7 +185,7 @@ cd backend && pytest tests/test_cultural_profiles.py -v
 
 预期：FAIL，`ModuleNotFoundError: No module named 'app.llm.cultural_profiles'`。
 
-- [ ] **Step 3: 实现 cultural_profiles.py**
+- [x] **Step 3: 实现 cultural_profiles.py**
 
 `backend/app/llm/cultural_profiles.py`：
 
@@ -246,7 +246,7 @@ SUPPORTED_CULTURAL_SPHERES: tuple[str, ...] = tuple(CULTURAL_SPHERE_PROFILES.key
 SUPPORTED_AUDIENCE_TYPES: tuple[str, ...] = tuple(AUDIENCE_TYPE_GUIDELINES.keys())
 ```
 
-- [ ] **Step 4: 运行测试确认通过**
+- [x] **Step 4: 运行测试确认通过**
 
 ```bash
 cd backend && pytest tests/test_cultural_profiles.py -v
@@ -254,7 +254,7 @@ cd backend && pytest tests/test_cultural_profiles.py -v
 
 预期：2 passed。
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add backend/app/llm/cultural_profiles.py backend/tests/test_cultural_profiles.py
@@ -271,7 +271,7 @@ git commit -m "feat(backend): add cultural sphere and audience type profile tabl
 
 新增 `CulturalLoadedTerm` 和 `CulturalPreprocessResult`，扩展 `CreateJobRequest` 和 `TranslationResultResponse`。
 
-- [ ] **Step 1: 写失败的测试**
+- [x] **Step 1: 写失败的测试**
 
 `backend/tests/test_cultural_schemas.py`：
 
@@ -355,7 +355,7 @@ def test_translation_result_response_cultural_adaptation_optional():
     assert resp.cultural_adaptation is None
 ```
 
-- [ ] **Step 2: 运行测试确认失败**
+- [x] **Step 2: 运行测试确认失败**
 
 ```bash
 cd backend && pytest tests/test_cultural_schemas.py -v
@@ -363,7 +363,7 @@ cd backend && pytest tests/test_cultural_schemas.py -v
 
 预期：FAIL，`ImportError: cannot import name 'CulturalLoadedTerm'`。
 
-- [ ] **Step 3: 修改 backend/app/schemas/job.py**
+- [x] **Step 3: 修改 backend/app/schemas/job.py**
 
 在文件顶部 imports 调整为（保留现有 + 新增 Literal/Optional）：
 
@@ -418,7 +418,7 @@ class TranslationResultResponse(BaseModel):
     created_at: datetime
 ```
 
-- [ ] **Step 4: 运行测试确认通过**
+- [x] **Step 4: 运行测试确认通过**
 
 ```bash
 cd backend && pytest tests/test_cultural_schemas.py -v
@@ -426,7 +426,7 @@ cd backend && pytest tests/test_cultural_schemas.py -v
 
 预期：6 passed。
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add backend/app/schemas/job.py backend/tests/test_cultural_schemas.py
@@ -445,7 +445,7 @@ git commit -m "feat(backend): add cultural context fields to schemas"
 
 > ⚠️ 简化决定：本计划范围内 `cultural_adaptation` 仅放在 `translation_results.risk_annotations` 同位置，作为另一个 JSONB 列存。这是为了让前端轮询能读到。新增列 `cultural_adaptation`（JSONB, nullable）。
 
-- [ ] **Step 1: 修改 backend/app/models/job.py**
+- [x] **Step 1: 修改 backend/app/models/job.py**
 
 `TranslationJob` 类追加两列（在 `glossary_ids` 后、`created_at` 前）：
 
@@ -460,7 +460,7 @@ git commit -m "feat(backend): add cultural context fields to schemas"
     cultural_adaptation: Mapped[dict | None] = mapped_column(JSONB, nullable=True)
 ```
 
-- [ ] **Step 2: 生成 Alembic 迁移**
+- [x] **Step 2: 生成 Alembic 迁移**
 
 ```bash
 cd backend && source .venv/bin/activate && alembic revision -m "add cultural context fields"
@@ -468,7 +468,7 @@ cd backend && source .venv/bin/activate && alembic revision -m "add cultural con
 
 记下生成的文件名（形如 `backend/alembic/versions/<revision>_add_cultural_context_fields.py`）。
 
-- [ ] **Step 3: 把迁移文件 upgrade/downgrade 改为以下内容**
+- [x] **Step 3: 把迁移文件 upgrade/downgrade 改为以下内容**
 
 ```python
 def upgrade() -> None:
@@ -494,7 +494,7 @@ def downgrade() -> None:
 
 确保文件顶部已有 `from sqlalchemy.dialects import postgresql` 这一行（Alembic 模板默认带）。
 
-- [ ] **Step 4: 运行迁移**
+- [x] **Step 4: 运行迁移**
 
 ```bash
 cd backend && source .venv/bin/activate && alembic upgrade head
@@ -502,7 +502,7 @@ cd backend && source .venv/bin/activate && alembic upgrade head
 
 预期：输出 `Running upgrade ad7cfe796694 -> <new_rev>, add cultural context fields`，无错误。
 
-- [ ] **Step 5: 验证表结构**
+- [x] **Step 5: 验证表结构**
 
 ```bash
 cd backend && source .venv/bin/activate && python -c "
@@ -533,7 +533,7 @@ asyncio.run(check())
 ['cultural_adaptation']
 ```
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add backend/app/models/job.py backend/alembic/versions/*_add_cultural_context_fields.py
@@ -550,7 +550,7 @@ git commit -m "feat(backend): add cultural context columns to db"
 
 新增预处理 prompt 模板，注入文化圈描述、受众指引、文体，并约束 LLM 输出严格 JSON。
 
-- [ ] **Step 1: 写失败的测试**
+- [x] **Step 1: 写失败的测试**
 
 `backend/tests/test_cultural_preprocess_prompt.py`：
 
@@ -590,7 +590,7 @@ def test_prompt_renders_with_known_values():
     assert "taboo_warnings" in rendered
 ```
 
-- [ ] **Step 2: 运行测试确认失败**
+- [x] **Step 2: 运行测试确认失败**
 
 ```bash
 cd backend && pytest tests/test_cultural_preprocess_prompt.py -v
@@ -598,7 +598,7 @@ cd backend && pytest tests/test_cultural_preprocess_prompt.py -v
 
 预期：FAIL，`ImportError: cannot import name 'CULTURAL_PREPROCESS_PROMPT'`。
 
-- [ ] **Step 3: 修改 backend/app/llm/prompts.py，在文件末尾追加**
+- [x] **Step 3: 修改 backend/app/llm/prompts.py，在文件末尾追加**
 
 ```python
 CULTURAL_PREPROCESS_PROMPT = """你是一位资深的国际传播专家，擅长跨文化内容适配。请阅读下面的中文源文本，并基于目标文化圈与受众类型，识别文本中可能造成跨文化障碍的"文化负载词"。
@@ -645,7 +645,7 @@ CULTURAL_PREPROCESS_PROMPT = """你是一位资深的国际传播专家，擅长
 
 注意 `{{` / `}}` 用于在 `.format()` 时输出字面量花括号。
 
-- [ ] **Step 4: 运行测试确认通过**
+- [x] **Step 4: 运行测试确认通过**
 
 ```bash
 cd backend && pytest tests/test_cultural_preprocess_prompt.py -v
@@ -653,7 +653,7 @@ cd backend && pytest tests/test_cultural_preprocess_prompt.py -v
 
 预期：2 passed。
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add backend/app/llm/prompts.py backend/tests/test_cultural_preprocess_prompt.py
@@ -670,7 +670,7 @@ git commit -m "feat(backend): add cultural preprocess prompt template"
 
 提供 `cultural_preprocess(...)` 函数：构建 prompt → 调用 LLM → 解析 JSON → 验证字段 → 失败则降级返回 None。
 
-- [ ] **Step 1: 写失败的测试**
+- [x] **Step 1: 写失败的测试**
 
 `backend/tests/test_cultural_service.py`：
 
@@ -799,7 +799,7 @@ async def test_returns_none_on_unknown_audience_type():
     assert result is None
 ```
 
-- [ ] **Step 2: 运行测试确认失败**
+- [x] **Step 2: 运行测试确认失败**
 
 ```bash
 cd backend && pytest tests/test_cultural_service.py -v
@@ -807,7 +807,7 @@ cd backend && pytest tests/test_cultural_service.py -v
 
 预期：FAIL，`ImportError: cannot import name 'cultural_preprocess'`。
 
-- [ ] **Step 3: 实现 backend/app/services/cultural.py**
+- [x] **Step 3: 实现 backend/app/services/cultural.py**
 
 ```python
 """文化语境预处理服务。
@@ -905,7 +905,7 @@ async def cultural_preprocess(
         return None
 ```
 
-- [ ] **Step 4: 运行测试确认通过**
+- [x] **Step 4: 运行测试确认通过**
 
 ```bash
 cd backend && pytest tests/test_cultural_service.py -v
@@ -913,7 +913,7 @@ cd backend && pytest tests/test_cultural_service.py -v
 
 预期：6 passed。
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add backend/app/services/cultural.py backend/tests/test_cultural_service.py
@@ -931,7 +931,7 @@ git commit -m "feat(backend): add cultural preprocess service with graceful fall
 
 主翻译 prompt 改造：把构建 system prompt 的逻辑抽到独立函数 `build_translation_system_prompt`，可选注入 cultural_constraints。原有 `TRANSLATION_SYSTEM_PROMPT` 模板保留，新增 `<cultural_constraints>` 占位（可为空）。
 
-- [ ] **Step 1: 写失败的测试**
+- [x] **Step 1: 写失败的测试**
 
 `backend/tests/test_cultural_prompt_injection.py`：
 
@@ -1028,7 +1028,7 @@ def test_prompt_with_empty_constraints_still_includes_section():
     assert "欧美英语圈" in prompt
 ```
 
-- [ ] **Step 2: 运行测试确认失败**
+- [x] **Step 2: 运行测试确认失败**
 
 ```bash
 cd backend && pytest tests/test_cultural_prompt_injection.py -v
@@ -1036,7 +1036,7 @@ cd backend && pytest tests/test_cultural_prompt_injection.py -v
 
 预期：FAIL，`ImportError: cannot import name 'build_translation_system_prompt'`。
 
-- [ ] **Step 3: 修改 backend/app/services/translation.py 顶部 import**
+- [x] **Step 3: 修改 backend/app/services/translation.py 顶部 import**
 
 把现有的：
 ```python
@@ -1116,7 +1116,7 @@ def build_translation_system_prompt(
     return f"{base}\n\n{cultural_block}\n"
 ```
 
-- [ ] **Step 4: 运行测试确认通过**
+- [x] **Step 4: 运行测试确认通过**
 
 ```bash
 cd backend && pytest tests/test_cultural_prompt_injection.py -v
@@ -1124,7 +1124,7 @@ cd backend && pytest tests/test_cultural_prompt_injection.py -v
 
 预期：3 passed。
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add backend/app/services/translation.py backend/tests/test_cultural_prompt_injection.py
@@ -1140,13 +1140,13 @@ git commit -m "feat(backend): inject cultural constraints into main translation 
 
 把流程从 2 步扩展为 3 步：预处理 → 主翻译（带约束）→ 风险标注。预处理失败不阻断主流程。
 
-- [ ] **Step 1: 修改 backend/app/services/translation.py 顶部 import 增加**
+- [x] **Step 1: 修改 backend/app/services/translation.py 顶部 import 增加**
 
 ```python
 from app.services.cultural import cultural_preprocess
 ```
 
-- [ ] **Step 2: 把 TranslationPipeline 的 translate 方法替换为以下实现**
+- [x] **Step 2: 把 TranslationPipeline 的 translate 方法替换为以下实现**
 
 完整替换原 `translate` 和 `_main_translation` 方法（保留 `_risk_annotation`、`translate_stream` 不动）：
 
@@ -1219,7 +1219,7 @@ from app.services.cultural import cultural_preprocess
         return result["content"]
 ```
 
-- [ ] **Step 3: 验证现有 prompt 注入测试仍然通过**
+- [x] **Step 3: 验证现有 prompt 注入测试仍然通过**
 
 ```bash
 cd backend && pytest tests/test_cultural_prompt_injection.py tests/test_cultural_service.py -v
@@ -1227,7 +1227,7 @@ cd backend && pytest tests/test_cultural_prompt_injection.py tests/test_cultural
 
 预期：9 passed。
 
-- [ ] **Step 4: 验证模块导入无错误**
+- [x] **Step 4: 验证模块导入无错误**
 
 ```bash
 cd backend && source .venv/bin/activate && python -c "from app.services.translation import pipeline, build_translation_system_prompt; print('ok')"
@@ -1235,7 +1235,7 @@ cd backend && source .venv/bin/activate && python -c "from app.services.translat
 
 预期：输出 `ok`。
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add backend/app/services/translation.py
@@ -1252,7 +1252,7 @@ git commit -m "feat(backend): wire cultural preprocess into translation pipeline
 
 `create_job` 把 `cultural_sphere` / `audience_type` 写入 TranslationJob；`run_translation` 任务把字段传给 pipeline，并把 `cultural_adaptation` 落到 `translation_results.cultural_adaptation`；`_build_job_response` 透出该字段。
 
-- [ ] **Step 1: 修改 backend/app/api/jobs.py 中的 create_job**
+- [x] **Step 1: 修改 backend/app/api/jobs.py 中的 create_job**
 
 把 `TranslationJob(...)` 构造调用改为：
 
@@ -1269,7 +1269,7 @@ git commit -m "feat(backend): wire cultural preprocess into translation pipeline
     )
 ```
 
-- [ ] **Step 2: 修改 _build_job_response 中的 TranslationResultResponse 构造**
+- [x] **Step 2: 修改 _build_job_response 中的 TranslationResultResponse 构造**
 
 把列表生成式中的 `TranslationResultResponse(...)` 改为：
 
@@ -1286,7 +1286,7 @@ git commit -m "feat(backend): wire cultural preprocess into translation pipeline
             )
 ```
 
-- [ ] **Step 3: 修改 backend/app/tasks.py 中的 _run_translation**
+- [x] **Step 3: 修改 backend/app/tasks.py 中的 _run_translation**
 
 把 `pipeline.translate(...)` 调用改为：
 
@@ -1315,7 +1315,7 @@ git commit -m "feat(backend): wire cultural preprocess into translation pipeline
                     tr.acceptance_score = output["acceptance_score"]
 ```
 
-- [ ] **Step 4: 验证模块导入无错误**
+- [x] **Step 4: 验证模块导入无错误**
 
 ```bash
 cd backend && source .venv/bin/activate && python -c "from app.api.jobs import router; from app.tasks import run_translation; print('ok')"
@@ -1323,7 +1323,7 @@ cd backend && source .venv/bin/activate && python -c "from app.api.jobs import r
 
 预期：输出 `ok`。
 
-- [ ] **Step 5: 验证旧请求仍然兼容（不带新字段）**
+- [x] **Step 5: 验证旧请求仍然兼容（不带新字段）**
 
 启动后端（用项目惯用方式，例如 `uvicorn app.main:app --reload --port 8000`），然后在另一个 shell：
 
@@ -1342,7 +1342,7 @@ curl -s -X POST http://localhost:8000/api/jobs \
 
 预期：响应包含 `cultural_adaptation: null`，无错误。
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add backend/app/api/jobs.py backend/app/tasks.py
@@ -1359,7 +1359,7 @@ git commit -m "feat(backend): plumb cultural fields through API and Celery task"
 
 新增 `CulturalSphere` / `AudienceType` 类型与 setter；`LangResult` 增 `culturalAdaptation` 字段。
 
-- [ ] **Step 1: 修改 frontend/stores/workspace-store.ts**
+- [x] **Step 1: 修改 frontend/stores/workspace-store.ts**
 
 完整替换为：
 
@@ -1436,7 +1436,7 @@ export const useWorkspaceStore = create<WorkspaceState>((set) => ({
 }));
 ```
 
-- [ ] **Step 2: 修改 frontend/stores/translation-store.ts**
+- [x] **Step 2: 修改 frontend/stores/translation-store.ts**
 
 在 `RiskSpan` 接口下方（约第 25 行），新增类型：
 
@@ -1485,7 +1485,7 @@ interface LangResult {
 
 其余 `defaults` 同理统一新增 `culturalAdaptation: null`。
 
-- [ ] **Step 3: 验证 TypeScript 编译通过**
+- [x] **Step 3: 验证 TypeScript 编译通过**
 
 ```bash
 cd frontend && pnpm exec tsc --noEmit
@@ -1493,7 +1493,7 @@ cd frontend && pnpm exec tsc --noEmit
 
 预期：无错误输出。
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 git add frontend/stores/workspace-store.ts frontend/stores/translation-store.ts
@@ -1509,7 +1509,7 @@ git commit -m "feat(frontend): extend stores with cultural sphere, audience type
 
 下拉式选择器，类似 GenreSelector 的 UI 风格但用 select 元素（8 项较多，按钮组太挤）。带 tooltip 显示覆盖国家。
 
-- [ ] **Step 1: 写组件**
+- [x] **Step 1: 写组件**
 
 ```tsx
 "use client";
@@ -1553,7 +1553,7 @@ export function CultureSphereSelector() {
 }
 ```
 
-- [ ] **Step 2: 验证 TypeScript**
+- [x] **Step 2: 验证 TypeScript**
 
 ```bash
 cd frontend && pnpm exec tsc --noEmit
@@ -1561,7 +1561,7 @@ cd frontend && pnpm exec tsc --noEmit
 
 预期：无错误。
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add frontend/components/workspace/culture-sphere-selector.tsx
@@ -1577,7 +1577,7 @@ git commit -m "feat(frontend): add culture sphere selector"
 
 按钮组，6 项可以放下。
 
-- [ ] **Step 1: 写组件**
+- [x] **Step 1: 写组件**
 
 ```tsx
 "use client";
@@ -1619,7 +1619,7 @@ export function AudienceTypeSelector() {
 }
 ```
 
-- [ ] **Step 2: 验证 TypeScript**
+- [x] **Step 2: 验证 TypeScript**
 
 ```bash
 cd frontend && pnpm exec tsc --noEmit
@@ -1627,7 +1627,7 @@ cd frontend && pnpm exec tsc --noEmit
 
 预期：无错误。
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add frontend/components/workspace/audience-type-selector.tsx
@@ -1643,14 +1643,14 @@ git commit -m "feat(frontend): add audience type selector"
 
 在 GenreSelector 与 TextEditor 之间插入两个新选择器；调用 `/api/jobs` 时带上 `cultural_sphere` / `audience_type`；轮询 `/api/jobs/{id}` 时把 `cultural_adaptation` 写回 store。
 
-- [ ] **Step 1: 在 import 顶部加两个新组件**
+- [x] **Step 1: 在 import 顶部加两个新组件**
 
 ```tsx
 import { CultureSphereSelector } from "./culture-sphere-selector";
 import { AudienceTypeSelector } from "./audience-type-selector";
 ```
 
-- [ ] **Step 2: 修改 handleTranslate 中的 POST body**
+- [x] **Step 2: 修改 handleTranslate 中的 POST body**
 
 把：
 ```tsx
@@ -1673,7 +1673,7 @@ import { AudienceTypeSelector } from "./audience-type-selector";
       });
 ```
 
-- [ ] **Step 3: 修改 pollJobStatus 内的 setResult 调用**
+- [x] **Step 3: 修改 pollJobStatus 内的 setResult 调用**
 
 把：
 ```tsx
@@ -1699,7 +1699,7 @@ import { AudienceTypeSelector } from "./audience-type-selector";
         }
 ```
 
-- [ ] **Step 4: 修改 JSX 布局**
+- [x] **Step 4: 修改 JSX 布局**
 
 把：
 ```tsx
@@ -1720,7 +1720,7 @@ import { AudienceTypeSelector } from "./audience-type-selector";
       <StrategySelector />
 ```
 
-- [ ] **Step 5: 验证 TypeScript**
+- [x] **Step 5: 验证 TypeScript**
 
 ```bash
 cd frontend && pnpm exec tsc --noEmit
@@ -1728,7 +1728,7 @@ cd frontend && pnpm exec tsc --noEmit
 
 预期：无错误。
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add frontend/components/workspace/input-panel.tsx
@@ -1745,7 +1745,7 @@ git commit -m "feat(frontend): wire cultural selectors into input panel"
 
 折叠面板显示文化负载词、注意事项、禁忌。
 
-- [ ] **Step 1: 写 cultural-adaptation-panel.tsx**
+- [x] **Step 1: 写 cultural-adaptation-panel.tsx**
 
 ```tsx
 "use client";
@@ -1851,7 +1851,7 @@ export function CulturalAdaptationPanel({ language }: { language: string }) {
 }
 ```
 
-- [ ] **Step 2: 修改 frontend/components/workspace/translation-result.tsx**
+- [x] **Step 2: 修改 frontend/components/workspace/translation-result.tsx**
 
 在 imports 顶部新增：
 ```tsx
@@ -1876,7 +1876,7 @@ import { CulturalAdaptationPanel } from "./cultural-adaptation-panel";
   );
 ```
 
-- [ ] **Step 3: 验证 TypeScript**
+- [x] **Step 3: 验证 TypeScript**
 
 ```bash
 cd frontend && pnpm exec tsc --noEmit
@@ -1884,7 +1884,7 @@ cd frontend && pnpm exec tsc --noEmit
 
 预期：无错误。
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 git add frontend/components/workspace/cultural-adaptation-panel.tsx frontend/components/workspace/translation-result.tsx
@@ -1899,7 +1899,7 @@ git commit -m "feat(frontend): show cultural adaptation panel above translation 
 
 启动后端 + Celery worker + 前端，从 UI 跑一次完整翻译，确认链路通畅。
 
-- [ ] **Step 1: 跑一次后端测试套件**
+- [x] **Step 1: 跑一次后端测试套件**
 
 ```bash
 cd backend && source .venv/bin/activate && pytest -v
@@ -1907,18 +1907,18 @@ cd backend && source .venv/bin/activate && pytest -v
 
 预期：所有 cultural 相关测试 PASS（约 17 个），没有 FAIL。
 
-- [ ] **Step 2: 启动后端 + Celery + 前端**
+- [x] **Step 2: 启动后端 + Celery + 前端**
 
 按项目惯用方式启动（参考之前 commit 历史的本地启动文档；通常是 3 个终端：`uvicorn app.main:app --reload`、`celery -A app.celery_app worker -l info`、`pnpm dev`）。
 
-- [ ] **Step 3: 浏览器打开 workspace 页**
+- [x] **Step 3: 浏览器打开 workspace 页**
 
 打开 http://localhost:3000/workspace（或项目实际 URL），登录后应能看到：
 - 顶部「文化圈」下拉，默认选中「欧美英语圈」
 - 「受众」按钮组，默认选中「公众」
 - 现有 GenreSelector / StrategySelector / 语言选择都还在
 
-- [ ] **Step 4: 输入测试文本并触发翻译**
+- [x] **Step 4: 输入测试文本并触发翻译**
 
 在文本框输入：
 ```
@@ -1926,22 +1926,22 @@ cd backend && source .venv/bin/activate && pytest -v
 ```
 选择「政治」文体、「欧美英语圈」+「公众」、目标语言英(英)、点击「开始转译」。
 
-- [ ] **Step 5: 等到翻译完成（status 变为 completed），观察右侧结果区**
+- [x] **Step 5: 等到翻译完成（status 变为 completed），观察右侧结果区**
 
 预期看到：
 1. 翻译文本正常出现
 2. 翻译文本上方有「▾ 文化适配说明（识别 N 个文化负载词…）」可折叠区
 3. 点击展开后能看到至少 1 条文化负载词条目（含术语+策略+差异度+译法+原因）
 
-- [ ] **Step 6: 切换文化圈再翻译一次，验证结果差异**
+- [x] **Step 6: 切换文化圈再翻译一次，验证结果差异**
 
 把文化圈切到「伊斯兰中东」，受众保持「公众」，重新翻译同一段文本，观察文化适配面板里识别的词或注意事项与上一次有差异（哪怕是 cultural_notes / taboo_warnings 不同也算通过）。
 
-- [ ] **Step 7: 向后兼容回归（可选）**
+- [x] **Step 7: 向后兼容回归（可选）**
 
 直接用 curl 不带新字段调用 `/api/jobs` 接口（同 Task 9 Step 5），确认依然返回 200 且 `cultural_adaptation: null`。
 
-- [ ] **Step 8: 没有代码改动则不需要 commit**
+- [x] **Step 8: 没有代码改动则不需要 commit**
 
 如果 Step 5/6/7 全部通过，本任务完成；如发现问题，回到对应任务修复并补 commit。
 

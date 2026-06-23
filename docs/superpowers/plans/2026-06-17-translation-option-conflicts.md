@@ -1,6 +1,6 @@
 # 翻译选项冲突消解 Implementation Plan
 
-> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
+> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [x]`) syntax for tracking.
 
 **Goal:** 消除翻译选项的硬冲突——在 UI 层禁止 `literal_reference`(直译参考)与 `brand`(品牌传播)组合,并把 `literal_reference` 定义为纯直译模式(禁用文化圈/受众选择器 + 后端请求传 null),使 system prompt 永不自相矛盾。
 
@@ -32,7 +32,7 @@
 **Files:**
 - Create: `frontend/lib/translation-conflicts.ts`
 
-- [ ] **Step 1: 创建纯函数模块**
+- [x] **Step 1: 创建纯函数模块**
 
 写入 `frontend/lib/translation-conflicts.ts`:
 
@@ -71,12 +71,12 @@ export function getDisabledStrategies(genre: Genre): Strategy[] {
 }
 ```
 
-- [ ] **Step 2: 类型检查**
+- [x] **Step 2: 类型检查**
 
 Run: `cd frontend && npm run build`
 Expected: `✓ Compiled successfully`,无 TypeScript 错误。
 
-- [ ] **Step 3: 提交**
+- [x] **Step 3: 提交**
 
 ```bash
 git add frontend/lib/translation-conflicts.ts
@@ -91,7 +91,7 @@ git commit -m "feat(frontend): add translation option conflict rules module"
 - Modify: `frontend/components/workspace/genre-selector.tsx`
 - Modify: `frontend/components/workspace/strategy-selector.tsx`
 
-- [ ] **Step 1: 改 GenreSelector——读 strategy 禁用 brand**
+- [x] **Step 1: 改 GenreSelector——读 strategy 禁用 brand**
 
 把 `frontend/components/workspace/genre-selector.tsx` 整体替换为:
 
@@ -141,7 +141,7 @@ export function GenreSelector() {
 }
 ```
 
-- [ ] **Step 2: 改 StrategySelector——读 genre 禁用 literal_reference**
+- [x] **Step 2: 改 StrategySelector——读 genre 禁用 literal_reference**
 
 把 `frontend/components/workspace/strategy-selector.tsx` 的 import 区与 `StrategySelector` 函数替换为:
 
@@ -231,12 +231,12 @@ export function StrategySelector() {
 }
 ```
 
-- [ ] **Step 3: 类型检查**
+- [x] **Step 3: 类型检查**
 
 Run: `cd frontend && npm run build`
 Expected: `✓ Compiled successfully`,无错误。
 
-- [ ] **Step 4: 手动验证双向禁用**
+- [x] **Step 4: 手动验证双向禁用**
 
 Run: `cd frontend && npm run dev`,打开 `http://localhost:3000`(登录后进入工作台)。
 - 选 `信息等值` 策略 → 四个文体按钮全可点。✅
@@ -244,7 +244,7 @@ Run: `cd frontend && npm run dev`,打开 `http://localhost:3000`(登录后进入
 - 把文体切回 `政治话语`,再切到 `品牌传播` 文体 → `直译参考` radio 置灰,其 tooltip 显示"与当前文体(品牌传播)冲突"。✅
 - 无法同时处于 `直译参考 + 品牌传播` 状态。✅
 
-- [ ] **Step 5: 提交**
+- [x] **Step 5: 提交**
 
 ```bash
 git add frontend/components/workspace/genre-selector.tsx frontend/components/workspace/strategy-selector.tsx
@@ -259,7 +259,7 @@ git commit -m "feat(frontend): disable literal/brand conflict combo bidirectiona
 - Modify: `frontend/components/workspace/culture-sphere-selector.tsx`
 - Modify: `frontend/components/workspace/audience-type-selector.tsx`
 
-- [ ] **Step 1: 改 CultureSphereSelector——直译模式置灰 + 提示**
+- [x] **Step 1: 改 CultureSphereSelector——直译模式置灰 + 提示**
 
 把 `frontend/components/workspace/culture-sphere-selector.tsx` 整体替换为:
 
@@ -313,7 +313,7 @@ export function CultureSphereSelector() {
 }
 ```
 
-- [ ] **Step 2: 改 AudienceTypeSelector——直译模式置灰 + 提示**
+- [x] **Step 2: 改 AudienceTypeSelector——直译模式置灰 + 提示**
 
 把 `frontend/components/workspace/audience-type-selector.tsx` 整体替换为:
 
@@ -365,18 +365,18 @@ export function AudienceTypeSelector() {
 }
 ```
 
-- [ ] **Step 3: 类型检查**
+- [x] **Step 3: 类型检查**
 
 Run: `cd frontend && npm run build`
 Expected: `✓ Compiled successfully`,无错误。
 
-- [ ] **Step 4: 手动验证直译模式禁用**
+- [x] **Step 4: 手动验证直译模式禁用**
 
 `cd frontend && npm run dev`,工作台:
 - 选 `直译参考` 策略 → 文化圈下拉框 + 受众按钮组整体置灰、不可交互,出现提示"直译参考模式下不进行文化适配"。✅
 - 切回 `信息等值` 或 `受众优先` → 文化圈/受众恢复可点。✅
 
-- [ ] **Step 5: 提交**
+- [x] **Step 5: 提交**
 
 ```bash
 git add frontend/components/workspace/culture-sphere-selector.tsx frontend/components/workspace/audience-type-selector.tsx
@@ -390,7 +390,7 @@ git commit -m "feat(frontend): disable cultural sphere/audience in literal mode"
 **Files:**
 - Modify: `frontend/components/workspace/input-panel.tsx`
 
-- [ ] **Step 1: 改 handleTranslate 的 payload**
+- [x] **Step 1: 改 handleTranslate 的 payload**
 
 在 `frontend/components/workspace/input-panel.tsx` 顶部 import 区加一行(在已有 import 后):
 
@@ -412,12 +412,12 @@ import { isLiteralMode } from "@/lib/translation-conflicts";
       });
 ```
 
-- [ ] **Step 2: 类型检查**
+- [x] **Step 2: 类型检查**
 
 Run: `cd frontend && npm run build`
 Expected: `✓ Compiled successfully`,无错误。
 
-- [ ] **Step 3: 端到端手动验证**
+- [x] **Step 3: 端到端手动验证**
 
 `cd frontend && npm run dev`,工作台:
 - 选 `直译参考` 策略(确认 `品牌传播` 文体被禁用,文化圈/受众已置灰)。
@@ -426,7 +426,7 @@ Expected: `✓ Compiled successfully`,无错误。
 - 翻译完成后:右侧输出区**不显示** "文化适配说明" 折叠面板(因后端返回的 `cultural_adaptation` 为 null)。✅
 - 切回 `受众优先` 策略 → 文化圈/受众恢复可点且**保留原值**,重新翻译后 payload 两字段恢复正常值、文化适配面板重新出现。✅
 
-- [ ] **Step 4: 提交**
+- [x] **Step 4: 提交**
 
 ```bash
 git add frontend/components/workspace/input-panel.tsx
@@ -437,9 +437,11 @@ git commit -m "feat(frontend): send null cultural fields in literal translation 
 
 ## 验收(全部完成后整体复核)
 
-- [ ] `npm run build` 通过,无 TS 错误。
-- [ ] 不可达到 `直译参考 + 品牌传播` 组合(双向禁用生效)。
-- [ ] 直译模式下文化圈/受众选择器置灰且不可交互,提示出现。
-- [ ] 直译模式请求 payload 两字段为 `null`,响应无 `cultural_adaptation`。
-- [ ] 切换出直译模式后选择器恢复、原值保留。
-- [ ] 其余功能(翻译、风险标注、采纳/忽略/回退、复制/导出)不受影响。
+- [x] `npm run build` 通过,无 TS 错误。
+- [x] 不可达到 `直译参考 + 品牌传播` 组合(双向禁用生效)。
+- [x] 直译模式下文化圈/受众选择器置灰且不可交互,提示出现。
+- [x] 直译模式请求 payload 两字段为 `null`,响应无 `cultural_adaptation`。
+- [x] 切换出直译模式后选择器恢复、原值保留。
+- [x] 其余功能(翻译、风险标注、采纳/忽略/回退、复制/导出)不受影响。
+
+> 注：spec 要求的 translation-conflicts.test.ts 单测未创建（计划遗漏该项任务）。

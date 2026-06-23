@@ -36,7 +36,7 @@
 **Files:**
 - Create: `backend/app/schemas/review.py`
 
-- [ ] **Step 1: Write the schemas**
+- [x] **Step 1: Write the schemas**
 
 Create `backend/app/schemas/review.py`:
 
@@ -86,13 +86,13 @@ class ReviewResult(BaseModel):
     created_at: datetime
 ```
 
-- [ ] **Step 2: Verify import works**
+- [x] **Step 2: Verify import works**
 
 Run: `cd /Users/felixwang/devspace/cc-project/mca-translation/backend && python -c "from app.schemas.review import ReviewRequest, ReviewResult; print('OK')"`
 
 Expected: `OK`
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add backend/app/schemas/review.py
@@ -106,7 +106,7 @@ git commit -m "feat(backend): add review service schemas"
 **Files:**
 - Modify: `backend/app/llm/prompts.py`
 
-- [ ] **Step 1: Append review prompts to prompts.py**
+- [x] **Step 1: Append review prompts to prompts.py**
 
 Add at the end of `backend/app/llm/prompts.py`:
 
@@ -173,13 +173,13 @@ SINGLE_REVIEW_PROMPT = """你是一位资深国际传播审校专家。请对下
 只返回 JSON，不要包含其他文本。"""
 ```
 
-- [ ] **Step 2: Verify import works**
+- [x] **Step 2: Verify import works**
 
 Run: `cd /Users/felixwang/devspace/cc-project/mca-translation/backend && python -c "from app.llm.prompts import DUAL_REVIEW_PROMPT, SINGLE_REVIEW_PROMPT; print('OK')"`
 
 Expected: `OK`
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add backend/app/llm/prompts.py
@@ -193,7 +193,7 @@ git commit -m "feat(backend): add dual and single review prompts"
 **Files:**
 - Create: `backend/app/services/review.py`
 
-- [ ] **Step 1: Write ReviewService**
+- [x] **Step 1: Write ReviewService**
 
 Create `backend/app/services/review.py`:
 
@@ -358,7 +358,7 @@ And update callers:
 
 Let me write this correctly.
 
-- [ ] **Step 2: Corrected ReviewService with proper _call_llm signature**
+- [x] **Step 2: Corrected ReviewService with proper _call_llm signature**
 
 Create `backend/app/services/review.py` with the corrected code:
 
@@ -498,13 +498,13 @@ class ReviewService:
 review_service = ReviewService()
 ```
 
-- [ ] **Step 3: Verify import works**
+- [x] **Step 3: Verify import works**
 
 Run: `cd /Users/felixwang/devspace/cc-project/mca-translation/backend && python -c "from app.services.review import review_service; print('OK')"`
 
 Expected: `OK`
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 git add backend/app/services/review.py
@@ -518,7 +518,7 @@ git commit -m "feat(backend): add ReviewService with dual/single review support"
 **Files:**
 - Create: `backend/app/api/reviews.py`
 
-- [ ] **Step 1: Write the router**
+- [x] **Step 1: Write the router**
 
 Create `backend/app/api/reviews.py`:
 
@@ -557,13 +557,13 @@ async def create_review(
         )
 ```
 
-- [ ] **Step 2: Verify import works**
+- [x] **Step 2: Verify import works**
 
 Run: `cd /Users/felixwang/devspace/cc-project/mca-translation/backend && python -c "from app.api.reviews import router; print('OK')"`
 
 Expected: `OK`
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add backend/app/api/reviews.py
@@ -577,7 +577,7 @@ git commit -m "feat(backend): add reviews API router"
 **Files:**
 - Modify: `backend/app/main.py`
 
-- [ ] **Step 1: Add import and registration**
+- [x] **Step 1: Add import and registration**
 
 In `backend/app/main.py`, add after line 7:
 
@@ -633,13 +633,13 @@ async def health():
     return {"status": "ok"}
 ```
 
-- [ ] **Step 2: Verify backend starts**
+- [x] **Step 2: Verify backend starts**
 
 Run: `cd /Users/felixwang/devspace/cc-project/mca-translation/backend && python -c "from app.main import app; print('OK')"`
 
 Expected: `OK`
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add backend/app/main.py
@@ -653,7 +653,7 @@ git commit -m "feat(backend): register reviews router"
 **Files:**
 - Modify: `frontend/lib/api-client.ts`
 
-- [ ] **Step 1: Add postReview method**
+- [x] **Step 1: Add postReview method** (偏离 — 未包含 genre 参数，前端从不发送)
 
 Add after the existing `post` method (after line 54):
 
@@ -757,13 +757,13 @@ class ApiClient {
 export const apiClient = new ApiClient();
 ```
 
-- [ ] **Step 2: Verify TypeScript compiles**
+- [x] **Step 2: Verify TypeScript compiles**
 
 Run: `cd /Users/felixwang/devspace/cc-project/mca-translation/frontend && npx tsc --noEmit --pretty 2>&1 | head -20`
 
 Expected: No errors related to `api-client.ts`.
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add frontend/lib/api-client.ts
@@ -777,7 +777,7 @@ git commit -m "feat(frontend): add postReview method to ApiClient"
 **Files:**
 - Create: `frontend/stores/review-store.ts`
 
-- [ ] **Step 1: Write the store**
+- [x] **Step 1: Write the store**
 
 Create `frontend/stores/review-store.ts`:
 
@@ -873,13 +873,13 @@ export const useReviewStore = create<ReviewState>((set) => ({
 }));
 ```
 
-- [ ] **Step 2: Verify TypeScript compiles**
+- [x] **Step 2: Verify TypeScript compiles**
 
 Run: `cd /Users/felixwang/devspace/cc-project/mca-translation/frontend && npx tsc --noEmit --pretty 2>&1 | head -20`
 
 Expected: No errors related to `review-store.ts`.
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add frontend/stores/review-store.ts
@@ -893,7 +893,7 @@ git commit -m "feat(frontend): add review store with mode/input/result state"
 **Files:**
 - Create: `frontend/app/(main)/review/page.tsx`
 
-- [ ] **Step 1: Create the page component**
+- [x] **Step 1: Create the page component**
 
 Create `frontend/app/(main)/review/page.tsx`:
 
@@ -928,13 +928,13 @@ export default function ReviewPage() {
 }
 ```
 
-- [ ] **Step 2: Verify TypeScript compiles**
+- [x] **Step 2: Verify TypeScript compiles**
 
 Run: `cd /Users/felixwang/devspace/cc-project/mca-translation/frontend && npx tsc --noEmit --pretty 2>&1 | head -20`
 
 Expected: No errors (component files will be created in subsequent tasks).
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add frontend/app/(main)/review/page.tsx
@@ -948,7 +948,7 @@ git commit -m "feat(frontend): add review page shell"
 **Files:**
 - Create: `frontend/components/review/review-input-panel.tsx`
 
-- [ ] **Step 1: Write the component**
+- [x] **Step 1: Write the component**
 
 Create `frontend/components/review/review-input-panel.tsx`:
 
@@ -1146,13 +1146,13 @@ export function ReviewInputPanel() {
 }
 ```
 
-- [ ] **Step 2: Verify TypeScript compiles**
+- [x] **Step 2: Verify TypeScript compiles**
 
 Run: `cd /Users/felixwang/devspace/cc-project/mca-translation/frontend && npx tsc --noEmit --pretty 2>&1 | head -20`
 
 Expected: No errors (result panel components will be created in subsequent tasks).
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add frontend/components/review/review-input-panel.tsx
@@ -1166,7 +1166,7 @@ git commit -m "feat(frontend): add review input panel with mode switch and param
 **Files:**
 - Create: `frontend/components/review/score-badge.tsx`
 
-- [ ] **Step 1: Write the component**
+- [x] **Step 1: Write the component**
 
 Create `frontend/components/review/score-badge.tsx`:
 
@@ -1227,13 +1227,13 @@ export function CategoryScoreBar({ name, score }: { name: string; score: number 
 }
 ```
 
-- [ ] **Step 2: Verify TypeScript compiles**
+- [x] **Step 2: Verify TypeScript compiles**
 
 Run: `cd /Users/felixwang/devspace/cc-project/mca-translation/frontend && npx tsc --noEmit --pretty 2>&1 | head -20`
 
 Expected: No errors.
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add frontend/components/review/score-badge.tsx
@@ -1247,7 +1247,7 @@ git commit -m "feat(frontend): add ScoreBadge and CategoryScoreBar components"
 **Files:**
 - Create: `frontend/components/review/issue-card.tsx`
 
-- [ ] **Step 1: Write the component**
+- [x] **Step 1: Write the component**
 
 Create `frontend/components/review/issue-card.tsx`:
 
@@ -1354,13 +1354,13 @@ export function IssueCard({
 }
 ```
 
-- [ ] **Step 2: Verify TypeScript compiles**
+- [x] **Step 2: Verify TypeScript compiles**
 
 Run: `cd /Users/felixwang/devspace/cc-project/mca-translation/frontend && npx tsc --noEmit --pretty 2>&1 | head -20`
 
 Expected: No errors.
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add frontend/components/review/issue-card.tsx
@@ -1374,7 +1374,7 @@ git commit -m "feat(frontend): add IssueCard component with severity/category ba
 **Files:**
 - Create: `frontend/components/review/review-result-panel.tsx`
 
-- [ ] **Step 1: Write the component**
+- [x] **Step 1: Write the component**
 
 Create `frontend/components/review/review-result-panel.tsx`:
 
@@ -1546,13 +1546,13 @@ export function ReviewResultPanel() {
 }
 ```
 
-- [ ] **Step 2: Verify TypeScript compiles**
+- [x] **Step 2: Verify TypeScript compiles**
 
 Run: `cd /Users/felixwang/devspace/cc-project/mca-translation/frontend && npx tsc --noEmit --pretty 2>&1 | head -30`
 
 Expected: No errors.
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add frontend/components/review/review-result-panel.tsx
@@ -1566,7 +1566,7 @@ git commit -m "feat(frontend): add review result panel with inline marks and iss
 **Files:**
 - Create: `frontend/components/review/review-report-panel.tsx`
 
-- [ ] **Step 1: Write the component**
+- [x] **Step 1: Write the component**
 
 Create `frontend/components/review/review-report-panel.tsx`:
 
@@ -1668,13 +1668,13 @@ export function ReviewReportPanel() {
 }
 ```
 
-- [ ] **Step 2: Verify TypeScript compiles**
+- [x] **Step 2: Verify TypeScript compiles**
 
 Run: `cd /Users/felixwang/devspace/cc-project/mca-translation/frontend && npx tsc --noEmit --pretty 2>&1 | head -20`
 
 Expected: No errors.
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add frontend/components/review/review-report-panel.tsx
@@ -1688,7 +1688,7 @@ git commit -m "feat(frontend): add review report panel with markdown export"
 **Files:**
 - Modify: `frontend/app/(main)/layout.tsx`
 
-- [ ] **Step 1: Add "审校" nav link**
+- [x] **Step 1: Add "审校" nav link**
 
 In `frontend/app/(main)/layout.tsx`, replace the `<nav>` section with:
 
@@ -1732,13 +1732,13 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
 }
 ```
 
-- [ ] **Step 2: Verify TypeScript compiles**
+- [x] **Step 2: Verify TypeScript compiles**
 
 Run: `cd /Users/felixwang/devspace/cc-project/mca-translation/frontend && npx tsc --noEmit --pretty 2>&1 | head -20`
 
 Expected: No errors.
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add frontend/app/(main)/layout.tsx
@@ -1751,19 +1751,19 @@ git commit -m "feat(frontend): add review nav link to main layout"
 
 **Files:** None (verification only)
 
-- [ ] **Step 1: Verify frontend builds**
+- [x] **Step 1: Verify frontend builds**
 
 Run: `cd /Users/felixwang/devspace/cc-project/mca-translation/frontend && npm run build 2>&1 | tail -20`
 
 Expected: `✓ Compiled successfully` with no TypeScript errors.
 
-- [ ] **Step 2: Verify backend imports**
+- [x] **Step 2: Verify backend imports**
 
 Run: `cd /Users/felixwang/devspace/cc-project/mca-translation/backend && python -c "from app.main import app; from app.api.reviews import router; print('OK')"`
 
 Expected: `OK`
 
-- [ ] **Step 3: Start services and smoke test**
+- [x] **Step 3: Start services and smoke test**
 
 1. Start backend: `cd backend && .venv/bin/uvicorn app.main:app --reload --port 8000`
 2. Start frontend: `cd frontend && npm run dev`
@@ -1779,7 +1779,7 @@ Expected: `OK`
    - 点击问题卡片滚动定位到内联标注
    - 底部报告面板可折叠，点击「导出 Markdown」下载 .md 文件
 
-- [ ] **Step 4: Commit any fixes**
+- [x] **Step 4: Commit any fixes**
 
 If smoke test revealed issues:
 ```bash

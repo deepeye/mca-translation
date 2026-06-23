@@ -1,6 +1,6 @@
 # 风险标注可视化 Implementation Plan
 
-> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
+> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [x]`) syntax for tracking.
 
 **Goal:** 将后端已返回的 risk_annotations 数据在前端译文中可视化——内联标记 + hover Popover + 下方卡片列表 + 双向联动高亮。
 
@@ -28,7 +28,7 @@
 **Files:**
 - Modify: `frontend/stores/translation-store.ts`
 
-- [ ] **Step 1: Add highlightedIndex to LangResult interface and initial state**
+- [x] **Step 1: Add highlightedIndex to LangResult interface and initial state**
 
 Replace the full file content:
 
@@ -89,13 +89,13 @@ Key changes:
 - `LangResult` gains `highlightedIndex: number | null`
 - Default value for `highlightedIndex` is `null` in all three places (`setResult` default, `appendText` existing fallback)
 
-- [ ] **Step 2: Verify the store compiles**
+- [x] **Step 2: Verify the store compiles**
 
 Run: `cd frontend && npx tsc --noEmit --pretty 2>&1 | head -20`
 
 Expected: No errors related to `translation-store.ts`. There may be pre-existing warnings in other files—ignore those.
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add frontend/stores/translation-store.ts
@@ -109,7 +109,7 @@ git commit -m "feat: add highlightedIndex and export RiskAnnotation/RiskSpan typ
 **Files:**
 - Create: `frontend/components/workspace/risk-annotation-popover.tsx`
 
-- [ ] **Step 1: Write the Popover component**
+- [x] **Step 1: Write the Popover component**
 
 Create `frontend/components/workspace/risk-annotation-popover.tsx`:
 
@@ -163,13 +163,13 @@ Notes:
 - `line-clamp-3` truncates explanation to 3 lines in the popover
 - `render` prop on `PopoverTrigger` lets the `<mark>` element be the trigger directly (base-ui pattern)
 
-- [ ] **Step 2: Verify it compiles**
+- [x] **Step 2: Verify it compiles**
 
 Run: `cd frontend && npx tsc --noEmit --pretty 2>&1 | head -20`
 
 Expected: No errors related to `risk-annotation-popover.tsx`.
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add frontend/components/workspace/risk-annotation-popover.tsx
@@ -183,7 +183,7 @@ git commit -m "feat: add RiskAnnotationPopover component"
 **Files:**
 - Modify: `frontend/components/workspace/translation-result.tsx`
 
-- [ ] **Step 1: Rewrite the component**
+- [x] **Step 1: Rewrite the component**
 
 Replace the full file content of `frontend/components/workspace/translation-result.tsx`:
 
@@ -343,13 +343,13 @@ Key design decisions:
 - The `useEffect` for custom events is guarded by `typeof window` check (SSR safety)
 - Popover wraps each `<mark>` via `RiskAnnotationPopover`
 
-- [ ] **Step 2: Verify it compiles**
+- [x] **Step 2: Verify it compiles**
 
 Run: `cd frontend && npx tsc --noEmit --pretty 2>&1 | head -30`
 
 Expected: No errors related to `translation-result.tsx`.
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add frontend/components/workspace/translation-result.tsx
@@ -363,7 +363,7 @@ git commit -m "feat: rewrite TranslationResult with inline risk marks and hover 
 **Files:**
 - Create: `frontend/components/workspace/risk-detail-list.tsx`
 
-- [ ] **Step 1: Write the component**
+- [x] **Step 1: Write the component**
 
 Create `frontend/components/workspace/risk-detail-list.tsx`:
 
@@ -487,13 +487,13 @@ Key design decisions:
 - Click dispatches `scroll-to-risk-mark` custom event → `TranslationResult` listens and scrolls
 - Card border changes to risk color when highlighted
 
-- [ ] **Step 2: Verify it compiles**
+- [x] **Step 2: Verify it compiles**
 
 Run: `cd frontend && npx tsc --noEmit --pretty 2>&1 | head -20`
 
 Expected: No errors related to `risk-detail-list.tsx`.
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add frontend/components/workspace/risk-detail-list.tsx
@@ -508,7 +508,7 @@ git commit -m "feat: add RiskDetailList component with card list and highlight l
 - Modify: `frontend/components/workspace/output-panel.tsx`
 - Delete: `frontend/components/workspace/risk-summary.tsx`
 
-- [ ] **Step 1: Update OutputPanel to use RiskDetailList**
+- [x] **Step 1: Update OutputPanel to use RiskDetailList**
 
 Replace the full content of `frontend/components/workspace/output-panel.tsx`:
 
@@ -554,19 +554,19 @@ export function OutputPanel() {
 
 Change: `RiskSummary` import → `RiskDetailList` import, component usage updated. Everything else identical.
 
-- [ ] **Step 2: Delete the old RiskSummary file**
+- [x] **Step 2: Delete the old RiskSummary file**
 
 ```bash
 rm frontend/components/workspace/risk-summary.tsx
 ```
 
-- [ ] **Step 3: Verify the app builds**
+- [x] **Step 3: Verify the app builds**
 
 Run: `cd frontend && pnpm build 2>&1 | tail -20`
 
 Expected: Build succeeds with no errors.
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 git add frontend/components/workspace/output-panel.tsx
@@ -581,7 +581,7 @@ git commit -m "feat: wire RiskDetailList into OutputPanel, remove old RiskSummar
 **Files:**
 - Possibly modify any files from Tasks 1-5 if issues found
 
-- [ ] **Step 1: Start the dev server and check for runtime errors**
+- [x] **Step 1: Start the dev server and check for runtime errors**
 
 Run: `cd frontend && pnpm dev`
 
@@ -596,14 +596,14 @@ Open http://localhost:3000 in browser, log in with admin/admin123, submit a tran
 7. ✅ Clicking a card scrolls the translation to the corresponding mark
 8. ✅ No console errors related to our components
 
-- [ ] **Step 2: Fix any issues found during smoke test**
+- [x] **Step 2: Fix any issues found during smoke test**
 
 If any of the above checks fail, diagnose and fix. Common issues:
 - Popover positioning: adjust `side`, `align`, `sideOffset` props
 - `indexOf` not finding phrase: check if whitespace/encoding differs between API response and rendered text
 - Custom event not received: verify event name matches exactly (`scroll-to-risk-mark`)
 
-- [ ] **Step 3: Final commit**
+- [x] **Step 3: Final commit**
 
 ```bash
 git add -A

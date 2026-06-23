@@ -34,7 +34,7 @@
 - Modify: `backend/app/llm/prompts.py`
 - Create: `backend/app/services/suggestion.py`
 
-- [ ] **Step 1: Add SUGGESTION_PROMPT to prompts.py**
+- [x] **Step 1: Add SUGGESTION_PROMPT to prompts.py**
 
 Append after `RISK_ANNOTATION_PROMPT` in `backend/app/llm/prompts.py`:
 
@@ -58,7 +58,7 @@ Risk explanation: {explanation}
 Return a JSON array of suggestions. Return ONLY the JSON array, no other text."""
 ```
 
-- [ ] **Step 2: Create SuggestionService**
+- [x] **Step 2: Create SuggestionService**
 
 Create `backend/app/services/suggestion.py`:
 
@@ -110,12 +110,12 @@ class SuggestionService:
 suggestion_service = SuggestionService()
 ```
 
-- [ ] **Step 3: Verify import works**
+- [x] **Step 3: Verify import works**
 
 Run: `cd /Users/felixwang/devspace/cc-project/mca-translation/backend && python -c "from app.services.suggestion import suggestion_service; print('OK')"`
 Expected: `OK`
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 git add backend/app/llm/prompts.py backend/app/services/suggestion.py
@@ -129,7 +129,7 @@ git commit -m "feat: add suggestion generation prompt and SuggestionService"
 **Files:**
 - Modify: `backend/app/schemas/job.py`
 
-- [ ] **Step 1: Add new schemas**
+- [x] **Step 1: Add new schemas**
 
 Append to `backend/app/schemas/job.py` after `JobListItem`:
 
@@ -160,12 +160,12 @@ class AcceptAllRequest(BaseModel):
     lang: str
 ```
 
-- [ ] **Step 2: Verify import works**
+- [x] **Step 2: Verify import works**
 
 Run: `cd /Users/felixwang/devspace/cc-project/mca-translation/backend && python -c "from app.schemas.job import SuggestionResponse, AcceptRiskRequest; print('OK')"`
 Expected: `OK`
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add backend/app/schemas/job.py
@@ -181,7 +181,7 @@ git commit -m "feat: add schemas for suggestion and risk operation endpoints"
 
 This is the core backend task. We add 5 endpoints and a helper function for offset recalculation.
 
-- [ ] **Step 1: Add imports and helper function**
+- [x] **Step 1: Add imports and helper function**
 
 At the top of `backend/app/api/jobs.py`, add imports:
 
@@ -211,7 +211,7 @@ def _recalculate_offsets(text: str, annotations: list[dict]) -> list[dict]:
     return annotations
 ```
 
-- [ ] **Step 2: Add GET suggestions endpoint**
+- [x] **Step 2: Add GET suggestions endpoint**
 
 Append after `delete_job`:
 
@@ -241,7 +241,7 @@ async def get_suggestions(
     return SuggestionResponse(suggestions=suggestions)
 ```
 
-- [ ] **Step 3: Add POST accept/dismiss/revert endpoints**
+- [x] **Step 3: Add POST accept/dismiss/revert endpoints**
 
 ```python
 @router.post("/{job_id}/risks/{risk_index}/accept")
@@ -330,7 +330,7 @@ async def revert_risk(
     return _build_job_response(job, [result])
 ```
 
-- [ ] **Step 4: Add POST accept-all endpoint**
+- [x] **Step 4: Add POST accept-all endpoint**
 
 ```python
 import asyncio
@@ -394,7 +394,7 @@ async def accept_all_risks(
     return response
 ```
 
-- [ ] **Step 5: Add helper functions used by new endpoints**
+- [x] **Step 5: Add helper functions used by new endpoints**
 
 Add these two helpers before `_build_job_response`:
 
@@ -429,12 +429,12 @@ async def _get_lang_result(job_id: uuid.UUID, lang: str, db: AsyncSession) -> Tr
 
 Also refactor `get_job` and `delete_job` to use `_get_user_job` instead of inline queries (replace the inline query blocks in those two functions with `job = await _get_user_job(job_id, user, db)`).
 
-- [ ] **Step 6: Verify backend starts**
+- [x] **Step 6: Verify backend starts**
 
 Run: `cd /Users/felixwang/devspace/cc-project/mca-translation/backend && python -c "from app.api.jobs import router; print('OK')"`
 Expected: `OK`
 
-- [ ] **Step 7: Commit**
+- [x] **Step 7: Commit**
 
 ```bash
 git add backend/app/api/jobs.py
@@ -450,7 +450,7 @@ git commit -m "feat: add suggestion generation and risk state operation API endp
 
 The current pipeline returns risk annotations without `offset` or `status` fields. We need to add those so the new endpoints can work with existing data.
 
-- [ ] **Step 1: Add offset calculation and default status to `_risk_annotation`**
+- [x] **Step 1: Add offset calculation and default status to `_risk_annotation`**
 
 In `backend/app/services/translation.py`, modify `_risk_annotation` to compute offsets and set defaults:
 
@@ -484,12 +484,12 @@ async def _risk_annotation(self, source_text: str, translated_text: str, target_
         return []
 ```
 
-- [ ] **Step 2: Verify pipeline still works**
+- [x] **Step 2: Verify pipeline still works**
 
 Run: `cd /Users/felixwang/devspace/cc-project/mca-translation/backend && python -c "from app.services.translation import pipeline; print('OK')"`
 Expected: `OK`
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add backend/app/services/translation.py
@@ -503,7 +503,7 @@ git commit -m "feat: populate offset and status fields in risk annotations"
 **Files:**
 - Modify: `frontend/stores/translation-store.ts`
 
-- [ ] **Step 1: Extend RiskAnnotation type and add store actions**
+- [x] **Step 1: Extend RiskAnnotation type and add store actions**
 
 Replace the `RiskAnnotation` interface and add new actions:
 
@@ -560,12 +560,12 @@ setAnnotations: (lang, annotations) =>
   }),
 ```
 
-- [ ] **Step 2: Verify TypeScript compiles**
+- [x] **Step 2: Verify TypeScript compiles**
 
 Run: `cd /Users/felixwang/devspace/cc-project/mca-translation/frontend && npx tsc --noEmit --pretty 2>&1 | head -30`
 Expected: No errors related to translation-store.ts
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add frontend/stores/translation-store.ts
@@ -579,7 +579,7 @@ git commit -m "feat: extend RiskAnnotation type with status/accepted_suggestion/
 **Files:**
 - Modify: `frontend/lib/api-client.ts`
 
-- [ ] **Step 1: Add `put` method**
+- [x] **Step 1: Add `put` method** (未实现 — 所有风险端点用 POST，无需 put 方法)
 
 Add after the `delete` method in `ApiClient`:
 
@@ -590,7 +590,7 @@ async put(path: string, body: unknown) {
 }
 ```
 
-- [ ] **Step 2: Commit**
+- [x] **Step 2: Commit** (未实现 — 所有风险端点用 POST，无需 put 方法)
 
 ```bash
 git add frontend/lib/api-client.ts
@@ -606,7 +606,7 @@ git commit -m "feat: add put method to ApiClient"
 
 This is the largest frontend task. The `RiskDetailCard` component needs: suggestion loading/display, accept/dismiss/revert buttons, status-aware rendering. The `RiskDetailList` component needs: accept-all button, summary bar updates.
 
-- [ ] **Step 1: Rewrite `risk-detail-list.tsx`**
+- [x] **Step 1: Rewrite `risk-detail-list.tsx`**
 
 Replace the full content of `frontend/components/workspace/risk-detail-list.tsx` with:
 
@@ -1043,12 +1043,12 @@ export function RiskDetailList({ language, jobId }: { language: string; jobId: s
 }
 ```
 
-- [ ] **Step 2: Verify TypeScript compiles**
+- [x] **Step 2: Verify TypeScript compiles**
 
 Run: `cd /Users/felixwang/devspace/cc-project/mca-translation/frontend && npx tsc --noEmit --pretty 2>&1 | head -30`
 Expected: No errors
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add frontend/components/workspace/risk-detail-list.tsx
@@ -1062,7 +1062,7 @@ git commit -m "feat: add suggestion UI, accept/dismiss/revert, and accept-all to
 **Files:**
 - Modify: `frontend/components/workspace/translation-result.tsx`
 
-- [ ] **Step 1: Add accepted/dismissed mark styles and update `locateRisks`**
+- [x] **Step 1: Add accepted/dismissed mark styles and update `locateRisks`**
 
 Add additional styles to `RISK_MARK_STYLES` and modify `locateRisks` to handle accepted/dismissed statuses:
 
@@ -1154,12 +1154,12 @@ Update the `<mark>` element style to use `borderStyle`:
 </mark>
 ```
 
-- [ ] **Step 2: Verify TypeScript compiles**
+- [x] **Step 2: Verify TypeScript compiles**
 
 Run: `cd /Users/felixwang/devspace/cc-project/mca-translation/frontend && npx tsc --noEmit --pretty 2>&1 | head -30`
 Expected: No errors
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add frontend/stores/translation-store.ts frontend/components/workspace/translation-result.tsx
@@ -1175,7 +1175,7 @@ git commit -m "feat: add accepted/dismissed mark styles and update locateRisks f
 
 The `RiskDetailList` now needs a `jobId` prop. We need to pass it from `OutputPanel`.
 
-- [ ] **Step 1: Add jobId state to OutputPanel**
+- [x] **Step 1: Add jobId state to OutputPanel**
 
 The `OutputPanel` needs access to the current job ID. Check if `workspace-store` already stores it; if not, add it. Looking at the current code, `useWorkspaceStore` has `languages` but likely no `jobId`.
 
@@ -1205,12 +1205,12 @@ setJobId: (id: string | null) => void;
 
 And ensure the job creation flow (in `InputPanel` or wherever `POST /api/jobs` is called) stores the returned job ID into `workspace-store.setJobId(...)`.
 
-- [ ] **Step 2: Verify TypeScript compiles**
+- [x] **Step 2: Verify TypeScript compiles**
 
 Run: `cd /Users/felixwang/devspace/cc-project/mca-translation/frontend && npx tsc --noEmit --pretty 2>&1 | head -30`
 Expected: No errors
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add frontend/stores/workspace-store.ts frontend/components/workspace/output-panel.tsx
@@ -1223,44 +1223,44 @@ git commit -m "feat: wire jobId into OutputPanel and RiskDetailList for API call
 
 **Files:** None (manual testing)
 
-- [ ] **Step 1: Start backend and Celery**
+- [x] **Step 1: Start backend and Celery**
 
 Run backend: `cd /Users/felixwang/devspace/cc-project/mca-translation/backend && source .venv/bin/activate && uvicorn app.main:app --reload --port 8000`
 
 Run Celery: `cd /Users/felixwang/devspace/cc-project/mca-translation/backend && source .venv/bin/activate && celery -A app.celery_app worker --loglevel=info --pool=solo`
 
-- [ ] **Step 2: Start frontend**
+- [x] **Step 2: Start frontend**
 
 Run: `cd /Users/felixwang/devspace/cc-project/mca-translation/frontend && npm run dev`
 
-- [ ] **Step 3: Submit a translation job and verify risk annotations appear**
+- [x] **Step 3: Submit a translation job and verify risk annotations appear**
 
 Navigate to `http://localhost:3000/workspace`, submit a translation with risk-prone text, wait for completion.
 
-- [ ] **Step 4: Test "查看替代方案" button**
+- [x] **Step 4: Test "查看替代方案" button**
 
 Click "查看替代方案" on a risk card → verify suggestions appear with text, reason, and "采纳" button.
 
-- [ ] **Step 5: Test "采纳" action**
+- [x] **Step 5: Test "采纳" action**
 
 Click "采纳" on a suggestion → verify:
 - Translation text updates with the suggestion
 - Risk card shows "已采纳：xxx → yyy" with "回退" button
 - Inline mark turns green
 
-- [ ] **Step 6: Test "回退" action**
+- [x] **Step 6: Test "回退" action**
 
 Click "回退" → verify original text is restored, risk returns to "open" state.
 
-- [ ] **Step 7: Test "忽略" action**
+- [x] **Step 7: Test "忽略" action**
 
 Click the X button on a risk card → verify it collapses to one-line gray text. Click to expand → verify "撤销忽略" button.
 
-- [ ] **Step 8: Test "一键采纳全部" button**
+- [x] **Step 8: Test "一键采纳全部" button**
 
 Submit a job with ≥2 risks → verify "一键采纳全部建议" button appears → click → verify all risks transition to "accepted" one by one.
 
-- [ ] **Step 9: Commit any fixes**
+- [x] **Step 9: Commit any fixes**
 
 If any fixes were needed during smoke test, commit them:
 ```bash

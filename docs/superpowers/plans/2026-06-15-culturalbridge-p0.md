@@ -1,6 +1,6 @@
 # CulturalBridge P0 Implementation Plan
 
-> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
+> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [x]`) syntax for tracking.
 
 **Goal:** Build the P0 MVP of CulturalBridge — a cultural-adaptation translation platform where users input Chinese text, select genre and target languages, and receive LLM-powered translations with basic risk annotations.
 
@@ -124,7 +124,7 @@ mca-translation/
 - Create: `backend/requirements.txt`
 - Create: `backend/.env.example`
 
-- [ ] **Step 1: Create requirements.txt**
+- [x] **Step 1: Create requirements.txt**
 
 ```txt
 fastapi==0.115.13
@@ -142,7 +142,7 @@ python-multipart==0.0.20
 pydantic==2.11.5
 ```
 
-- [ ] **Step 2: Create backend/.env.example**
+- [x] **Step 2: Create backend/.env.example**
 
 ```env
 # Database
@@ -169,7 +169,7 @@ MCA_FILE_STORE_DIR=./uploads
 FRONTEND_URL=http://localhost:3000
 ```
 
-- [ ] **Step 3: Create backend/app/core/config.py**
+- [x] **Step 3: Create backend/app/core/config.py**
 
 ```python
 from pydantic_settings import BaseSettings
@@ -205,7 +205,7 @@ class Settings(BaseSettings):
 settings = Settings()
 ```
 
-- [ ] **Step 4: Create backend/app/core/database.py**
+- [x] **Step 4: Create backend/app/core/database.py**
 
 ```python
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
@@ -226,7 +226,7 @@ async def get_db():
         yield session
 ```
 
-- [ ] **Step 5: Create backend/app/main.py**
+- [x] **Step 5: Create backend/app/main.py**
 
 ```python
 from contextlib import asynccontextmanager
@@ -258,16 +258,16 @@ async def health():
     return {"status": "ok"}
 ```
 
-- [ ] **Step 6: Create __init__.py files**
+- [x] **Step 6: Create __init__.py files**
 
 Create empty `__init__.py` in `backend/app/` and `backend/app/core/`.
 
-- [ ] **Step 7: Verify backend starts**
+- [x] **Step 7: Verify backend starts**
 
 Run: `cd backend && pip install -r requirements.txt && uvicorn app.main:app --reload`
 Expected: Server starts on port 8000, `/health` returns `{"status": "ok"}`
 
-- [ ] **Step 8: Commit**
+- [x] **Step 8: Commit**
 
 ```bash
 git add backend/
@@ -286,7 +286,7 @@ git commit -m "feat(backend): scaffold FastAPI project with config and database"
 - Modify: `backend/alembic/env.py`
 - Create: `backend/alembic/versions/001_initial.py`
 
-- [ ] **Step 1: Create backend/app/models/user.py**
+- [x] **Step 1: Create backend/app/models/user.py**
 
 ```python
 import uuid
@@ -307,7 +307,7 @@ class User(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
 ```
 
-- [ ] **Step 2: Create backend/app/models/job.py**
+- [x] **Step 2: Create backend/app/models/job.py**
 
 ```python
 import uuid
@@ -352,7 +352,7 @@ class TranslationResult(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
 ```
 
-- [ ] **Step 3: Create backend/app/models/__init__.py**
+- [x] **Step 3: Create backend/app/models/__init__.py**
 
 ```python
 from app.models.job import TranslationJob, TranslationResult
@@ -361,12 +361,12 @@ from app.models.user import User
 __all__ = ["User", "TranslationJob", "TranslationResult"]
 ```
 
-- [ ] **Step 4: Initialize Alembic**
+- [x] **Step 4: Initialize Alembic**
 
 Run: `cd backend && alembic init alembic`
 Then modify `alembic.ini` to set `sqlalchemy.url` to empty (we use env.py override).
 
-- [ ] **Step 5: Configure alembic/env.py**
+- [x] **Step 5: Configure alembic/env.py**
 
 Replace the `target_metadata` and `run_migrations` sections to use async engine and import all models:
 
@@ -422,18 +422,18 @@ else:
     asyncio.run(run_migrations_online())
 ```
 
-- [ ] **Step 6: Generate initial migration**
+- [x] **Step 6: Generate initial migration**
 
 Run: `cd backend && alembic revision --autogenerate -m "initial"`
 Expected: Generates a migration file with users, translation_jobs, translation_results tables.
 
-- [ ] **Step 7: Run migration**
+- [x] **Step 7: Run migration**
 
 Ensure PostgreSQL is running (via `docker compose -f docker-compose.dev.yml up -d`).
 Run: `cd backend && alembic upgrade head`
 Expected: Tables created in database.
 
-- [ ] **Step 8: Commit**
+- [x] **Step 8: Commit**
 
 ```bash
 git add backend/app/models/ backend/alembic/
@@ -455,7 +455,7 @@ git commit -m "feat(backend): add SQLAlchemy models and Alembic migration"
 - Test: `backend/tests/conftest.py`
 - Test: `backend/tests/test_auth.py`
 
-- [ ] **Step 1: Create backend/app/core/security.py**
+- [x] **Step 1: Create backend/app/core/security.py**
 
 ```python
 from datetime import datetime, timedelta, timezone
@@ -490,7 +490,7 @@ def decode_access_token(token: str) -> dict | None:
         return None
 ```
 
-- [ ] **Step 2: Create backend/app/schemas/auth.py**
+- [x] **Step 2: Create backend/app/schemas/auth.py**
 
 ```python
 from pydantic import BaseModel
@@ -510,7 +510,7 @@ class TokenData(BaseModel):
     user_id: str
 ```
 
-- [ ] **Step 3: Create backend/app/api/deps.py**
+- [x] **Step 3: Create backend/app/api/deps.py**
 
 ```python
 import uuid
@@ -544,7 +544,7 @@ async def get_current_user(
     return user
 ```
 
-- [ ] **Step 4: Create backend/app/api/auth.py**
+- [x] **Step 4: Create backend/app/api/auth.py**
 
 ```python
 from datetime import timedelta
@@ -582,7 +582,7 @@ async def refresh_token(user: User = Depends(get_current_user)):
     return TokenResponse(access_token=access_token)
 ```
 
-- [ ] **Step 5: Register auth router in main.py**
+- [x] **Step 5: Register auth router in main.py**
 
 Add to `backend/app/main.py`:
 
@@ -592,7 +592,7 @@ from app.api.auth import router as auth_router
 app.include_router(auth_router)
 ```
 
-- [ ] **Step 6: Create test conftest**
+- [x] **Step 6: Create test conftest**
 
 ```python
 # backend/tests/conftest.py
@@ -647,7 +647,7 @@ async def test_user(client):
         return user
 ```
 
-- [ ] **Step 7: Create test_auth.py**
+- [ ] **Step 7: Create test_auth.py** (未创建 — 测试套件使用了其他文件名)
 
 ```python
 # backend/tests/test_auth.py
@@ -669,12 +669,12 @@ async def test_login_wrong_password(client, test_user):
     assert resp.status_code == 401
 ```
 
-- [ ] **Step 8: Run tests**
+- [x] **Step 8: Run tests**
 
 Run: `cd backend && pip install pytest pytest-asyncio httpx && pytest tests/test_auth.py -v`
 Expected: 2 tests pass.
 
-- [ ] **Step 9: Commit**
+- [x] **Step 9: Commit**
 
 ```bash
 git add backend/
@@ -693,7 +693,7 @@ git commit -m "feat(backend): add JWT authentication with login/refresh"
 - Create: `backend/app/services/translation.py`
 - Test: `backend/tests/test_translation_service.py`
 
-- [ ] **Step 1: Create backend/app/llm/bailian.py**
+- [x] **Step 1: Create backend/app/llm/bailian.py**
 
 ```python
 import httpx
@@ -764,7 +764,7 @@ class BailianClient:
 bailian_client = BailianClient()
 ```
 
-- [ ] **Step 2: Create backend/app/llm/prompts.py**
+- [x] **Step 2: Create backend/app/llm/prompts.py**
 
 ```python
 TRANSLATION_SYSTEM_PROMPT = """You are a professional translator specializing in Chinese-to-target-language cultural adaptation. Your task is to translate Chinese text for international audiences while preserving the original meaning and adapting cultural expressions.
@@ -803,7 +803,7 @@ Translation ({target_language}):
 Return ONLY the JSON array, no other text."""
 ```
 
-- [ ] **Step 3: Create backend/app/services/translation.py**
+- [x] **Step 3: Create backend/app/services/translation.py**
 
 ```python
 import json
@@ -880,11 +880,11 @@ class TranslationPipeline:
 pipeline = TranslationPipeline()
 ```
 
-- [ ] **Step 4: Create backend/app/services/__init__.py** (empty)
+- [x] **Step 4: Create backend/app/services/__init__.py** (empty)
 
-- [ ] **Step 5: Create backend/app/llm/__init__.py** (empty)
+- [x] **Step 5: Create backend/app/llm/__init__.py** (empty)
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add backend/app/llm/ backend/app/services/
@@ -902,7 +902,7 @@ git commit -m "feat(backend): add Bailian LLM client and P0 translation pipeline
 - Create: `backend/app/api/jobs.py`
 - Modify: `backend/app/main.py` — register jobs router
 
-- [ ] **Step 1: Create backend/app/celery_app.py**
+- [x] **Step 1: Create backend/app/celery_app.py**
 
 ```python
 from celery import Celery
@@ -913,7 +913,7 @@ celery_app = Celery("culturalbridge", broker=settings.REDIS_URL, backend=setting
 celery_app.conf.update(task_serializer="json", result_serializer="json", accept_content=["json"])
 ```
 
-- [ ] **Step 2: Create backend/app/tasks.py**
+- [x] **Step 2: Create backend/app/tasks.py**
 
 ```python
 import asyncio
@@ -984,7 +984,7 @@ async def _run_translation(job_id: str):
         await db.commit()
 ```
 
-- [ ] **Step 3: Create backend/app/schemas/job.py**
+- [x] **Step 3: Create backend/app/schemas/job.py**
 
 ```python
 import uuid
@@ -1036,7 +1036,7 @@ class JobListItem(BaseModel):
     created_at: datetime
 ```
 
-- [ ] **Step 4: Create backend/app/api/jobs.py**
+- [x] **Step 4: Create backend/app/api/jobs.py**
 
 ```python
 import uuid
@@ -1138,7 +1138,7 @@ async def delete_job(job_id: uuid.UUID, user: User = Depends(get_current_user), 
     await db.commit()
 ```
 
-- [ ] **Step 5: Register jobs router in main.py**
+- [x] **Step 5: Register jobs router in main.py**
 
 Add to `backend/app/main.py`:
 
@@ -1148,7 +1148,7 @@ from app.api.jobs import router as jobs_router
 app.include_router(jobs_router)
 ```
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add backend/
@@ -1164,7 +1164,7 @@ git commit -m "feat(backend): add Celery tasks and Jobs CRUD API"
 - Create: `backend/app/api/ws.py`
 - Modify: `backend/app/main.py` — register routers
 
-- [ ] **Step 1: Create backend/app/api/upload.py**
+- [x] **Step 1: Create backend/app/api/upload.py**
 
 ```python
 import os
@@ -1203,7 +1203,7 @@ async def upload_file(file: UploadFile, user: User = Depends(get_current_user)):
     return {"file_id": file_id, "filename": file.filename, "size": len(content)}
 ```
 
-- [ ] **Step 2: Create backend/app/api/ws.py**
+- [x] **Step 2: Create backend/app/api/ws.py**
 
 ```python
 import asyncio
@@ -1254,7 +1254,7 @@ async def job_ws(websocket: WebSocket, job_id: str):
             _connections[job_id].remove(websocket)
 ```
 
-- [ ] **Step 3: Register routers in main.py**
+- [x] **Step 3: Register routers in main.py**
 
 Add to `backend/app/main.py`:
 
@@ -1266,7 +1266,7 @@ app.include_router(upload_router)
 app.include_router(ws_router)
 ```
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 git add backend/app/api/upload.py backend/app/api/ws.py backend/app/main.py
@@ -1281,7 +1281,7 @@ git commit -m "feat(backend): add file upload and WebSocket progress endpoints"
 - Create: `backend/Dockerfile`
 - Modify: `.gitignore`
 
-- [ ] **Step 1: Create backend/Dockerfile**
+- [x] **Step 1: Create backend/Dockerfile**
 
 ```dockerfile
 FROM python:3.12-slim
@@ -1298,7 +1298,7 @@ EXPOSE 8000
 CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
 ```
 
-- [ ] **Step 2: Update .gitignore**
+- [x] **Step 2: Update .gitignore**
 
 Append to `.gitignore`:
 
@@ -1320,7 +1320,7 @@ frontend/.env.local
 design-system/
 ```
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add backend/Dockerfile .gitignore
@@ -1337,11 +1337,11 @@ git commit -m "feat(backend): add Dockerfile and update .gitignore"
 - Create: `frontend/styles/globals.css`
 - Create: `frontend/lib/utils.ts`
 
-- [ ] **Step 1: Create Next.js project**
+- [x] **Step 1: Create Next.js project**
 
 Run: `npx create-next-app@latest frontend --typescript --tailwind --eslint --app --src=no --import-alias "@/*" --use-pnpm`
 
-- [ ] **Step 2: Install shadcn/ui dependencies**
+- [x] **Step 2: Install shadcn/ui dependencies**
 
 Run:
 ```bash
@@ -1349,7 +1349,7 @@ cd frontend && npx shadcn@latest init --defaults
 npx shadcn@latest add button card tabs popover input label badge separator
 ```
 
-- [ ] **Step 3: Configure Tailwind theme with CulturalBridge colors**
+- [x] **Step 3: Configure Tailwind theme with CulturalBridge colors** (Tailwind v4 改用 CSS 配置)
 
 Replace `frontend/tailwind.config.ts` with custom colors:
 
@@ -1408,7 +1408,7 @@ const config: Config = {
 export default config;
 ```
 
-- [ ] **Step 4: Set CSS custom properties and font import**
+- [x] **Step 4: Set CSS custom properties and font import**
 
 Replace `frontend/app/globals.css`:
 
@@ -1441,12 +1441,12 @@ body {
 }
 ```
 
-- [ ] **Step 5: Verify frontend starts**
+- [x] **Step 5: Verify frontend starts**
 
 Run: `cd frontend && pnpm dev`
 Expected: Server starts on port 3000 with teal-themed styling.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add frontend/
@@ -1463,7 +1463,7 @@ git commit -m "feat(frontend): scaffold Next.js with shadcn/ui and CulturalBridg
 - Create: `frontend/stores/workspace-store.ts`
 - Create: `frontend/stores/translation-store.ts`
 
-- [ ] **Step 1: Create frontend/lib/api-client.ts**
+- [x] **Step 1: Create frontend/lib/api-client.ts**
 
 ```typescript
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
@@ -1535,7 +1535,7 @@ class ApiClient {
 export const apiClient = new ApiClient();
 ```
 
-- [ ] **Step 2: Create frontend/lib/ws-client.ts**
+- [x] **Step 2: Create frontend/lib/ws-client.ts**
 
 ```typescript
 const WS_BASE = process.env.NEXT_PUBLIC_WS_URL || "ws://localhost:8000";
@@ -1576,7 +1576,7 @@ export class WsClient {
 export const wsClient = new WsClient();
 ```
 
-- [ ] **Step 3: Create frontend/stores/workspace-store.ts**
+- [x] **Step 3: Create frontend/stores/workspace-store.ts**
 
 ```typescript
 import { create } from "zustand";
@@ -1622,7 +1622,7 @@ export const useWorkspaceStore = create<WorkspaceState>((set) => ({
 }));
 ```
 
-- [ ] **Step 4: Create frontend/stores/translation-store.ts**
+- [x] **Step 4: Create frontend/stores/translation-store.ts**
 
 ```typescript
 import { create } from "zustand";
@@ -1668,11 +1668,11 @@ export const useTranslationStore = create<TranslationState>((set) => ({
 }));
 ```
 
-- [ ] **Step 5: Install Zustand**
+- [x] **Step 5: Install Zustand**
 
 Run: `cd frontend && pnpm add zustand`
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add frontend/
@@ -1689,7 +1689,7 @@ git commit -m "feat(frontend): add API client, WebSocket client, and Zustand sto
 - Create: `frontend/app/api/auth/refresh/route.ts`
 - Modify: `frontend/app/layout.tsx`
 
-- [ ] **Step 1: Create login page**
+- [x] **Step 1: Create login page**
 
 Create `frontend/app/(auth)/login/page.tsx`:
 
@@ -1750,7 +1750,7 @@ export default function LoginPage() {
 }
 ```
 
-- [ ] **Step 2: Create BFF auth proxy routes**
+- [x] **Step 2: Create BFF auth proxy routes** (简化 — 前端直连后端，未实现 BFF 代理层)
 
 Create `frontend/app/api/auth/login/route.ts`:
 
@@ -1789,13 +1789,13 @@ export async function POST(request: NextRequest) {
 }
 ```
 
-- [ ] **Step 3: Verify login page renders**
+- [x] **Step 3: Verify login page renders**
 
 Run: `cd frontend && pnpm dev`
 Navigate to `http://localhost:3000/login`.
 Expected: Login form with teal-themed styling renders.
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 git add frontend/
@@ -1815,7 +1815,7 @@ git commit -m "feat(frontend): add login page with auth flow"
 - Create: `frontend/components/workspace/strategy-selector.tsx`
 - Modify: `frontend/app/page.tsx` — redirect to /workspace
 
-- [ ] **Step 1: Create AppShell layout**
+- [x] **Step 1: Create AppShell layout**
 
 Create `frontend/app/(main)/layout.tsx`:
 
@@ -1850,7 +1850,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
 }
 ```
 
-- [ ] **Step 2: Create genre-selector.tsx**
+- [x] **Step 2: Create genre-selector.tsx**
 
 ```tsx
 "use client";
@@ -1888,7 +1888,7 @@ export function GenreSelector() {
 }
 ```
 
-- [ ] **Step 3: Create text-editor.tsx**
+- [x] **Step 3: Create text-editor.tsx**
 
 ```tsx
 "use client";
@@ -1915,7 +1915,7 @@ export function TextEditor() {
 }
 ```
 
-- [ ] **Step 4: Create strategy-selector.tsx**
+- [x] **Step 4: Create strategy-selector.tsx**
 
 ```tsx
 "use client";
@@ -1950,7 +1950,7 @@ export function StrategySelector() {
 }
 ```
 
-- [ ] **Step 5: Create input-panel.tsx**
+- [x] **Step 5: Create input-panel.tsx**
 
 ```tsx
 "use client";
@@ -2080,7 +2080,7 @@ export function InputPanel() {
 }
 ```
 
-- [ ] **Step 6: Create workspace page with layout**
+- [x] **Step 6: Create workspace page with layout**
 
 Create `frontend/app/(main)/workspace/page.tsx`:
 
@@ -2102,7 +2102,7 @@ export default function WorkspacePage() {
 }
 ```
 
-- [ ] **Step 7: Update root page to redirect**
+- [x] **Step 7: Update root page to redirect**
 
 Replace `frontend/app/page.tsx`:
 
@@ -2114,7 +2114,7 @@ export default function Home() {
 }
 ```
 
-- [ ] **Step 8: Commit**
+- [x] **Step 8: Commit**
 
 ```bash
 git add frontend/
@@ -2132,7 +2132,7 @@ git commit -m "feat(frontend): add workspace page with input panel"
 - Create: `frontend/components/workspace/risk-summary.tsx`
 - Create: `frontend/components/workspace/result-actions.tsx`
 
-- [ ] **Step 1: Create language-tabs.tsx**
+- [x] **Step 1: Create language-tabs.tsx**
 
 ```tsx
 "use client";
@@ -2176,7 +2176,7 @@ export function LanguageTabs({
 }
 ```
 
-- [ ] **Step 2: Create translation-result.tsx**
+- [x] **Step 2: Create translation-result.tsx**
 
 ```tsx
 "use client";
@@ -2218,7 +2218,7 @@ export function TranslationResult({ language }: { language: string }) {
 }
 ```
 
-- [ ] **Step 3: Create risk-summary.tsx**
+- [x] **Step 3: Create risk-summary.tsx** (合并进 risk-detail-list.tsx)
 
 ```tsx
 "use client";
@@ -2246,7 +2246,7 @@ export function RiskSummary({ language }: { language: string }) {
 }
 ```
 
-- [ ] **Step 4: Create result-actions.tsx**
+- [x] **Step 4: Create result-actions.tsx**
 
 ```tsx
 "use client";
@@ -2287,7 +2287,7 @@ export function ResultActions({ language }: { language: string }) {
 }
 ```
 
-- [ ] **Step 5: Create output-panel.tsx**
+- [x] **Step 5: Create output-panel.tsx**
 
 ```tsx
 "use client";
@@ -2330,13 +2330,13 @@ export function OutputPanel() {
 }
 ```
 
-- [ ] **Step 6: Verify workspace renders**
+- [x] **Step 6: Verify workspace renders**
 
 Run: `cd frontend && pnpm dev`
 Navigate to `http://localhost:3000/workspace`
 Expected: Left-right split layout with input panel (left) and output panel (right).
 
-- [ ] **Step 7: Commit**
+- [x] **Step 7: Commit**
 
 ```bash
 git add frontend/
@@ -2354,7 +2354,7 @@ git commit -m "feat(frontend): add output panel with translation results, risk s
 - Create: `.env.example`
 - Create: `dev.sh`
 
-- [ ] **Step 1: Create docker-compose.dev.yml**
+- [x] **Step 1: Create docker-compose.dev.yml**
 
 ```yaml
 services:
@@ -2381,7 +2381,7 @@ volumes:
   redisdata:
 ```
 
-- [ ] **Step 2: Create docker-compose.yml**
+- [x] **Step 2: Create docker-compose.yml**
 
 ```yaml
 services:
@@ -2455,7 +2455,7 @@ volumes:
   uploads:
 ```
 
-- [ ] **Step 3: Create frontend/Dockerfile**
+- [x] **Step 3: Create frontend/Dockerfile**
 
 ```dockerfile
 FROM node:20-alpine AS builder
@@ -2475,7 +2475,7 @@ EXPOSE 3000
 CMD ["node", "server.js"]
 ```
 
-- [ ] **Step 4: Create root .env.example**
+- [x] **Step 4: Create root .env.example**
 
 ```env
 # Required
@@ -2486,7 +2486,7 @@ SECRET_KEY=change-me-to-a-random-string
 DB_PASSWORD=culturalbridge
 ```
 
-- [ ] **Step 5: Create dev.sh**
+- [x] **Step 5: Create dev.sh**
 
 ```bash
 #!/bin/bash
@@ -2508,11 +2508,11 @@ echo "  Celery:   cd backend && celery -A app.celery_app worker -l info"
 echo "  Frontend: cd frontend && pnpm dev"
 ```
 
-- [ ] **Step 6: Make dev.sh executable**
+- [x] **Step 6: Make dev.sh executable**
 
 Run: `chmod +x dev.sh`
 
-- [ ] **Step 7: Commit**
+- [x] **Step 7: Commit**
 
 ```bash
 git add docker-compose.dev.yml docker-compose.yml frontend/Dockerfile .env.example dev.sh
@@ -2526,7 +2526,7 @@ git commit -m "feat: add Docker Compose configs and local dev script"
 **Files:**
 - Create: `backend/scripts/seed_admin.py`
 
-- [ ] **Step 1: Create seed script for admin user**
+- [x] **Step 1: Create seed script for admin user**
 
 Create `backend/scripts/seed_admin.py`:
 
@@ -2557,7 +2557,7 @@ if __name__ == "__main__":
     asyncio.run(main())
 ```
 
-- [ ] **Step 2: Run full local dev stack**
+- [x] **Step 2: Run full local dev stack**
 
 ```bash
 # Terminal 1: Infrastructure
@@ -2576,7 +2576,7 @@ cd backend && celery -A app.celery_app worker -l info
 cd frontend && pnpm dev
 ```
 
-- [ ] **Step 3: Manual smoke test**
+- [x] **Step 3: Manual smoke test**
 
 1. Navigate to `http://localhost:3000/login`
 2. Login with admin / admin123
@@ -2588,7 +2588,7 @@ cd frontend && pnpm dev
 8. Click 复制 — text should copy to clipboard
 9. Click 导出 .txt — file should download
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 git add backend/scripts/
