@@ -1,7 +1,7 @@
 import asyncio
 import uuid
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy import select
 from sqlalchemy.orm.attributes import flag_modified
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -58,15 +58,18 @@ async def create_job(
 
 @router.get("", response_model=list[JobListItem])
 async def list_jobs(
+    genre: str | None = Query(None),
+    status: str | None = Query(None),
     user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
 ):
-    result = await db.execute(
-        select(TranslationJob)
-        .where(TranslationJob.user_id == user.id)
-        .order_by(TranslationJob.created_at.desc())
-        .limit(50)
-    )
+    query = select(TranslationJob).where(TranslationJob.user_id == user.id)
+    if genre:
+        query = query.where(TranslationJob.genre == genre)
+    if status:
+        query = query.where(TranslationJob.status == status)
+    query = query.order_by(TranslationJob.created_at.desc()).limit(50)
+    result = await db.execute(query)
     jobs = result.scalars().all()
     return [
         JobListItem(
@@ -74,6 +77,7 @@ async def list_jobs(
             status=j.status,
             genre=j.genre,
             target_languages=j.target_languages,
+            source_text=j.source_text[:200] if j.source_text else None,
             created_at=j.created_at,
         )
         for j in jobs
