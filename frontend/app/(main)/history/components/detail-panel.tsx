@@ -95,7 +95,7 @@ export function DetailPanel({ job, onLoadToWorkspace, onDelete, isDeleting }: De
         </Button>
 
         <AlertDialog>
-          <AlertDialogTrigger className="inline-flex shrink-0 items-center justify-center rounded-lg border border-border bg-background bg-clip-padding px-2.5 text-xs font-medium whitespace-nowrap text-destructive hover:bg-muted hover:text-destructive transition-all duration-200 outline-none select-none h-7 gap-1 cursor-pointer">
+          <AlertDialogTrigger render={<Button variant="outline" size="sm" className="text-destructive hover:text-destructive" />}>
             🗑️ 删除
           </AlertDialogTrigger>
           <AlertDialogContent>

@@ -55,6 +55,8 @@ export default function HistoryPage() {
       setFilters(newFilters);
       setSelectedId(null);
       setSelectedJob(null);
+      setDetailError(null);
+      selectedJobRef.current = null;
       fetchJobs(newFilters);
     },
     [fetchJobs],
