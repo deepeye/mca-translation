@@ -10,11 +10,13 @@ function AlertDialog({ ...props }: AlertDialogPrimitive.Root.Props) {
 }
 
 function AlertDialogTrigger({
+  className,
   ...props
 }: AlertDialogPrimitive.Trigger.Props) {
   return (
     <AlertDialogPrimitive.Trigger
       data-slot="alert-dialog-trigger"
+      className={cn("cursor-pointer", className)}
       {...props}
     />
   )
