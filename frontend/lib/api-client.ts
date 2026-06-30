@@ -1,5 +1,14 @@
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
+export interface JobListItem {
+  id: string;
+  status: string;
+  genre: string;
+  target_languages: string[];
+  source_text: string | null;
+  created_at: string;
+}
+
 class ApiClient {
   private token: string | null = null;
 
@@ -194,6 +203,14 @@ class ApiClient {
       throw new Error(body.detail || `Export error: ${res.status}`);
     }
     return res.blob();
+  }
+
+  async listJobs(params?: { genre?: string; status?: string }): Promise<JobListItem[]> {
+    const searchParams = new URLSearchParams();
+    if (params?.genre) searchParams.set("genre", params.genre);
+    if (params?.status) searchParams.set("status", params.status);
+    const qs = searchParams.toString();
+    return this.get(`/api/jobs${qs ? `?${qs}` : ""}`);
   }
 
   async get(path: string) {
