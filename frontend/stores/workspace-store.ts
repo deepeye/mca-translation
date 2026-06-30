@@ -50,6 +50,15 @@ interface WorkspaceState {
   setLanguages: (languages: string[]) => void;
   setIsTranslating: (v: boolean) => void;
   setCurrentJobId: (id: string | null) => void;
+  loadFromHistory: (job: {
+    id: string;
+    source_text: string;
+    genre: string;
+    strategy: string;
+    cultural_sphere?: string | null;
+    audience_type?: string | null;
+    target_languages: string[];
+  }) => void;
   setUploadState: (state: Partial<UploadState>) => void;
   clearUpload: () => void;
   reset: () => void;
@@ -88,6 +97,19 @@ export const useWorkspaceStore = create<WorkspaceState>((set) => ({
   setLanguages: (languages) => set({ languages }),
   setIsTranslating: (isTranslating) => set({ isTranslating }),
   setCurrentJobId: (currentJobId) => set({ currentJobId }),
+  loadFromHistory: (job) =>
+    set({
+      input: {
+        text: job.source_text,
+        genre: job.genre as Genre,
+        strategy: job.strategy as Strategy,
+        culturalSphere: (job.cultural_sphere || "western_english") as CulturalSphere,
+        audienceType: (job.audience_type || "general_public") as AudienceType,
+      },
+      languages: job.target_languages,
+      currentJobId: job.id,
+      isTranslating: false,
+    }),
   setUploadState: (state) => set((s) => ({ upload: { ...s.upload, ...state } })),
   clearUpload: () => set({ upload: initialUploadState }),
   reset: () => set({ ...initialState, upload: initialUploadState }),
