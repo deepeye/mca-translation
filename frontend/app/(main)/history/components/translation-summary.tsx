@@ -1,13 +1,15 @@
 "use client";
 
 import { useState } from "react";
+import type { CulturalAdaptation, RiskAnnotation } from "@/stores/translation-store";
 
 export interface TranslationResultData {
   language: string;
   status: string;
   translated_text: string | null;
-  risk_annotations: Array<unknown> | null;
+  risk_annotations: RiskAnnotation[] | null;
   acceptance_score: number;
+  cultural_adaptation: CulturalAdaptation | null;
 }
 
 interface TranslationSummaryProps {
