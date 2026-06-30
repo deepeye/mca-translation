@@ -106,6 +106,11 @@ Input → 文体选择 → 文化圈选择 → 受众类型 → LLM 预处理
 - 内联标注 + 问题卡片 (IssueCard) + 可导出 Markdown 报告
 详情: `backend/app/services/review.py` + `frontend/app/review/`
 
+### 导出功能
+- .txt 导出：纯文本，前端生成
+- .docx 导出：原文 + 译文双段，风险标注为 Word 批注（comment），后端生成
+详情: `backend/app/services/export_docx.py` + `backend/app/api/export.py`
+
 ### 术语管理 (RAG 知识库)
 - Phase 1: 硬编码政治术语词典（15 组高优先级词汇）
 - Phase 2: 双路检索（关键词 + pgvector 向量语义）
