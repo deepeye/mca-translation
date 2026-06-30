@@ -113,6 +113,41 @@ class ApiClient {
     return this.delete(`/api/glossary/user-entries/${id}`);
   }
 
+  async uploadFile(file: File): Promise<{
+    file_id: string;
+    filename: string;
+    size: number;
+    text_content: string;
+  }> {
+    const formData = new FormData();
+    formData.append("file", file);
+
+    const headers: Record<string, string> = {};
+    const token = this.getToken();
+    if (token) {
+      headers["Authorization"] = `Bearer ${token}`;
+    }
+    // Do NOT set Content-Type: fetch auto-sets with boundary for FormData
+
+    const res = await fetch(`${API_BASE}/api/upload`, {
+      method: "POST",
+      headers,
+      body: formData,
+    });
+    if (res.status === 401) {
+      this.clearToken();
+      if (typeof window !== "undefined") {
+        window.location.href = "/login";
+      }
+      throw new Error("Unauthorized");
+    }
+    if (!res.ok) {
+      const body = await res.json().catch(() => ({}));
+      throw new Error(body.detail || `Upload error: ${res.status}`);
+    }
+    return res.json();
+  }
+
   async get(path: string) {
     const res = await this.request(path, { method: "GET" });
     return res.json();

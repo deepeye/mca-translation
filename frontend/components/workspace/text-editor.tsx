@@ -12,7 +12,7 @@ export function TextEditor() {
       <textarea
         value={text}
         onChange={(e) => setText(e.target.value)}
-        placeholder={"将中文文本粘贴至此，或上传文件\n支持 .txt .docx .pdf（< 10MB）"}
+        placeholder={"将中文文本粘贴至此\n支持 .txt .docx .pdf（< 10MB）"}
         className="h-full w-full resize-none rounded-md border border-border bg-white p-3 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
       />
       <TermHighlighter text={text} containerClassName="px-1" />

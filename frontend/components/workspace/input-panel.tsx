@@ -5,6 +5,7 @@ import { CultureSphereSelector } from "./culture-sphere-selector";
 import { AudienceTypeSelector } from "./audience-type-selector";
 import { TextEditor } from "./text-editor";
 import { StrategySelector } from "./strategy-selector";
+import { FileUploadZone } from "./file-upload-zone";
 import { useWorkspaceStore } from "@/stores/workspace-store";
 import { useTranslationStore } from "@/stores/translation-store";
 import { apiClient } from "@/lib/api-client";
@@ -106,6 +107,7 @@ export function InputPanel() {
       <GenreSelector />
       <CultureSphereSelector />
       <AudienceTypeSelector />
+      <FileUploadZone />
       <TextEditor />
       <StrategySelector />
       <div className="flex flex-wrap gap-1.5">
@@ -121,7 +123,7 @@ export function InputPanel() {
           </button>
         ))}
       </div>
-      <Button onClick={handleTranslate} disabled={!store.input.text.trim() || store.isTranslating} className="bg-teal hover:bg-teal-light text-white">
+      <Button onClick={handleTranslate} disabled={!store.input.text.trim() || store.isTranslating || store.upload.isUploading} className="bg-teal hover:bg-teal-light text-white">
         {store.isTranslating ? "转译中..." : "开始转译"}
       </Button>
     </div>

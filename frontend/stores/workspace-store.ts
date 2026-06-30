@@ -19,6 +19,15 @@ export type AudienceType =
   | "business"
   | "diaspora_chinese";
 
+export type UploadState = {
+  file: File | null;
+  fileId: string | null;
+  fileName: string | null;
+  fileSize: number | null;
+  isUploading: boolean;
+  uploadError: string | null;
+};
+
 interface WorkspaceInput {
   text: string;
   genre: Genre;
@@ -32,6 +41,7 @@ interface WorkspaceState {
   languages: string[];
   isTranslating: boolean;
   currentJobId: string | null;
+  upload: UploadState;
   setText: (text: string) => void;
   setGenre: (genre: Genre) => void;
   setStrategy: (strategy: Strategy) => void;
@@ -40,8 +50,19 @@ interface WorkspaceState {
   setLanguages: (languages: string[]) => void;
   setIsTranslating: (v: boolean) => void;
   setCurrentJobId: (id: string | null) => void;
+  setUploadState: (state: Partial<UploadState>) => void;
+  clearUpload: () => void;
   reset: () => void;
 }
+
+const initialUploadState: UploadState = {
+  file: null,
+  fileId: null,
+  fileName: null,
+  fileSize: null,
+  isUploading: false,
+  uploadError: null,
+};
 
 const initialState = {
   input: {
@@ -54,6 +75,7 @@ const initialState = {
   languages: ["en-GB"],
   isTranslating: false,
   currentJobId: null as string | null,
+  upload: initialUploadState,
 };
 
 export const useWorkspaceStore = create<WorkspaceState>((set) => ({
@@ -62,9 +84,11 @@ export const useWorkspaceStore = create<WorkspaceState>((set) => ({
   setGenre: (genre) => set((s) => ({ input: { ...s.input, genre } })),
   setStrategy: (strategy) => set((s) => ({ input: { ...s.input, strategy } })),
   setCulturalSphere: (culturalSphere) => set((s) => ({ input: { ...s.input, culturalSphere } })),
-  setAudienceType: (audienceType) => set((s) => ({ input: { ...s.input, audienceType } })),
+  setAudienceType: (audience) => set((s) => ({ input: { ...s.input, audienceType: audience } })),
   setLanguages: (languages) => set({ languages }),
   setIsTranslating: (isTranslating) => set({ isTranslating }),
   setCurrentJobId: (currentJobId) => set({ currentJobId }),
-  reset: () => set(initialState),
+  setUploadState: (state) => set((s) => ({ upload: { ...s.upload, ...state } })),
+  clearUpload: () => set({ upload: initialUploadState }),
+  reset: () => set({ ...initialState, upload: initialUploadState }),
 }));
