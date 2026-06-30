@@ -57,6 +57,14 @@ interface TranslationState {
   dismissRisk: (lang: string, riskIndex: number, annotations: RiskAnnotation[]) => void;
   revertRisk: (lang: string, riskIndex: number, translatedText: string, annotations: RiskAnnotation[]) => void;
   setAnnotations: (lang: string, annotations: RiskAnnotation[]) => void;
+  loadFromHistory: (results: Array<{
+    language: string;
+    status: string;
+    translated_text: string | null;
+    risk_annotations: RiskAnnotation[] | null;
+    acceptance_score: number;
+    cultural_adaptation: CulturalAdaptation | null;
+  }>) => void;
 }
 
 export const useTranslationStore = create<TranslationState>((set) => ({
@@ -96,5 +104,20 @@ export const useTranslationStore = create<TranslationState>((set) => ({
       const defaults: LangResult = { status: "idle", translatedText: "", riskAnnotations: [], acceptanceScore: -1, highlightedIndex: null, culturalAdaptation: null };
       const existing = s.results[lang] || defaults;
       return { results: { ...s.results, [lang]: { ...existing, riskAnnotations: annotations } } };
+    }),
+  loadFromHistory: (results) =>
+    set((s) => {
+      const newResults: Record<string, LangResult> = {};
+      for (const r of results) {
+        newResults[r.language] = {
+          status: r.status as ResultStatus,
+          translatedText: r.translated_text || "",
+          riskAnnotations: r.risk_annotations || [],
+          acceptanceScore: r.acceptance_score,
+          highlightedIndex: null,
+          culturalAdaptation: r.cultural_adaptation,
+        };
+      }
+      return { results: { ...s.results, ...newResults } };
     }),
 }));
