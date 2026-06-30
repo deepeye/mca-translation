@@ -55,6 +55,7 @@ class JobListItem(BaseModel):
     status: str
     genre: str
     target_languages: list[str]
+    source_text: str | None = None       # 新增：列表页原文摘要
     created_at: datetime
 
 
