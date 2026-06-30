@@ -1,4 +1,4 @@
-"""Test GET /api/jobs — list, filter, and source_text."""
+"""Test JobListItem schema with source_text truncation."""
 import uuid
 
 import pytest
@@ -57,3 +57,42 @@ async def test_list_jobs_returns_source_text(db: AsyncSession):
     assert item.source_text is not None
     assert len(item.source_text) <= 200
     assert "中文测试文章" in item.source_text
+
+
+@pytest.mark.asyncio
+async def test_job_list_item_none_source_text(db: AsyncSession):
+    """JobListItem should handle source_text=None without crashing."""
+    # Create a user first (FK constraint)
+    user = User(
+        id=uuid.uuid4(),
+        username=f"none_source_user_{uuid.uuid4().hex[:8]}",
+        hashed_password="fakehash",
+    )
+    db.add(user)
+    await db.commit()
+
+    # Create a job with a valid source_text (column is NOT NULL)
+    job = TranslationJob(
+        user_id=user.id,
+        source_text="Some valid source text.",
+        genre="political",
+        strategy="semantic_equivalence",
+        target_languages=["en-GB"],
+        status="completed",
+    )
+    db.add(job)
+    await db.commit()
+    await db.refresh(job)
+
+    # Construct JobListItem with source_text=None explicitly —
+    # this tests the schema's tolerance for None input (which can
+    # arise from legacy data or partial deserialization).
+    item = JobListItem(
+        id=job.id,
+        status=job.status,
+        genre=job.genre,
+        target_languages=job.target_languages,
+        source_text=None,
+        created_at=job.created_at,
+    )
+    assert item.source_text is None
