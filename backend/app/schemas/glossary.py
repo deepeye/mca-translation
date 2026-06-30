@@ -55,6 +55,14 @@ class UserGlossaryEntryCreate(BaseModel):
     applicable_genres: list[str] = Field(default_factory=list)
 
 
+class UserGlossaryEntryUpdate(BaseModel):
+    source_term: Optional[str] = None
+    term_type: Optional[UserGlossaryTermType] = None
+    translations: Optional[dict[str, TranslationEntry]] = None
+    risk_notes: Optional[str] = None
+    applicable_genres: Optional[list[str]] = None
+
+
 class UserGlossaryEntryResponse(BaseModel):
     id: uuid.UUID
     user_id: uuid.UUID

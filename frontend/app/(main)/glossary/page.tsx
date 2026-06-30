@@ -19,6 +19,13 @@ interface GlossaryEntry {
   applicable_genres: string[];
 }
 
+interface EditingEntry {
+  id: string;
+  source_term: string;
+  translation: string;
+  risk_notes: string;
+}
+
 const USER_PAGE_SIZE = 10;
 
 export default function GlossaryPage() {
@@ -91,6 +98,41 @@ export default function GlossaryPage() {
   }
 
   const userPageNum = Math.floor(userOffset / USER_PAGE_SIZE) + 1;
+  const [editingEntry, setEditingEntry] = useState<EditingEntry | null>(null);
+
+  function startEdit(entry: GlossaryEntry) {
+    setEditingEntry({
+      id: entry.id,
+      source_term: entry.source_term,
+      translation: entry.translations["en-GB"]?.preferred || "",
+      risk_notes: entry.risk_notes || "",
+    });
+  }
+
+  function cancelEdit() {
+    setEditingEntry(null);
+  }
+
+  async function handleEditSave() {
+    if (!editingEntry) return;
+    try {
+      await apiClient.updateUserGlossaryEntry(editingEntry.id, {
+        source_term: editingEntry.source_term.trim(),
+        translations: {
+          "en-GB": {
+            preferred: editingEntry.translation.trim(),
+            alternatives: [],
+            notes: "",
+          },
+        },
+        risk_notes: editingEntry.risk_notes.trim(),
+      });
+      setEditingEntry(null);
+      loadEntries();
+    } catch (err) {
+      console.error("Failed to update entry:", err);
+    }
+  }
   const groupedSystemEntries = Object.entries(
     systemEntries.reduce<Record<string, GlossaryEntry[]>>((groups, entry) => {
       const key = entry.term_type || "other_specialized";
@@ -144,23 +186,68 @@ export default function GlossaryPage() {
           <>
             <div className="space-y-2">
               {userEntries.map((entry) => (
-                <div key={entry.id} className="flex items-center justify-between rounded border border-border p-3">
-                  <div>
-                    <span className="font-medium">{entry.source_term}</span>
-                    {entry.translations["en-GB"] && (
-                      <span className="ml-2 text-sm text-teal-700">
-                        → {entry.translations["en-GB"].preferred}
-                      </span>
-                    )}
-                  </div>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => handleDeleteUserEntry(entry.id)}
-                    className="text-red-500 hover:text-red-700"
-                  >
-                    删除
-                  </Button>
+                <div key={entry.id} className="rounded border border-border p-3">
+                  {editingEntry?.id === entry.id ? (
+                    /* Inline edit mode */
+                    <div className="space-y-2">
+                      <Input
+                        value={editingEntry.source_term}
+                        onChange={(e) => setEditingEntry({ ...editingEntry, source_term: e.target.value })}
+                        placeholder="中文术语"
+                      />
+                      <Input
+                        value={editingEntry.translation}
+                        onChange={(e) => setEditingEntry({ ...editingEntry, translation: e.target.value })}
+                        placeholder="英语译法"
+                      />
+                      <Input
+                        value={editingEntry.risk_notes}
+                        onChange={(e) => setEditingEntry({ ...editingEntry, risk_notes: e.target.value })}
+                        placeholder="风险备注（可选）"
+                      />
+                      <div className="flex gap-2">
+                        <Button onClick={handleEditSave} size="sm" className="bg-teal hover:bg-teal-light text-white">
+                          保存
+                        </Button>
+                        <Button onClick={cancelEdit} variant="outline" size="sm">
+                          取消
+                        </Button>
+                      </div>
+                    </div>
+                  ) : (
+                    /* Display mode */
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <span className="font-medium">{entry.source_term}</span>
+                        {entry.translations["en-GB"] && (
+                          <span className="ml-2 text-sm text-teal-700">
+                            → {entry.translations["en-GB"].preferred}
+                          </span>
+                        )}
+                        {entry.risk_notes && (
+                          <span className="ml-2 text-xs text-orange-600">⚠ {entry.risk_notes}</span>
+                        )}
+                      </div>
+                      <div className="flex gap-1">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => startEdit(entry)}
+                          className="text-muted-foreground hover:text-foreground"
+                        >
+                          编辑
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => handleDeleteUserEntry(entry.id)}
+                          className="text-red-500 hover:text-red-700"
+                        >
+                          删除
+                        </Button>
+                      </div>
+                    </div>
+                  )}
                 </div>
               ))}
             </div>

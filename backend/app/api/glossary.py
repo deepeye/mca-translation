@@ -16,6 +16,7 @@ from app.schemas.glossary import (
     GlossaryEntryUpdate,
     UserGlossaryEntryCreate,
     UserGlossaryEntryResponse,
+    UserGlossaryEntryUpdate,
 )
 from app.services.hardcoded_glossary import find_terms_in_text, get_term_translation
 
@@ -180,7 +181,41 @@ async def delete_user_entry(
     await db.commit()
 
 
-# --- Legacy detect endpoint (hardcoded, keep for backward compat) ---
+@router.put("/user-entries/{entry_id}", response_model=UserGlossaryEntryResponse)
+async def update_user_entry(
+    entry_id: uuid.UUID,
+    body: UserGlossaryEntryUpdate,
+    user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+):
+    entry = await db.get(UserGlossaryEntry, entry_id)
+    if not entry or entry.user_id != user.id:
+        raise HTTPException(status_code=404, detail="Entry not found")
+
+    update_data = body.model_dump(exclude_unset=True)
+    if "translations" in update_data and update_data["translations"] is not None:
+        update_data["translations"] = {
+            k: v.model_dump() if hasattr(v, "model_dump") else v
+            for k, v in update_data["translations"].items()
+        }
+
+    # Re-generate embedding if source_term changed
+    if "source_term" in update_data:
+        try:
+            embeddings = await bailian_client.embed([update_data["source_term"]])
+            update_data["embedding"] = embeddings[0] if embeddings else None
+        except Exception:
+            update_data["embedding"] = None
+
+    for field, value in update_data.items():
+        setattr(entry, field, value)
+
+    await db.commit()
+    await db.refresh(entry)
+    return entry
+
+
+# --- Legacy detect endpoint (hybrid: DB first, hardcoded fallback) ---
 
 class _DetectRequest(BaseModel):
     text: str
@@ -201,7 +236,57 @@ class _DetectResponse(BaseModel):
 async def detect_terms(
     body: _DetectRequest,
     user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
 ):
+    """Detect glossary terms in source text.
+
+    Hybrid mode:
+    1.  Query user glossary entries (substring match, current user)
+    2.  Query system glossary entries (substring match)
+    3.  If combined DB results exist, deduplicate (user > system) and return
+    4.  Otherwise fall back to hardcoded glossary
+    """
+    if not body.text:
+        return _DetectResponse(terms=[])
+
+    # --- Step 1: Query DB for substring matches ---
+    db_terms: list[_DetectedTermItem] = []
+    seen_sources: set[str] = set()
+
+    # User glossary (higher priority)
+    user_stmt = select(UserGlossaryEntry).where(UserGlossaryEntry.user_id == user.id)
+    user_rows = (await db.execute(user_stmt)).scalars().all()
+    for row in user_rows:
+        if row.source_term in body.text and row.source_term not in seen_sources:
+            seen_sources.add(row.source_term)
+            db_terms.append(
+                _DetectedTermItem(
+                    source_term=row.source_term,
+                    term_type=row.term_type,
+                    risk_notes=row.risk_notes or "",
+                    translations=dict(row.translations),
+                )
+            )
+
+    # System glossary
+    sys_stmt = select(GlossaryEntry)
+    sys_rows = (await db.execute(sys_stmt)).scalars().all()
+    for row in sys_rows:
+        if row.source_term in body.text and row.source_term not in seen_sources:
+            seen_sources.add(row.source_term)
+            db_terms.append(
+                _DetectedTermItem(
+                    source_term=row.source_term,
+                    term_type=row.term_type,
+                    risk_notes=row.risk_notes or "",
+                    translations=dict(row.translations),
+                )
+            )
+
+    if db_terms:
+        return _DetectResponse(terms=db_terms)
+
+    # --- Step 2: Fall back to hardcoded ---
     matched = find_terms_in_text(body.text)
     items = []
     for term in matched:

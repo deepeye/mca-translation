@@ -54,6 +54,11 @@ class ApiClient {
     return res.json();
   }
 
+  async put(path: string, body: unknown) {
+    const res = await this.request(path, { method: "PUT", body: JSON.stringify(body) });
+    return res.json();
+  }
+
   async postReview(body: {
     mode: "dual" | "single";
     source_text?: string;
@@ -111,6 +116,16 @@ class ApiClient {
 
   async deleteUserGlossaryEntry(id: string) {
     return this.delete(`/api/glossary/user-entries/${id}`);
+  }
+
+  async updateUserGlossaryEntry(id: string, body: {
+    source_term?: string;
+    term_type?: string;
+    translations?: Record<string, { preferred: string; alternatives: string[]; notes: string }>;
+    risk_notes?: string;
+    applicable_genres?: string[];
+  }) {
+    return this.put(`/api/glossary/user-entries/${id}`, body);
   }
 
   async uploadFile(file: File): Promise<{
