@@ -163,6 +163,39 @@ class ApiClient {
     return res.json();
   }
 
+  async exportDocx(data: {
+    source_text: string;
+    translated_text: string;
+    risk_annotations: Array<{
+      phrase: string;
+      risk_level: string;
+      risk_type?: string;
+      explanation?: string;
+    }>;
+    language: string;
+  }): Promise<Blob> {
+    const res = await fetch(`${API_BASE}/api/export/docx`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${this.getToken()}`,
+      },
+      body: JSON.stringify(data),
+    });
+    if (res.status === 401) {
+      this.clearToken();
+      if (typeof window !== "undefined") {
+        window.location.href = "/login";
+      }
+      throw new Error("Unauthorized");
+    }
+    if (!res.ok) {
+      const body = await res.json().catch(() => ({}));
+      throw new Error(body.detail || `Export error: ${res.status}`);
+    }
+    return res.blob();
+  }
+
   async get(path: string) {
     const res = await this.request(path, { method: "GET" });
     return res.json();
