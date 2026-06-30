@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { apiClient } from "@/lib/api-client";
 import { useWorkspaceStore } from "@/stores/workspace-store";
 import { useTranslationStore } from "@/stores/translation-store";
@@ -21,6 +21,8 @@ export default function HistoryPage() {
   const [selectedJob, setSelectedJob] = useState<JobDetailData | null>(null);
   const [isLoadingDetail, setIsLoadingDetail] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [detailError, setDetailError] = useState<string | null>(null);
+  const selectedJobRef = useRef<string | null>(null);
 
   const workspaceLoadFromHistory = useWorkspaceStore((s) => s.loadFromHistory);
   const translationLoadFromHistory = useTranslationStore((s) => s.loadFromHistory);
@@ -61,15 +63,23 @@ export default function HistoryPage() {
   // Handle job selection — load full detail
   const handleSelectJob = useCallback(async (jobId: string) => {
     setSelectedId(jobId);
+    selectedJobRef.current = jobId;
     setIsLoadingDetail(true);
     setSelectedJob(null);
+    setDetailError(null);
     try {
       const data = await apiClient.get(`/api/jobs/${jobId}`);
-      setSelectedJob(data);
+      if (selectedJobRef.current === jobId) {
+        setSelectedJob(data);
+      }
     } catch (err) {
-      setError(err instanceof Error ? err.message : "加载详情失败");
+      if (selectedJobRef.current === jobId) {
+        setDetailError(err instanceof Error ? err.message : "加载详情失败");
+      }
     } finally {
-      setIsLoadingDetail(false);
+      if (selectedJobRef.current === jobId) {
+        setIsLoadingDetail(false);
+      }
     }
   }, []);
 
@@ -139,6 +149,13 @@ export default function HistoryPage() {
   const renderRightContent = () => {
     if (isLoadingDetail) {
       return <HistorySkeleton />;
+    }
+    if (detailError) {
+      return (
+        <div className="flex h-full items-center justify-center">
+          <p className="text-sm text-destructive">加载失败: {detailError}</p>
+        </div>
+      );
     }
     return (
       <DetailPanel
