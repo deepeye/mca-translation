@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useTranslationStore } from "@/stores/translation-store";
 import { useWorkspaceStore } from "@/stores/workspace-store";
 import { AcceptanceDimensionBar } from "./acceptance-dimension-bar";
@@ -27,6 +27,9 @@ export function AcceptanceScorePanel() {
   const triggerFirstScoring = useTranslationStore((s) => s.triggerFirstScoring);
   const setResult = useTranslationStore((s) => s.setResult);
   const clearAcceptanceScore = useTranslationStore((s) => s.clearAcceptanceScore);
+
+  // 折叠状态 — 默认展开（评分是首要反馈，转译完成即可见；区别于 DecisionLogPanel 默认折叠）
+  const [collapsed, setCollapsed] = useState(false);
 
   // 转译完成后自动首次评分（幂等：仅 completed + acceptanceScore===-1 + 未在评分中）
   useEffect(() => {
@@ -70,7 +73,14 @@ export function AcceptanceScorePanel() {
   return (
     <div className="border rounded-lg bg-card">
       <div className="flex items-center justify-between px-3 py-2">
-        <span className="text-sm font-semibold" style={{ color: TEAL }}>接受度评分</span>
+        <button
+          type="button"
+          onClick={() => setCollapsed((v) => !v)}
+          className="flex items-center gap-2 text-left hover:bg-muted/50 rounded"
+        >
+          <span className="text-xs">{collapsed ? "▸" : "▾"}</span>
+          <span className="text-sm font-semibold" style={{ color: TEAL }}>接受度评分</span>
+        </button>
         <div className="flex items-center gap-1">
           {AUDIENCES.map((a) => (
             <Button
@@ -87,7 +97,7 @@ export function AcceptanceScorePanel() {
         </div>
       </div>
 
-      {scoring ? (
+      {!collapsed && (scoring ? (
         <AcceptanceScoreSkeleton />
       ) : score === -1 ? (
         <div className="px-3 pb-3 text-center">
@@ -140,7 +150,7 @@ export function AcceptanceScorePanel() {
             基于 LLM 的接受度估计（受众基准：{AUDIENCES.find((a) => a.key === baseline)?.label}），非审计级，仅供参考
           </p>
         </div>
-      )}
+      ))}
     </div>
   );
 }

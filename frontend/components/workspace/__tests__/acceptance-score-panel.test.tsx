@@ -145,4 +145,22 @@ describe("AcceptanceScorePanel", () => {
     render(<AcceptanceScorePanel />);
     expect(screen.getByText(/非审计级，仅供参考/)).toBeInTheDocument();
   });
+
+  it("does not re-trigger scoring when clicking the active audience baseline (same-baseline skip)", () => {
+    setState({ results: { "en-GB": {
+      status: "completed", translatedText: "Hello.", acceptanceScore: 80,
+      acceptanceDimensions: { audience: 20, cultural: 20, naturalness: 20, risk: 20 },
+      acceptanceConfidence: 0.9, acceptanceTop3Risks: [], audienceBaseline: "policy_media",
+    } } });
+    render(<AcceptanceScorePanel />);
+    fireEvent.click(screen.getByText("主流媒体")); // 当前已激活的基准 — 应为 no-op
+    expect(state.triggerFirstScoring).not.toHaveBeenCalled();
+  });
+
+  it("clears acceptance score when status is not completed", () => {
+    setState({ results: { "en-GB": { status: "streaming", translatedText: "Hello.", acceptanceScore: -1 } } });
+    const { container } = render(<AcceptanceScorePanel />);
+    expect(container.firstChild).toBeNull();
+    expect(state.clearAcceptanceScore).toHaveBeenCalledWith("en-GB");
+  });
 });
