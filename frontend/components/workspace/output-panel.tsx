@@ -8,6 +8,7 @@ import { TranslationResult } from "./translation-result";
 import { RiskDetailList } from "./risk-detail-list";
 import { ResultActions } from "./result-actions";
 import { DecisionLogPanel } from "./decision-log-panel";
+import { AcceptanceScorePanel } from "./acceptance-score-panel";
 
 export function OutputPanel() {
   const languages = useWorkspaceStore((s) => s.languages);
@@ -24,6 +25,7 @@ export function OutputPanel() {
     <div className="flex h-full flex-col gap-4">
       <LanguageTabs activeLang={activeLang} onSwitch={setActiveLang} />
       <TranslationResult language={activeLang} />
+      <AcceptanceScorePanel />
       <RiskDetailList language={activeLang} jobId={jobId} />
       <DecisionLogPanel />
       <div className="flex items-center justify-between">
