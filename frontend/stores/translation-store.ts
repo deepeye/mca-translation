@@ -41,6 +41,7 @@ export interface CulturalAdaptation {
 }
 
 interface LangResult {
+  resultId?: string;          // 新增：译文结果 ID，用于拉取决策日志
   status: ResultStatus;
   translatedText: string;
   riskAnnotations: RiskAnnotation[];
