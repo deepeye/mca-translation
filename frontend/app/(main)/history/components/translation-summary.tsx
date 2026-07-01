@@ -4,6 +4,7 @@ import { useState } from "react";
 import type { CulturalAdaptation, RiskAnnotation } from "@/stores/translation-store";
 
 export interface TranslationResultData {
+  id: string;                // 译文结果 ID，用于拉取决策日志
   language: string;
   status: string;
   translated_text: string | null;

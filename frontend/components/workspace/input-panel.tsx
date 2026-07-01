@@ -77,6 +77,7 @@ export function InputPanel() {
             riskAnnotations: r.risk_annotations || [],
             acceptanceScore: r.acceptance_score,
             culturalAdaptation: r.cultural_adaptation || null,
+            resultId: r.id,   // 保存结果 ID，供 DecisionLogPanel 拉取决策日志
           });
         }
         if (data.status === "completed" || data.status === "failed" || data.status === "partial") {

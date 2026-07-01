@@ -60,6 +60,7 @@ interface TranslationState {
   revertRisk: (lang: string, riskIndex: number, translatedText: string, annotations: RiskAnnotation[]) => void;
   setAnnotations: (lang: string, annotations: RiskAnnotation[]) => void;
   loadFromHistory: (results: Array<{
+    id: string;                // 译文结果 ID，用于拉取决策日志
     language: string;
     status: string;
     translated_text: string | null;
@@ -116,6 +117,7 @@ export const useTranslationStore = create<TranslationState>((set) => ({
       const newResults: Record<string, LangResult> = {};
       for (const r of results) {
         newResults[r.language] = {
+          resultId: r.id,      // 保存结果 ID，供 DecisionLogPanel 拉取决策日志
           status: r.status as ResultStatus,
           translatedText: r.translated_text || "",
           riskAnnotations: r.risk_annotations || [],
