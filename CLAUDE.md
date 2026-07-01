@@ -81,6 +81,7 @@ docker compose -f docker-compose.dev.yml up -d
 
 - ✅ **全部 8 个实施计划已完成**（361 个步骤中 360 个完成，1 项已放弃）
 - ✅ **文件上传功能已完成**（拖拽/选择 → .txt/.docx/.pdf 文本提取 → 自动填入 TextEditor）
+- ✅ **转译决策日志功能已完成**（决策链路记录与展示）
 - 所有计划文档在 `docs/superpowers/plans/`，设计文档在 `docs/superpowers/specs/`
 
 ## 功能模块速览
@@ -99,6 +100,12 @@ Input → 文体选择 → 文化圈选择 → 受众类型 → LLM 预处理
 - 一键全部接受
 - 风险说明及建议均为中文输出
 详情: `backend/app/services/risk_annotation.py` + `frontend/components/workspace/`
+
+### 转译决策日志
+- 记录翻译管线各节点（文化预处理 / 术语检索 / 翻译约束 / 风险标注 / 替换建议）的关键决策与推理依据
+- 从现有管线输出中提取，无额外 LLM 调用，不影响翻译质量
+- 工作台译文区可折叠面板，按阶段分组展示，与风险标注内联高亮联动
+详情: `backend/app/services/decision_log.py` + `frontend/components/workspace/decision-log-panel.tsx`
 
 ### 审校服务 (独立页面)
 - 双模式: 对照审校（原文+译文） / 独立审校（仅译文）
