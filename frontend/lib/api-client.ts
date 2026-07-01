@@ -13,14 +13,15 @@ export interface DecisionLogEntry {
   id: string;
   job_id: string;
   result_id: string;
-  // 决策阶段：preprocess / cultural_detect / glossary / translate / risk / suggestion
+  // 决策阶段：preprocess / cultural_detect / glossary / translate / risk / suggestion / acceptance
   stage:
     | "preprocess"
     | "cultural_detect"
     | "glossary"
     | "translate"
     | "risk"
-    | "suggestion";
+    | "suggestion"
+    | "acceptance";
   decision_type: string;
   source_phrase: string | null;
   target_phrase: string | null;
@@ -29,6 +30,24 @@ export interface DecisionLogEntry {
   confidence: "high" | "medium" | "low" | null;
   metadata: Record<string, unknown> | null;
   created_at: string;
+}
+
+// 接受度评分（audience acceptance scoring）
+export type AudienceBaseline = "policy_media" | "academic" | "social_media";
+
+export interface DimensionScores {
+  audience: number;
+  cultural: number;
+  naturalness: number;
+  risk: number;
+}
+
+export interface AcceptanceScorePayload {
+  total_score: number;            // -1 失败
+  dimensions: DimensionScores;
+  confidence: number;
+  top3_risk_indices: number[];
+  audience_baseline: AudienceBaseline;
 }
 
 // 文化负载词识别结果（输入期 LLM 识别，带文本偏移）
@@ -263,6 +282,20 @@ class ApiClient {
 
   async getJobDecisions(jobId: string): Promise<DecisionLogEntry[]> {
     return this.get(`/api/jobs/${jobId}/decisions`);
+  }
+
+  async postAcceptanceScore(
+    jobId: string,
+    body: { lang: string; audience_baseline: AudienceBaseline },
+  ): Promise<AcceptanceScorePayload> {
+    return this.post(`/api/jobs/${jobId}/acceptance-score`, body);
+  }
+
+  async postAcceptanceScoreDelta(
+    jobId: string,
+    body: { lang: string; risk_index: number },
+  ): Promise<AcceptanceScorePayload> {
+    return this.post(`/api/jobs/${jobId}/acceptance-score/delta`, body);
   }
 
   async get(path: string) {
