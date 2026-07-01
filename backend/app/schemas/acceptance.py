@@ -1,7 +1,7 @@
 """接受度评分的 Pydantic schema 契约。"""
 
 from typing import Literal
-from pydantic import BaseModel, Field, model_validator
+from pydantic import BaseModel, Field
 
 
 class DimensionScores(BaseModel):

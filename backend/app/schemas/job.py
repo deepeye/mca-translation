@@ -86,7 +86,7 @@ class AcceptAllRequest(BaseModel):
 
 
 # ---- 接受度评分（acceptance scoring）请求/响应 ----
-from app.schemas.acceptance import AcceptanceResult  # noqa: E402
+from app.schemas.acceptance import DimensionScores  # noqa: E402
 
 
 class AcceptanceScoreRequest(BaseModel):
@@ -105,7 +105,7 @@ class AcceptanceScoreDeltaRequest(BaseModel):
 class AcceptanceScoreResponse(BaseModel):
     """接受度评分响应 — 镜像 AcceptanceResult 公开字段。"""
     total_score: int
-    dimensions: dict
+    dimensions: DimensionScores
     confidence: float
     top3_risk_indices: list[int] = Field(default_factory=list)
     audience_baseline: str

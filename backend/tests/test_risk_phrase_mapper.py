@@ -31,7 +31,7 @@ def test_map_unmatched_goes_to_rationale():
     anns = [{"phrase": "Hello", "offset": 0, "risk_level": "high", "status": "open"}]
     r = map_risk_phrases(scores, sents, anns)
     assert r["mapped_indices"] == []
-    assert "world" in r["unmapped_phrases"]
+    assert r["unmapped_phrases"] == ["world"]
 
 
 def test_top3_sorts_by_severity_excludes_dismissed():

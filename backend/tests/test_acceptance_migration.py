@@ -1,6 +1,5 @@
 import uuid
 import pytest
-from sqlalchemy import select
 from app.models.job import TranslationJob, TranslationResult
 from app.models.user import User
 

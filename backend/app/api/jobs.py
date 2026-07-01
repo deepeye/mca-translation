@@ -499,7 +499,7 @@ async def _run_acceptance_delta(
         raise HTTPException(status_code=400, detail="No cached sentence scores; run initial scoring first")
 
     # 重建 SentenceScore 列表（从缓存反序列化）
-    from app.schemas.acceptance import SentenceScore, DimensionScores
+    from app.schemas.acceptance import SentenceScore
     scores = [SentenceScore(**c) for c in cached]
     by_id = {s.sentence_id: s for s in scores}
     if sentence_id not in by_id:
@@ -513,8 +513,11 @@ async def _run_acceptance_delta(
         new_text, lang, audience, genre=genre, cultural_sphere=cultural_sphere)
     new_ss.sentence_id = sentence_id
     by_id[sentence_id] = new_ss
+    affected_ids = [sentence_id]
 
     # 邻接句：若目标句 affects_neighbors，重算前后句（重切全文以拿邻接句文本）
+    # 假设替换不改变句边界 —— sentence_id 仍能对齐到重切后的同位置句；
+    # 若替换导致句合并/拆分，sent_by_id.get(nsid) 返回 None，邻接句重算被跳过（降级为仅目标句）。
     if new_ss.affects_neighbors:
         idx = next(i for i, s in enumerate(scores) if s.sentence_id == sentence_id)
         sents = segment(result.translated_text or "", lang)
@@ -528,6 +531,7 @@ async def _run_acceptance_delta(
                         sent.text, lang, audience, genre=genre, cultural_sphere=cultural_sphere)
                     nss.sentence_id = nsid
                     by_id[nsid] = nss
+                    affected_ids.append(nsid)
 
     new_scores = [by_id[s.sentence_id] for s in scores]
     risk_annotations = result.risk_annotations or []
@@ -541,7 +545,6 @@ async def _run_acceptance_delta(
     flag_modified(result, "acceptance_dimensions")
     flag_modified(result, "acceptance_sentence_scores")
 
-    affected_ids = [sentence_id]
     entries = [{
         "stage": "acceptance",
         "decision_type": "acceptance_delta",
