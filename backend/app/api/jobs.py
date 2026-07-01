@@ -14,6 +14,7 @@ from app.schemas.job import (
     AcceptAllRequest, AcceptRiskRequest, CreateJobRequest, DismissRiskRequest,
     JobListItem, JobResponse, RevertRiskRequest, SuggestionResponse, TranslationResultResponse,
 )
+from app.services.decision_log import save_decision_logs
 from app.services.suggestion import suggestion_service
 from app.tasks import run_translation
 
@@ -135,6 +136,34 @@ async def get_suggestions(
         risk_type=ann.get("risk_type", ""),
         explanation=ann.get("explanation", ""),
     )
+
+    # 决策提取：建议阶段 — 记录每个替换建议（尽力而为）
+    if suggestions:
+        suggestion_entries = [
+            {
+                "stage": "suggestion",
+                "decision_type": "alternative_suggested",
+                "source_phrase": ann.get("phrase"),
+                "target_phrase": s.get("text"),
+                "decision": f"建议替换为「{s.get('text', '')}」",
+                "reasoning": s.get("reason", ""),
+                "confidence": None,
+                "metadata": {"risk_index": risk_index, "risk_type": ann.get("risk_type")},
+            }
+            for s in suggestions
+        ]
+        try:
+            log_ids = await save_decision_logs(
+                db, job_id=job.id, result_id=result.id, entries=suggestion_entries
+            )
+            existing = list(result.decision_log_ids or [])
+            existing.extend(log_ids)
+            result.decision_log_ids = existing
+            await db.commit()
+        except Exception as e:
+            import logging
+            logging.getLogger(__name__).warning(f"Suggestion decision log save failed: {e}")
+
     return SuggestionResponse(suggestions=suggestions)
 
 
