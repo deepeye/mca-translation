@@ -9,6 +9,21 @@ export interface JobListItem {
   created_at: string;
 }
 
+export interface DecisionLogEntry {
+  id: string;
+  job_id: string;
+  result_id: string;
+  stage: "preprocess" | "glossary" | "translate" | "risk" | "suggestion";
+  decision_type: string;
+  source_phrase: string | null;
+  target_phrase: string | null;
+  decision: string;
+  reasoning: string;
+  confidence: "high" | "medium" | "low" | null;
+  metadata: Record<string, unknown> | null;
+  created_at: string;
+}
+
 class ApiClient {
   private token: string | null = null;
 
@@ -211,6 +226,14 @@ class ApiClient {
     if (params?.status) searchParams.set("status", params.status);
     const qs = searchParams.toString();
     return this.get(`/api/jobs${qs ? `?${qs}` : ""}`);
+  }
+
+  async getResultDecisions(resultId: string): Promise<DecisionLogEntry[]> {
+    return this.get(`/api/results/${resultId}/decisions`);
+  }
+
+  async getJobDecisions(jobId: string): Promise<DecisionLogEntry[]> {
+    return this.get(`/api/jobs/${jobId}/decisions`);
   }
 
   async get(path: string) {
