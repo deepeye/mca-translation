@@ -100,13 +100,19 @@ class TranslationPipeline:
         user_id: uuid.UUID | None = None,
         cultural_constraints: object = _CULTURAL_CONSTRAINTS_NOT_PROVIDED,
     ) -> dict:
-        """Run the pipeline. Returns {translated_text, risk_annotations, cultural_adaptation, acceptance_score}.
+        """Run the pipeline. Returns {translated_text, risk_annotations,
+        cultural_adaptation, acceptance_score, decision_entries}.
 
         ``cultural_constraints`` may be a pre-computed ``CulturalPreprocessResult`` or
         ``None``. When the caller passes it (even ``None``), the internal preprocess
         step is skipped — use this to run preprocess once for a multi-language job
         and reuse the result across languages. When omitted, preprocess runs here.
+
+        ``decision_entries`` 收集各阶段决策条目，由调用方持久化。
         """
+        # 新增：收集决策条目
+        decision_entries: list[dict] = []
+
         # Step 1: cultural preprocessing (optional, graceful fallback to None).
         # Skipped when the caller already ran it and passed the result in.
         if cultural_constraints is _CULTURAL_CONSTRAINTS_NOT_PROVIDED:
@@ -122,6 +128,20 @@ class TranslationPipeline:
         else:
             cultural_result = cultural_constraints  # type: ignore[assignment]
 
+        # 决策提取：文化预处理阶段 — 记录识别的文化负载词适配
+        if cultural_result is not None:
+            for term in cultural_result.culture_loaded_terms:
+                decision_entries.append({
+                    "stage": "preprocess",
+                    "decision_type": "culture_term_adaptation",
+                    "source_phrase": term.term,
+                    "target_phrase": term.suggested_rendering,
+                    "decision": f"采用 {term.adaptation_strategy} 策略翻译「{term.term}」",
+                    "reasoning": term.reason,
+                    "confidence": term.culture_gap,
+                    "metadata": {"adaptation_strategy": term.adaptation_strategy},
+                })
+
         # RAG glossary retrieval (Phase 2)
         glossary_block = ""
         if db and user_id:
@@ -135,6 +155,24 @@ class TranslationPipeline:
             )
             if rag_terms:
                 glossary_block = self._format_rag_glossary_block(rag_terms, target_language, strategy)
+                # 决策提取：术语检索阶段 — 记录命中的知识库术语
+                for t in rag_terms:
+                    trans = t.get("translations", {}).get(target_language, {})
+                    target_phrase = trans.get("preferred") if trans else None
+                    decision_entries.append({
+                        "stage": "glossary",
+                        "decision_type": "term_retrieved",
+                        "source_phrase": t.get("source_term"),
+                        "target_phrase": target_phrase,
+                        "decision": f"从知识库检索到术语「{t.get('source_term', '')}」",
+                        "reasoning": t.get("risk_notes") or "知识库匹配",
+                        "confidence": None,
+                        "metadata": {
+                            "glossary_id": str(t["id"]) if t.get("id") else None,
+                            "source": t.get("source"),
+                            "term_type": t.get("term_type"),
+                        },
+                    })
         else:
             # Fallback to hardcoded (Phase 1)
             from app.services.hardcoded_glossary import find_terms_in_text, format_glossary_block
@@ -154,14 +192,46 @@ class TranslationPipeline:
             glossary_block=glossary_block,
         )
 
-        # Step 3: risk annotation (unchanged)
+        # 决策提取：翻译阶段 — 记录注入 prompt 的文化约束（high/medium）
+        if cultural_result is not None:
+            for term in cultural_result.culture_loaded_terms:
+                if term.culture_gap in ("high", "medium"):
+                    decision_entries.append({
+                        "stage": "translate",
+                        "decision_type": "cultural_constraint_applied",
+                        "source_phrase": term.term,
+                        "target_phrase": term.suggested_rendering,
+                        "decision": f"翻译时必须遵守：「{term.term}」→ {term.suggested_rendering}",
+                        "reasoning": term.reason,
+                        "confidence": term.culture_gap,
+                        "metadata": {"adaptation_strategy": term.adaptation_strategy},
+                    })
+
+        # Step 3: risk annotation
         risk_annotations = await self._risk_annotation(source_text, translated_text, target_language)
+
+        # 决策提取：风险标注阶段 — 记录每条识别的风险
+        for risk in risk_annotations:
+            decision_entries.append({
+                "stage": "risk",
+                "decision_type": "risk_identified",
+                "source_phrase": None,
+                "target_phrase": risk.get("phrase"),
+                "decision": f"标记为 {risk.get('risk_level', 'unknown')} 风险：{risk.get('risk_type', '')}",
+                "reasoning": risk.get("explanation", ""),
+                "confidence": risk.get("risk_level"),
+                "metadata": {
+                    "risk_level": risk.get("risk_level"),
+                    "risk_type": risk.get("risk_type"),
+                },
+            })
 
         return {
             "translated_text": translated_text,
             "risk_annotations": risk_annotations,
             "cultural_adaptation": cultural_result.model_dump() if cultural_result else None,
             "acceptance_score": -1,
+            "decision_entries": decision_entries,
         }
 
     async def _main_translation(
