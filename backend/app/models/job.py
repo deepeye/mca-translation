@@ -38,6 +38,10 @@ class TranslationResult(Base):
     audience_baseline: Mapped[str | None] = mapped_column(String(32), nullable=True)
     risk_annotations: Mapped[dict | None] = mapped_column(JSONB, nullable=True)
     quality_confidence: Mapped[float | None] = mapped_column(Float, nullable=True)
+    # 接受度评分新增字段（acceptance_score / audience_baseline 已存在）
+    acceptance_confidence: Mapped[float | None] = mapped_column(Float, nullable=True)
+    acceptance_dimensions: Mapped[dict | None] = mapped_column(JSONB, nullable=True)
+    acceptance_sentence_scores: Mapped[list | None] = mapped_column(JSONB, nullable=True)
     decision_log_ids: Mapped[list | None] = mapped_column(ARRAY(UUID(as_uuid=True)), nullable=True)
     cultural_adaptation: Mapped[dict | None] = mapped_column(JSONB, nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
