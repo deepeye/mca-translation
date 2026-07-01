@@ -101,3 +101,36 @@ async def test_score_sentence_affects_neighbors_majority_vote():
     scorer = AcceptanceScorer(llm_client=client)
     ss = await scorer.score_sentence("Hello.", "en", "policy_media")
     assert ss.affects_neighbors is True
+
+
+@pytest.mark.asyncio
+async def test_score_sentence_malformed_offsets_does_not_crash():
+    # 回归保护：畸形 risk_phrase_offsets 条目不应让整个样本失效。
+    # 该样本仍应贡献有效 dimensions（仅 offsets 降级为空）。
+    malformed = json.dumps({
+        "audience": 20, "cultural": 20, "naturalness": 20, "risk": 20,
+        "risk_phrase_offsets": [["bad"], [5], "5-10", {"x": 1}, [1, 2, 3]],
+        "affects_neighbors": False,
+        "rationale": "ok",
+    })
+    client = FakeClient([malformed, _payload((20, 20, 20, 20)), _payload((20, 20, 20, 20))])
+    scorer = AcceptanceScorer(llm_client=client)
+    ss = await scorer.score_sentence("Hello.", "en", "policy_media")
+    # 3 个样本均有效（malformed 样本 offsets 降级为空但 dimensions 保留）
+    assert ss.failed is False
+    assert ss.score == 80
+
+
+@pytest.mark.asyncio
+async def test_score_sentence_affects_neighbors_string_false_not_inverted():
+    # 回归保护：LLM 返回字符串 "false" 时不应被反转为 True。
+    payload = json.dumps({
+        "audience": 20, "cultural": 20, "naturalness": 20, "risk": 20,
+        "risk_phrase_offsets": [],
+        "affects_neighbors": "false",
+        "rationale": "ok",
+    })
+    client = FakeClient([payload, payload, payload])
+    scorer = AcceptanceScorer(llm_client=client)
+    ss = await scorer.score_sentence("Hello.", "en", "policy_media")
+    assert ss.affects_neighbors is False

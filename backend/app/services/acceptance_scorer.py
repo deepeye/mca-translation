@@ -132,7 +132,7 @@ class AcceptanceScorer:
         try:
             data = json.loads(content)
         except json.JSONDecodeError:
-            # 重试 1 次（schema 不合规重试）
+            # 重试 1 次（JSON 解析失败重试，非 schema 校验失败）
             async with self._sem:
                 try:
                     result = await client.chat(
@@ -160,10 +160,25 @@ class AcceptanceScorer:
         except (KeyError, ValueError, TypeError):
             return None
 
-        offsets = [(int(s), int(e)) for s, e in data.get("risk_phrase_offsets", [])]
+        # offsets 解析容错：LLM 可能返回畸形条目（[5]、"5-10"、dict、长度!=2）。
+        # 解析失败时降级为空 offsets，不丢弃该样本的有效 dimensions。
+        offsets = []
+        try:
+            for s, e in data.get("risk_phrase_offsets", []):
+                offsets.append((int(s), int(e)))
+        except (ValueError, TypeError):
+            offsets = []
+
+        # affects_neighbors 容错：LLM 常返回字符串 "false"/"true"，bool("false") 为 True 会反转语义。
+        raw_neighbors = data.get("affects_neighbors", False)
+        if isinstance(raw_neighbors, bool):
+            affects_neighbors = raw_neighbors
+        else:
+            affects_neighbors = str(raw_neighbors).strip().lower() == "true"
+
         return {
             "dims": dims,
             "offsets": offsets,
-            "affects_neighbors": bool(data.get("affects_neighbors", False)),
+            "affects_neighbors": affects_neighbors,
             "rationale": str(data.get("rationale", "")),
         }
