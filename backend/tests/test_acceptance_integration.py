@@ -77,20 +77,33 @@ async def test_full_chain_first_then_delta(db):
             assert len(logs) == 1
             assert logs[0].metadata_.get("trigger") == "initial"
 
-            # 2. delta re-scoring: s1 drops to dims 10×4 → score 40, mean (80+40)/2 = 60
-            scorer_mod.bailian_client.content = _p(10, 10, 10, 10)
+            # 2. delta re-scoring: add a risk annotation in s1 (post-accept state), re-score s1 → 40
+            from sqlalchemy.orm.attributes import flag_modified as _flag
+            res_obj = (await db.execute(
+                select(TranslationResult).where(TranslationResult.id == result_id)
+            )).scalar_one()
+            res_obj.risk_annotations = [
+                {"phrase": "Bye", "offset": 7, "risk_level": "low", "risk_type": "ambiguity",
+                 "explanation": "", "status": "accepted", "accepted_suggestion": "Goodbye."}
+            ]
+            _flag(res_obj, "risk_annotations")
+            await db.commit()
+
+            scorer_mod.bailian_client = FakeClient(_p(10, 10, 10, 10))
             res2 = await c.post(f"/api/jobs/{job_id}/acceptance-score/delta",
-                                json={"lang": "en", "sentence_id": "s1", "new_text": "Bye."})
+                                json={"lang": "en", "risk_index": 0})
             assert res2.status_code == 200
+            # s1 re-scored 80→40; s0 stays 80; accepted risk → no penalty; mean(80,40)=60
             assert res2.json()["total_score"] == 60
 
-            # verify new decision_log entry (trigger=sentence_replace)
+            # verify new decision_log entry with trigger=sentence_replace + risk_index
             logs2 = (await db.execute(
                 select(DecisionLog).where(DecisionLog.result_id == result_id,
                                           DecisionLog.stage == "acceptance")
             )).scalars().all()
             assert len(logs2) == 2
-            assert any(l.metadata_.get("trigger") == "sentence_replace" for l in logs2)
+            delta_log = next(l for l in logs2 if l.metadata_.get("trigger") == "sentence_replace")
+            assert delta_log.metadata_.get("risk_index") == 0
     finally:
         scorer_mod.bailian_client = orig
         app.dependency_overrides.clear()

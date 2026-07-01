@@ -96,10 +96,9 @@ class AcceptanceScoreRequest(BaseModel):
 
 
 class AcceptanceScoreDeltaRequest(BaseModel):
-    """单句改写后 delta 重算请求体。"""
+    """风险词替换后 delta 重算请求体（按 risk_index 定位被改句）。"""
     lang: str
-    sentence_id: str
-    new_text: str
+    risk_index: int
 
 
 class AcceptanceScoreResponse(BaseModel):

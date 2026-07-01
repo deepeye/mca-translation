@@ -486,55 +486,65 @@ async def score_acceptance(
 
 async def _run_acceptance_delta(
     result: TranslationResult,
-    sentence_id: str,
-    new_text: str,
+    risk_index: int,
     db: AsyncSession,
     job_id: uuid.UUID,
     genre: str = "",
     cultural_sphere: str = "",
 ) -> dict:
-    """delta 重算：仅重算指定句（单次采样）+ 受影响邻接句，再聚合缓存。"""
+    """delta 重算：按 risk_index 定位被改句，重算该句 + 邻接句，再聚合缓存。"""
     cached = result.acceptance_sentence_scores or []
     if not cached:
         raise HTTPException(status_code=400, detail="No cached sentence scores; run initial scoring first")
+
+    risk_annotations = result.risk_annotations or []
+    if risk_index < 0 or risk_index >= len(risk_annotations):
+        raise HTTPException(status_code=400, detail=f"Invalid risk_index {risk_index}")
+
+    ann = risk_annotations[risk_index]
+    offset = ann.get("offset", -1)
+    if offset is None or offset < 0:
+        raise HTTPException(status_code=400, detail="Cannot locate sentence: risk annotation has no offset")
 
     # 重建 SentenceScore 列表（从缓存反序列化）
     from app.schemas.acceptance import SentenceScore
     scores = [SentenceScore(**c) for c in cached]
     by_id = {s.sentence_id: s for s in scores}
-    if sentence_id not in by_id:
-        raise HTTPException(status_code=400, detail=f"Unknown sentence_id {sentence_id}")
 
     audience = result.audience_baseline or "policy_media"
     lang = result.language
 
-    # 重算目标句
-    new_ss = await _acceptance_scorer.score_sentence_single(
-        new_text, lang, audience, genre=genre, cultural_sphere=cultural_sphere)
-    new_ss.sentence_id = sentence_id
-    by_id[sentence_id] = new_ss
-    affected_ids = [sentence_id]
+    # 重切译文，定位包含 offset 的句
+    sents = segment(result.translated_text or "", lang)
+    target = next((s for s in sents if s.char_offset <= offset < s.char_offset + s.length), None)
+    if target is None:
+        raise HTTPException(status_code=400, detail="Cannot locate sentence containing the replaced phrase")
+    target_id = target.id
 
-    # 邻接句：若目标句 affects_neighbors，重算前后句（重切全文以拿邻接句文本）
-    # 假设替换不改变句边界 —— sentence_id 仍能对齐到重切后的同位置句；
-    # 若替换导致句合并/拆分，sent_by_id.get(nsid) 返回 None，邻接句重算被跳过（降级为仅目标句）。
+    # 重算目标句（单次采样，换速度）
+    new_ss = await _acceptance_scorer.score_sentence_single(
+        target.text, lang, audience, genre=genre, cultural_sphere=cultural_sphere)
+    new_ss.sentence_id = target_id
+    by_id[target_id] = new_ss
+    affected_ids = [target_id]
+
+    # 邻接句：若目标句 affects_neighbors，重算前后句
+    # 假设替换不改变句边界；若邻接句 id 不在缓存中（边界漂移），跳过（降级为仅目标句）。
     if new_ss.affects_neighbors:
-        idx = next(i for i, s in enumerate(scores) if s.sentence_id == sentence_id)
-        sents = segment(result.translated_text or "", lang)
-        sent_by_id = {s.id: s for s in sents}
-        for neighbor_idx in (idx - 1, idx + 1):
-            if 0 <= neighbor_idx < len(scores):
-                nsid = scores[neighbor_idx].sentence_id
-                sent = sent_by_id.get(nsid)
-                if sent:
-                    nss = await _acceptance_scorer.score_sentence_single(
-                        sent.text, lang, audience, genre=genre, cultural_sphere=cultural_sphere)
-                    nss.sentence_id = nsid
-                    by_id[nsid] = nss
-                    affected_ids.append(nsid)
+        tidx = next((i for i, s in enumerate(sents) if s.id == target_id), None)
+        if tidx is not None:
+            for neighbor_idx in (tidx - 1, tidx + 1):
+                if 0 <= neighbor_idx < len(sents):
+                    nsent = sents[neighbor_idx]
+                    nsid = nsent.id
+                    if nsid in by_id:
+                        nss = await _acceptance_scorer.score_sentence_single(
+                            nsent.text, lang, audience, genre=genre, cultural_sphere=cultural_sphere)
+                        nss.sentence_id = nsid
+                        by_id[nsid] = nss
+                        affected_ids.append(nsid)
 
     new_scores = [by_id[s.sentence_id] for s in scores]
-    risk_annotations = result.risk_annotations or []
     agg = aggregate(new_scores, risk_annotations)
 
     # 写回
@@ -548,11 +558,12 @@ async def _run_acceptance_delta(
     entries = [{
         "stage": "acceptance",
         "decision_type": "acceptance_delta",
-        "decision": f"delta 重算：句 {sentence_id} → {new_ss.score}",
+        "decision": f"delta 重算：risk_index {risk_index} (句 {target_id}) → {new_ss.score}",
         "reasoning": new_ss.rationale,
         "confidence": "low" if agg["confidence"] < 0.7 else "high",
         "metadata": {
             "trigger": "sentence_replace",
+            "risk_index": risk_index,
             "affected_sentence_ids": affected_ids,
             "total_score": agg["total_score"],
         },
@@ -583,10 +594,10 @@ async def score_acceptance_delta(
     user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
 ):
-    """替换风险词后句级 delta 重算（<1s 目标）。"""
+    """替换风险词后句级 delta 重算（<1s 目标）。按 risk_index 定位被改句。"""
     job = await _get_user_job(job_id, user, db)
     result = await _get_lang_result(job.id, body.lang, db)
     return await _run_acceptance_delta(
-        result, body.sentence_id, body.new_text, db, job.id,
+        result, body.risk_index, db, job.id,
         genre=job.genre, cultural_sphere=job.cultural_sphere or "",
     )
