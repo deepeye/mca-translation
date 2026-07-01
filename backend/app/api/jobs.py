@@ -361,6 +361,8 @@ async def _run_acceptance_scoring(
     audience_baseline: str,
     db: AsyncSession,
     job_id: uuid.UUID,
+    genre: str = "",
+    cultural_sphere: str = "",
 ) -> dict:
     """编排：切句 → 逐句评分 → 映射 → 聚合 → 写 DB + decision_log。"""
     text = result.translated_text or ""
@@ -368,15 +370,16 @@ async def _run_acceptance_scoring(
     sents = segment(text, lang)
     sent_index = {s.id: s for s in sents}
 
-    # 逐句评分（scorer 内部信号量节流）
-    sentence_scores = []
-    for s in sents:
+    # 逐句并发评分（scorer 内部信号量节流；gather 保持与 sents 同序）
+    async def _score_one(s):
         ss = await _acceptance_scorer.score_sentence(
             s.text, lang, audience_baseline,
-            genre="", cultural_sphere="",
+            genre=genre, cultural_sphere=cultural_sphere,
         )
         ss.sentence_id = s.id  # 回填 id
-        sentence_scores.append(ss)
+        return ss
+
+    sentence_scores = await asyncio.gather(*[_score_one(s) for s in sents])
 
     risk_annotations = result.risk_annotations or []
     mapped = map_risk_phrases(sentence_scores, sent_index, risk_annotations)
@@ -475,7 +478,10 @@ async def score_acceptance(
     result = await _get_lang_result(job.id, body.lang, db)
     if not result.translated_text:
         raise HTTPException(status_code=400, detail="Translation not ready")
-    return await _run_acceptance_scoring(result, body.audience_baseline, db, job.id)
+    return await _run_acceptance_scoring(
+        result, body.audience_baseline, db, job.id,
+        genre=job.genre, cultural_sphere=job.cultural_sphere or "",
+    )
 
 
 async def _run_acceptance_delta(
@@ -484,6 +490,8 @@ async def _run_acceptance_delta(
     new_text: str,
     db: AsyncSession,
     job_id: uuid.UUID,
+    genre: str = "",
+    cultural_sphere: str = "",
 ) -> dict:
     """delta 重算：仅重算指定句（单次采样）+ 受影响邻接句，再聚合缓存。"""
     cached = result.acceptance_sentence_scores or []
@@ -501,7 +509,8 @@ async def _run_acceptance_delta(
     lang = result.language
 
     # 重算目标句
-    new_ss = await _acceptance_scorer.score_sentence_single(new_text, lang, audience)
+    new_ss = await _acceptance_scorer.score_sentence_single(
+        new_text, lang, audience, genre=genre, cultural_sphere=cultural_sphere)
     new_ss.sentence_id = sentence_id
     by_id[sentence_id] = new_ss
 
@@ -515,7 +524,8 @@ async def _run_acceptance_delta(
                 nsid = scores[neighbor_idx].sentence_id
                 sent = sent_by_id.get(nsid)
                 if sent:
-                    nss = await _acceptance_scorer.score_sentence_single(sent.text, lang, audience)
+                    nss = await _acceptance_scorer.score_sentence_single(
+                        sent.text, lang, audience, genre=genre, cultural_sphere=cultural_sphere)
                     nss.sentence_id = nsid
                     by_id[nsid] = nss
 
@@ -573,4 +583,7 @@ async def score_acceptance_delta(
     """替换风险词后句级 delta 重算（<1s 目标）。"""
     job = await _get_user_job(job_id, user, db)
     result = await _get_lang_result(job.id, body.lang, db)
-    return await _run_acceptance_delta(result, body.sentence_id, body.new_text, db, job.id)
+    return await _run_acceptance_delta(
+        result, body.sentence_id, body.new_text, db, job.id,
+        genre=job.genre, cultural_sphere=job.cultural_sphere or "",
+    )

@@ -134,3 +134,27 @@ async def test_score_sentence_affects_neighbors_string_false_not_inverted():
     scorer = AcceptanceScorer(llm_client=client)
     ss = await scorer.score_sentence("Hello.", "en", "policy_media")
     assert ss.affects_neighbors is False
+
+
+class _ExceptionThenValidClient:
+    """首次 chat 抛异常，第二次起返回固定 payload。守护 I3：LLM 异常也重试。"""
+    def __init__(self, valid_content: str):
+        self._valid = valid_content
+        self.calls = 0
+
+    async def chat(self, *, model, messages, temperature=0.3):
+        self.calls += 1
+        if self.calls == 1:
+            raise RuntimeError("LLM down")
+        return {"content": self._valid}
+
+
+@pytest.mark.asyncio
+async def test_score_sentence_retries_on_llm_exception():
+    # I3 守护：首次 LLM 调用抛异常 → 重试 1 次 → 成功。score_sentence_single 单采样路径。
+    client = _ExceptionThenValidClient(_payload((20, 20, 20, 20)))
+    scorer = AcceptanceScorer(llm_client=client)
+    ss = await scorer.score_sentence_single("Hello.", "en", "policy_media")
+    assert ss.failed is False
+    assert ss.score == 80
+    assert client.calls == 2  # 首次异常 + 重试成功

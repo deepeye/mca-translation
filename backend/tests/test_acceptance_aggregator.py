@@ -41,8 +41,9 @@ def test_aggregate_risk_penalty_capped():
 
 
 def test_aggregate_dismissed_not_penalized():
+    # accepted（已替换）与 dismissed（用户保留）均视为已解决，不惩罚；仅 open 惩罚。
     scores = [_ss("s0", DimensionScores(audience=25, cultural=25, naturalness=25, risk=25), 0.9)]
-    anns = [{"status": "dismissed"}, {"status": "open"}]  # only -2
+    anns = [{"status": "dismissed"}, {"status": "accepted"}, {"status": "open"}]  # only -2
     r = aggregate(scores, anns)
     assert r["total_score"] == 98
 

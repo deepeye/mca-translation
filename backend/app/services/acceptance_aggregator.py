@@ -31,7 +31,7 @@ def aggregate(
     mean_score = sum(filled_scores) / len(filled_scores)
 
     open_risk_count = sum(
-        1 for a in risk_annotations if a.get("status", "open") != "dismissed"
+        1 for a in risk_annotations if a.get("status", "open") == "open"
     )
     penalty = min(open_risk_count * _RISK_PENALTY_PER_OPEN, _RISK_PENALTY_CAP)
 

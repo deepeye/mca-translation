@@ -114,3 +114,57 @@ async def test_delta_rescoring_updates_score(db, mock_user):
     finally:
         scorer_mod.bailian_client = orig
         app.dependency_overrides.clear()
+
+
+@pytest.mark.asyncio
+async def test_delta_neighbor_rescore_when_affects_neighbors(db, mock_user):
+    # M1：守护 affects_neighbors 分支。3 句缓存全 80，delta s1 → affects_neighbors=True
+    # 触发邻接句 s0/s2 重算。FakeClient 全程返回 dims 10×4（score 40）+ affects_neighbors=True。
+    db.add(mock_user)
+    await db.commit()
+
+    job = TranslationJob(user_id=mock_user.id, source_text="你好。再见。再见。", genre="political",
+                         strategy="semantic_equivalence", target_languages=["en"],
+                         cultural_sphere="EastAsia")
+    db.add(job); await db.commit(); await db.refresh(job)
+    cached = [
+        {"sentence_id": "s0", "dimensions": {"audience": 20, "cultural": 20, "naturalness": 20, "risk": 20},
+         "confidence": 0.9, "risk_phrase_offsets": [], "affects_neighbors": False, "rationale": "ok", "failed": False},
+        {"sentence_id": "s1", "dimensions": {"audience": 20, "cultural": 20, "naturalness": 20, "risk": 20},
+         "confidence": 0.9, "risk_phrase_offsets": [], "affects_neighbors": False, "rationale": "ok", "failed": False},
+        {"sentence_id": "s2", "dimensions": {"audience": 20, "cultural": 20, "naturalness": 20, "risk": 20},
+         "confidence": 0.9, "risk_phrase_offsets": [], "affects_neighbors": False, "rationale": "ok", "failed": False},
+    ]
+    result = TranslationResult(
+        job_id=job.id, language="en",
+        translated_text="Hello. Bye. Goodbye.",
+        acceptance_score=80, audience_baseline="policy_media",
+        acceptance_confidence=0.9,
+        acceptance_dimensions={"audience": 20, "cultural": 20, "naturalness": 20, "risk": 20},
+        acceptance_sentence_scores=cached,
+    )
+    db.add(result); await db.commit(); await db.refresh(result)
+
+    async def fake_get_db():
+        yield db
+    app.dependency_overrides[get_current_user] = lambda: mock_user
+    app.dependency_overrides[get_db] = fake_get_db
+    # delta: s1 重算得 40 + affects_neighbors=True → s0/s2 邻接重算亦得 40
+    payload = json.dumps({
+        "audience": 10, "cultural": 10, "naturalness": 10, "risk": 10,
+        "risk_phrase_offsets": [], "affects_neighbors": True, "rationale": "worse",
+    })
+    orig = scorer_mod.bailian_client
+    scorer_mod.bailian_client = FakeClient(payload)
+    try:
+        transport = ASGITransport(app=app)
+        async with AsyncClient(transport=transport, base_url="http://t") as c:
+            res = await c.post(f"/api/jobs/{job.id}/acceptance-score/delta",
+                               json={"lang": "en", "sentence_id": "s1", "new_text": "Bye."})
+        assert res.status_code == 200
+        body = res.json()
+        # s0/s1/s2 全部重算为 40（s1 目标 + s0/s2 邻接）→ mean 40, penalty 0 → total 40
+        assert body["total_score"] == 40
+    finally:
+        scorer_mod.bailian_client = orig
+        app.dependency_overrides.clear()

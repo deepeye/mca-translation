@@ -15,7 +15,7 @@ def map_risk_phrases(
 
     - 命中现有标注 → mapped_indices（引用其下标，不新增高亮）
     - 未命中 → unmapped_phrases（仅进 rationale 文字）
-    - top3_risk_indices：未 dismissed 的标注按严重度排序取前 3
+    - top3_risk_indices：未解决（open）的标注按严重度排序取前 3（accepted/dismissed 均已解决，不入选）
     """
     mapped_indices: set[int] = set()
     unmapped: list[str] = []
@@ -62,7 +62,7 @@ def _find_overlapping(anns: list[dict], start: int, end: int) -> int | None:
 def _top3(anns: list[dict]) -> list[int]:
     open_anns = [
         (i, ann) for i, ann in enumerate(anns)
-        if ann.get("status", "open") != "dismissed"
+        if ann.get("status", "open") == "open"
     ]
     open_anns.sort(key=lambda x: _SEVERITY.get(x[1].get("risk_level", "low"), 3))
     return [i for i, _ in open_anns[:3]]

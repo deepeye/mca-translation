@@ -114,71 +114,57 @@ class AcceptanceScorer:
             cultural_sphere=cultural_sphere or "未指定",
             sentence_text=sentence_text,
         )
-        async with self._sem:
-            client = self._client if self._client is not None else bailian_client
-            try:
-                result = await client.chat(
-                    model=settings.BAILIAN_MODEL_PLUS,
-                    messages=[{"role": "user", "content": prompt}],
-                    temperature=0.3,
-                )
-            except Exception as e:
-                logger.warning("acceptance scoring LLM call failed: %s", e)
-                return None
-
-        content = (result.get("content") or "").strip()
-        if content.startswith("```"):
-            content = content.split("\n", 1)[1].rsplit("```", 1)[0]
-        try:
-            data = json.loads(content)
-        except json.JSONDecodeError:
-            # 重试 1 次（JSON 解析失败重试，非 schema 校验失败）
+        # 任意失败（LLM 异常 / JSON 解析失败 / DimensionScores schema 校验失败）均重试 1 次，
+        # 重试 prompt 追加 schema 警示；二次仍失败则返回 None。
+        for attempt in (1, 2):
+            nudge = "\n\n上次输出格式错误，请严格按 JSON schema 输出。" if attempt == 2 else ""
             async with self._sem:
+                client = self._client if self._client is not None else bailian_client
                 try:
                     result = await client.chat(
                         model=settings.BAILIAN_MODEL_PLUS,
-                        messages=[{"role": "user", "content": prompt + "\n\n上次输出格式错误，请严格按 JSON schema 输出。"}],
+                        messages=[{"role": "user", "content": prompt + nudge}],
                         temperature=0.3,
                     )
-                except Exception:
-                    return None
+                except Exception as e:
+                    logger.warning("acceptance scoring LLM call failed: %s", e)
+                    continue  # 重试 1 次
+
             content = (result.get("content") or "").strip()
             if content.startswith("```"):
                 content = content.split("\n", 1)[1].rsplit("```", 1)[0]
             try:
                 data = json.loads(content)
-            except json.JSONDecodeError:
-                return None
+                dims = DimensionScores(
+                    audience=float(data["audience"]),
+                    cultural=float(data["cultural"]),
+                    naturalness=float(data["naturalness"]),
+                    risk=float(data["risk"]),
+                )
+            except (json.JSONDecodeError, KeyError, ValueError, TypeError):
+                # JSON 解析失败或 schema 校验失败 → 重试 1 次
+                continue
 
-        try:
-            dims = DimensionScores(
-                audience=float(data["audience"]),
-                cultural=float(data["cultural"]),
-                naturalness=float(data["naturalness"]),
-                risk=float(data["risk"]),
-            )
-        except (KeyError, ValueError, TypeError):
-            return None
-
-        # offsets 解析容错：LLM 可能返回畸形条目（[5]、"5-10"、dict、长度!=2）。
-        # 解析失败时降级为空 offsets，不丢弃该样本的有效 dimensions。
-        offsets = []
-        try:
-            for s, e in data.get("risk_phrase_offsets", []):
-                offsets.append((int(s), int(e)))
-        except (ValueError, TypeError):
+            # offsets 解析容错：LLM 可能返回畸形条目（[5]、"5-10"、dict、长度!=2）。
+            # 解析失败时降级为空 offsets，不丢弃该样本的有效 dimensions。
             offsets = []
+            try:
+                for s, e in data.get("risk_phrase_offsets", []):
+                    offsets.append((int(s), int(e)))
+            except (ValueError, TypeError):
+                offsets = []
 
-        # affects_neighbors 容错：LLM 常返回字符串 "false"/"true"，bool("false") 为 True 会反转语义。
-        raw_neighbors = data.get("affects_neighbors", False)
-        if isinstance(raw_neighbors, bool):
-            affects_neighbors = raw_neighbors
-        else:
-            affects_neighbors = str(raw_neighbors).strip().lower() == "true"
+            # affects_neighbors 容错：LLM 常返回字符串 "false"/"true"，bool("false") 为 True 会反转语义。
+            raw_neighbors = data.get("affects_neighbors", False)
+            if isinstance(raw_neighbors, bool):
+                affects_neighbors = raw_neighbors
+            else:
+                affects_neighbors = str(raw_neighbors).strip().lower() == "true"
 
-        return {
-            "dims": dims,
-            "offsets": offsets,
-            "affects_neighbors": affects_neighbors,
-            "rationale": str(data.get("rationale", "")),
-        }
+            return {
+                "dims": dims,
+                "offsets": offsets,
+                "affects_neighbors": affects_neighbors,
+                "rationale": str(data.get("rationale", "")),
+            }
+        return None  # 两次尝试均失败
