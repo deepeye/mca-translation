@@ -476,3 +476,101 @@ async def score_acceptance(
     if not result.translated_text:
         raise HTTPException(status_code=400, detail="Translation not ready")
     return await _run_acceptance_scoring(result, body.audience_baseline, db, job.id)
+
+
+async def _run_acceptance_delta(
+    result: TranslationResult,
+    sentence_id: str,
+    new_text: str,
+    db: AsyncSession,
+    job_id: uuid.UUID,
+) -> dict:
+    """delta 重算：仅重算指定句（单次采样）+ 受影响邻接句，再聚合缓存。"""
+    cached = result.acceptance_sentence_scores or []
+    if not cached:
+        raise HTTPException(status_code=400, detail="No cached sentence scores; run initial scoring first")
+
+    # 重建 SentenceScore 列表（从缓存反序列化）
+    from app.schemas.acceptance import SentenceScore, DimensionScores
+    scores = [SentenceScore(**c) for c in cached]
+    by_id = {s.sentence_id: s for s in scores}
+    if sentence_id not in by_id:
+        raise HTTPException(status_code=400, detail=f"Unknown sentence_id {sentence_id}")
+
+    audience = result.audience_baseline or "policy_media"
+    lang = result.language
+
+    # 重算目标句
+    new_ss = await _acceptance_scorer.score_sentence_single(new_text, lang, audience)
+    new_ss.sentence_id = sentence_id
+    by_id[sentence_id] = new_ss
+
+    # 邻接句：若目标句 affects_neighbors，重算前后句（重切全文以拿邻接句文本）
+    if new_ss.affects_neighbors:
+        idx = next(i for i, s in enumerate(scores) if s.sentence_id == sentence_id)
+        sents = segment(result.translated_text or "", lang)
+        sent_by_id = {s.id: s for s in sents}
+        for neighbor_idx in (idx - 1, idx + 1):
+            if 0 <= neighbor_idx < len(scores):
+                nsid = scores[neighbor_idx].sentence_id
+                sent = sent_by_id.get(nsid)
+                if sent:
+                    nss = await _acceptance_scorer.score_sentence_single(sent.text, lang, audience)
+                    nss.sentence_id = nsid
+                    by_id[nsid] = nss
+
+    new_scores = [by_id[s.sentence_id] for s in scores]
+    risk_annotations = result.risk_annotations or []
+    agg = aggregate(new_scores, risk_annotations)
+
+    # 写回
+    result.acceptance_score = agg["total_score"]
+    result.acceptance_confidence = agg["confidence"]
+    result.acceptance_dimensions = agg["dimensions"]
+    result.acceptance_sentence_scores = [s.model_dump() for s in new_scores]
+    flag_modified(result, "acceptance_dimensions")
+    flag_modified(result, "acceptance_sentence_scores")
+
+    affected_ids = [sentence_id]
+    entries = [{
+        "stage": "acceptance",
+        "decision_type": "acceptance_delta",
+        "decision": f"delta 重算：句 {sentence_id} → {new_ss.score}",
+        "reasoning": new_ss.rationale,
+        "confidence": "low" if agg["confidence"] < 0.7 else "high",
+        "metadata": {
+            "trigger": "sentence_replace",
+            "affected_sentence_ids": affected_ids,
+            "total_score": agg["total_score"],
+        },
+    }]
+    log_ids = await save_decision_logs(db, job_id, result.id, entries)
+    if result.decision_log_ids is None:
+        result.decision_log_ids = []
+    result.decision_log_ids.extend(log_ids)
+    flag_modified(result, "decision_log_ids")
+    await db.commit()
+    await db.refresh(result)
+
+    # top3 only；delta 后句内 offsets 已失效，传空 sentence_index 仅取 top3
+    mapped = map_risk_phrases(new_scores, {}, risk_annotations)
+    return {
+        "total_score": agg["total_score"],
+        "dimensions": agg["dimensions"],
+        "confidence": agg["confidence"],
+        "top3_risk_indices": mapped["top3_risk_indices"],
+        "audience_baseline": audience,
+    }
+
+
+@router.post("/{job_id}/acceptance-score/delta", response_model=AcceptanceScoreResponse)
+async def score_acceptance_delta(
+    job_id: uuid.UUID,
+    body: AcceptanceScoreDeltaRequest,
+    user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+):
+    """替换风险词后句级 delta 重算（<1s 目标）。"""
+    job = await _get_user_job(job_id, user, db)
+    result = await _get_lang_result(job.id, body.lang, db)
+    return await _run_acceptance_delta(result, body.sentence_id, body.new_text, db, job.id)

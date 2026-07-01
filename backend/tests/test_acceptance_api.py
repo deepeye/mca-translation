@@ -66,3 +66,51 @@ async def test_first_scoring_returns_result(db, mock_user):
     finally:
         scorer_mod.bailian_client = orig
         app.dependency_overrides.clear()
+
+
+@pytest.mark.asyncio
+async def test_delta_rescoring_updates_score(db, mock_user):
+    # 先持久化 user，避免 translation_jobs.user_id → users.id 的 FK 违约
+    db.add(mock_user)
+    await db.commit()
+
+    job = TranslationJob(user_id=mock_user.id, source_text="你好。再见。", genre="political",
+                         strategy="semantic_equivalence", target_languages=["zh"])
+    db.add(job); await db.commit(); await db.refresh(job)
+    result = TranslationResult(
+        job_id=job.id, language="zh",
+        translated_text="Hello. Bye.",
+        acceptance_score=80, audience_baseline="policy_media",
+        acceptance_confidence=0.9,
+        acceptance_dimensions={"audience": 20, "cultural": 20, "naturalness": 20, "risk": 20},
+        acceptance_sentence_scores=[
+            {"sentence_id": "s0", "dimensions": {"audience": 20, "cultural": 20, "naturalness": 20, "risk": 20},
+             "confidence": 0.9, "risk_phrase_offsets": [], "affects_neighbors": False, "rationale": "ok", "failed": False},
+            {"sentence_id": "s1", "dimensions": {"audience": 20, "cultural": 20, "naturalness": 20, "risk": 20},
+             "confidence": 0.9, "risk_phrase_offsets": [], "affects_neighbors": False, "rationale": "ok", "failed": False},
+        ],
+    )
+    db.add(result); await db.commit(); await db.refresh(result)
+
+    async def fake_get_db():
+        yield db
+    app.dependency_overrides[get_current_user] = lambda: mock_user
+    app.dependency_overrides[get_db] = fake_get_db
+    # delta re-scores s1 to a lower score
+    orig = scorer_mod.bailian_client
+    scorer_mod.bailian_client = FakeClient(json.dumps({
+        "audience": 10, "cultural": 10, "naturalness": 10, "risk": 10,
+        "risk_phrase_offsets": [], "affects_neighbors": False, "rationale": "worse",
+    }))
+    try:
+        transport = ASGITransport(app=app)
+        async with AsyncClient(transport=transport, base_url="http://t") as c:
+            res = await c.post(f"/api/jobs/{job.id}/acceptance-score/delta",
+                               json={"lang": "zh", "sentence_id": "s1", "new_text": "Bye."})
+        assert res.status_code == 200
+        body = res.json()
+        # s1 dropped 80→40, s0 stays 80 → mean 60
+        assert body["total_score"] == 60
+    finally:
+        scorer_mod.bailian_client = orig
+        app.dependency_overrides.clear()
