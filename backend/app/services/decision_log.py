@@ -6,9 +6,11 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models.decision_log import DecisionLog
 
-# 阶段排序优先级 — preprocess → glossary → translate → risk → suggestion
+# 阶段排序优先级 — preprocess / cultural_detect → glossary → translate → risk → suggestion
+# cultural_detect 为输入期 LLM 文化负载词识别，与 preprocess 同序（可并列展示）
 _STAGE_ORDER = {
     "preprocess": 0,
+    "cultural_detect": 0,
     "glossary": 1,
     "translate": 2,
     "risk": 3,

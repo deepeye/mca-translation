@@ -22,7 +22,7 @@ class DecisionLog(Base):
     result_id: Mapped[uuid.UUID] = mapped_column(
         UUID(as_uuid=True), ForeignKey("translation_results.id"), index=True
     )
-    # 决策阶段：preprocess / glossary / translate / risk / suggestion
+    # 决策阶段：preprocess / cultural_detect / glossary / translate / risk / suggestion
     stage: Mapped[str] = mapped_column(String(16), index=True)
     # 决策类型标签，如 culture_term_adaptation / risk_identified
     decision_type: Mapped[str] = mapped_column(String(48))

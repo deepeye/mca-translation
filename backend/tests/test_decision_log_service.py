@@ -117,3 +117,27 @@ async def test_save_empty_entries_returns_empty(db: AsyncSession):
     job, result = await _setup_job_and_result(db)
     ids = await save_decision_logs(db, job.id, result.id, [])
     assert ids == []
+
+
+def test_stage_order_includes_cultural_detect():
+    """_STAGE_ORDER 应包含 cultural_detect 阶段，且与 preprocess 同序、先于 glossary。
+
+    纯单元测试，不依赖 DB。验证输入期文化识别阶段的排序优先级正确。
+    """
+    from app.services.decision_log import _STAGE_ORDER
+
+    assert "cultural_detect" in _STAGE_ORDER
+    assert _STAGE_ORDER["cultural_detect"] == _STAGE_ORDER["preprocess"]
+    assert _STAGE_ORDER["cultural_detect"] < _STAGE_ORDER["glossary"]
+
+    # 模拟一组跨阶段日志，按 _STAGE_ORDER 排序应得正确顺序
+    fake_logs = [
+        type("L", (), {"stage": "glossary", "created_at": 1})(),
+        type("L", (), {"stage": "cultural_detect", "created_at": 2})(),
+        type("L", (), {"stage": "preprocess", "created_at": 3})(),
+        type("L", (), {"stage": "risk", "created_at": 4})(),
+    ]
+    ordered = sorted(fake_logs, key=lambda r: (_STAGE_ORDER.get(r.stage, 99), r.created_at))
+    stages = [r.stage for r in ordered]
+    # preprocess 与 cultural_detect 同序(0)，按 created_at 升序；glossary=1；risk=3
+    assert stages == ["cultural_detect", "preprocess", "glossary", "risk"]

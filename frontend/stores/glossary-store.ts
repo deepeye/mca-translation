@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import type { CulturalTermResult } from "@/lib/api-client";
 
 export interface DetectedTerm {
   source_term: string;
@@ -7,6 +8,10 @@ export interface DetectedTerm {
   translations: Record<string, { preferred: string; notes: string; alternatives: string[] }>;
 }
 
+// 输入期 LLM 文化负载词分析状态机：
+// idle → loading → analyzed；文本变更后 analyzed → stale（提示用户重新分析）
+export type CulturalAnalysisState = "idle" | "loading" | "analyzed" | "stale";
+
 interface GlossaryState {
   detectedTerms: DetectedTerm[];
   isLoading: boolean;
@@ -14,6 +19,12 @@ interface GlossaryState {
   setDetectedTerms: (terms: DetectedTerm[]) => void;
   setIsLoading: (v: boolean) => void;
   setHoveredTerm: (term: string | null) => void;
+
+  // 文化负载词（LLM 识别，带文本偏移）
+  culturalTerms: CulturalTermResult[];
+  culturalAnalysisState: CulturalAnalysisState;
+  setCulturalTerms: (terms: CulturalTermResult[]) => void;
+  setCulturalAnalysisState: (s: CulturalAnalysisState) => void;
 }
 
 export const useGlossaryStore = create<GlossaryState>((set) => ({
@@ -23,4 +34,10 @@ export const useGlossaryStore = create<GlossaryState>((set) => ({
   setDetectedTerms: (terms) => set({ detectedTerms: terms }),
   setIsLoading: (isLoading) => set({ isLoading }),
   setHoveredTerm: (hoveredTerm) => set({ hoveredTerm }),
+
+  culturalTerms: [],
+  culturalAnalysisState: "idle",
+  setCulturalTerms: (culturalTerms) => set({ culturalTerms }),
+  setCulturalAnalysisState: (culturalAnalysisState) =>
+    set({ culturalAnalysisState }),
 }));

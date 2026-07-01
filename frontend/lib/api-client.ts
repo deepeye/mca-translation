@@ -13,7 +13,14 @@ export interface DecisionLogEntry {
   id: string;
   job_id: string;
   result_id: string;
-  stage: "preprocess" | "glossary" | "translate" | "risk" | "suggestion";
+  // 决策阶段：preprocess / cultural_detect / glossary / translate / risk / suggestion
+  stage:
+    | "preprocess"
+    | "cultural_detect"
+    | "glossary"
+    | "translate"
+    | "risk"
+    | "suggestion";
   decision_type: string;
   source_phrase: string | null;
   target_phrase: string | null;
@@ -22,6 +29,18 @@ export interface DecisionLogEntry {
   confidence: "high" | "medium" | "low" | null;
   metadata: Record<string, unknown> | null;
   created_at: string;
+}
+
+// 文化负载词识别结果（输入期 LLM 识别，带文本偏移）
+export interface CulturalTermResult {
+  term: string;
+  offset: number;
+  length: number;
+  culture_gap: "low" | "medium" | "high";
+  adaptation_strategy: string;
+  suggested_rendering: string;
+  reason: string;
+  term_type: string;
 }
 
 class ApiClient {
@@ -96,6 +115,16 @@ class ApiClient {
 
   async detectTerms(text: string) {
     return this.post("/api/glossary/detect", { text });
+  }
+
+  // 输入期 LLM 文化负载词识别（隐喻/政治话语），返回带文本偏移的转译建议
+  async detectCulturalTerms(body: {
+    text: string;
+    cultural_sphere: string;
+    audience_type: string;
+    genre: string;
+  }): Promise<{ terms: CulturalTermResult[] }> {
+    return this.post("/api/glossary/detect-cultural", body);
   }
 
   async listGlossaryEntries(q?: string) {

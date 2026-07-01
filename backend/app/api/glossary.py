@@ -18,6 +18,7 @@ from app.schemas.glossary import (
     UserGlossaryEntryResponse,
     UserGlossaryEntryUpdate,
 )
+from app.services.cultural import cultural_preprocess
 from app.services.hardcoded_glossary import find_terms_in_text, get_term_translation
 
 router = APIRouter(prefix="/api/glossary", tags=["glossary"])
@@ -302,3 +303,84 @@ async def detect_terms(
             translations=trans,
         ))
     return _DetectResponse(terms=items)
+
+
+# --- Cultural term detection (LLM-based, input-phase) ---
+
+class _CulturalDetectRequest(BaseModel):
+    text: str
+    cultural_sphere: str
+    audience_type: str
+    genre: str
+
+
+class _CulturalDetectedTerm(BaseModel):
+    term: str
+    offset: int
+    length: int
+    culture_gap: str  # low|medium|high
+    adaptation_strategy: str  # literal|explanatory|analogical|reconstruction
+    suggested_rendering: str
+    reason: str
+    term_type: str = "cultural_metaphor"  # 固定分类，供前端着色
+
+
+class _CulturalDetectResponse(BaseModel):
+    terms: list[_CulturalDetectedTerm]
+
+
+def _find_all_occurrences(haystack: str, needle: str) -> list[int]:
+    """返回 needle 在 haystack 中所有出现位置的首字符偏移。空串或未命中返回 []。
+    多次出现全部计入，用于内联高亮每处命中。"""
+    if not needle:
+        return []
+    offsets: list[int] = []
+    start = 0
+    while True:
+        idx = haystack.find(needle, start)
+        if idx == -1:
+            break
+        offsets.append(idx)
+        start = idx + len(needle)
+    return offsets
+
+
+@router.post("/detect-cultural", response_model=_CulturalDetectResponse)
+async def detect_cultural_terms(
+    body: _CulturalDetectRequest,
+    user: User = Depends(get_current_user),
+):
+    """识别源文本中的文化负载词（隐喻/政治话语），返回带文本偏移的转译建议。
+
+    复用 cultural_preprocess；任何降级（未知文化圈/受众、LLM 失败、JSON 解析失败、
+    schema 校验失败）都返回空 terms，不报错 —— 输入期识别为附属能力，不阻塞用户输入。
+    """
+    if not body.text:
+        return _CulturalDetectResponse(terms=[])
+
+    result = await cultural_preprocess(
+        text=body.text,
+        cultural_sphere=body.cultural_sphere,
+        audience_type=body.audience_type,
+        genre=body.genre,
+        llm_client=bailian_client,
+    )
+    if result is None:
+        return _CulturalDetectResponse(terms=[])
+
+    # 服务端计算每个 term 的全部出现位置（LLM 不返回 offset）
+    items: list[_CulturalDetectedTerm] = []
+    for t in result.culture_loaded_terms:
+        for offset in _find_all_occurrences(body.text, t.term):
+            items.append(
+                _CulturalDetectedTerm(
+                    term=t.term,
+                    offset=offset,
+                    length=len(t.term),
+                    culture_gap=t.culture_gap,
+                    adaptation_strategy=t.adaptation_strategy,
+                    suggested_rendering=t.suggested_rendering,
+                    reason=t.reason,
+                )
+            )
+    return _CulturalDetectResponse(terms=items)

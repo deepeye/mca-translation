@@ -105,7 +105,17 @@ Input → 文体选择 → 文化圈选择 → 受众类型 → LLM 预处理
 - 记录翻译管线各节点（文化预处理 / 术语检索 / 翻译约束 / 风险标注 / 替换建议）的关键决策与推理依据
 - 从现有管线输出中提取，无额外 LLM 调用，不影响翻译质量
 - 工作台译文区可折叠面板，按阶段分组展示，与风险标注内联高亮联动
+- 阶段：`preprocess` / `cultural_detect`（输入期文化识别） / `glossary` / `translate` / `risk` / `suggestion`
 详情: `backend/app/services/decision_log.py` + `frontend/components/workspace/decision-log-panel.tsx`
+
+### 高语境术语内联高亮
+- 输入区 textarea 上内联高亮（overlay 镜像层），覆盖两类高语境术语：
+  - 术语库命中（政治话语/文化隐喻字面匹配，实时 800ms debounce）
+  - LLM 文化负载词识别（隐喻/政治话语语义识别，手动「分析高语境词」按钮触发）
+- 悬停高亮片段显示 Popover：分类、风险备注、转译建议（`suggested_rendering`）、适配理由
+- 复用 `cultural_preprocess`，服务端计算文本偏移；重叠区间 glossary 优先
+- 不改 `CULTURAL_PREPROCESS_PROMPT`，不影响翻译质量；LLM 失败/未选文化圈降级返回空
+详情: `backend/app/api/glossary.py`（`/detect-cultural`）+ `frontend/components/workspace/inline-highlighter.tsx`
 
 ### 审校服务 (独立页面)
 - 双模式: 对照审校（原文+译文） / 独立审校（仅译文）

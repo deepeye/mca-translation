@@ -42,3 +42,8 @@ export const TERM_TYPE_BADGE_CLASS: Record<string, string> = {
 
 export const DEFAULT_TERM_TYPE_LABEL = "其他专名";
 export const DEFAULT_TERM_TYPE_BADGE_CLASS = "bg-zinc-100 text-zinc-700";
+
+// 文化负载词（LLM 输入期识别）内联高亮配色 — 赤陶系，与品牌色呼应
+export const CULTURAL_HIGHLIGHT_CLASS =
+  "bg-orange-100/60 border-b-2 border-orange-400";
+export const CULTURAL_TERM_LABEL = "文化负载词（LLM 识别）";
