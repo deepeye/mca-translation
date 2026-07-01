@@ -7,6 +7,7 @@ from app.core.config import settings
 from app.llm.bailian import bailian_client
 from app.models.job import TranslationJob, TranslationResult
 from app.services.cultural import cultural_preprocess
+from app.services.decision_log import save_decision_logs
 from app.services.translation import pipeline
 
 logger = logging.getLogger(__name__)
@@ -96,6 +97,18 @@ async def _run_translation(job_id: str):
                     tr.cultural_adaptation = output["cultural_adaptation"]
                     tr.acceptance_score = output["acceptance_score"]
                     tr.status = "completed"
+
+                    # 持久化决策日志 — 尽力而为，失败不阻断翻译流程
+                    decision_entries = output.get("decision_entries") or []
+                    if decision_entries:
+                        try:
+                            log_ids = await save_decision_logs(
+                                db, job_id=job.id, result_id=tr.id, entries=decision_entries
+                            )
+                            tr.decision_log_ids = log_ids
+                        except Exception as e:
+                            logger.warning(f"Decision log save failed for job {job.id} lang {lang}: {e}")
+
                     await db.commit()
 
                 except Exception as e:
