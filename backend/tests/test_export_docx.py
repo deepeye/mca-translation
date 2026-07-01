@@ -116,3 +116,60 @@ class TestGenerateTranslationDocx:
                 risk_annotations=sample_annotations,
                 language="en-GB",
             )
+
+
+@pytest.fixture
+async def async_client():
+    """Create a test client for the FastAPI app."""
+    from app.main import app
+    from httpx import AsyncClient, ASGITransport
+
+    transport = ASGITransport(app=app)
+    async with AsyncClient(transport=transport, base_url="http://test") as client:
+        yield client
+
+
+class TestExportApi:
+    """Integration tests for POST /api/export/docx."""
+
+    async def test_export_returns_docx(self, async_client, sample_source, sample_translation, sample_annotations):
+        """Verify the endpoint returns a .docx file."""
+        resp = await async_client.post(
+            "/api/export/docx",
+            json={
+                "source_text": sample_source,
+                "translated_text": sample_translation,
+                "risk_annotations": sample_annotations,
+                "language": "en-GB",
+            },
+        )
+        assert resp.status_code == 200
+        assert resp.headers["content-type"] == "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+        assert len(resp.content) > 0
+
+    async def test_export_empty_translation_returns_400(self, async_client, sample_source):
+        """Verify the endpoint rejects empty translation."""
+        resp = await async_client.post(
+            "/api/export/docx",
+            json={
+                "source_text": sample_source,
+                "translated_text": "",
+                "risk_annotations": [],
+                "language": "en-GB",
+            },
+        )
+        assert resp.status_code == 400
+
+    async def test_export_no_annotations(self, async_client, sample_source, sample_translation):
+        """Verify the endpoint works with no risk annotations."""
+        resp = await async_client.post(
+            "/api/export/docx",
+            json={
+                "source_text": sample_source,
+                "translated_text": sample_translation,
+                "risk_annotations": [],
+                "language": "en-GB",
+            },
+        )
+        assert resp.status_code == 200
+        assert len(resp.content) > 0
