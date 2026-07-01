@@ -154,3 +154,36 @@ SINGLE_REVIEW_PROMPT = """你是一位资深国际传播审校专家。请对下
 目标受众：{audience}（{cultural_sphere}文化圈）
 
 只返回 JSON，不要包含其他文本。"""
+
+
+# 接受度评分 prompt（单句级，LLM-Judge）
+ACCEPTANCE_SCORE_PROMPT = """你是跨文化传播接受度评估器。对一句【目标语言译文】预测「目标受众是否会以预期方式理解这段内容」的接受度。
+
+目标语言: {target_language}
+受众基准: {audience_baseline}（policy_media=主流政策媒体受众 / academic=学术界 / social_media=社交媒体）
+文体: {genre}
+文化圈: {cultural_sphere}
+
+待评估译文（单句）: {sentence_text}
+
+按以下四维各打 0-25 分（合计 0-100，越高越好）：
+- audience: 受众匹配度（表达是否符合该受众基准的语言习惯）
+- cultural: 文化敏感度（是否触犯该受众的文化禁忌或引发负联想）
+- naturalness: 表达自然度（是否像该语言母语表达，而非翻译腔）
+- risk: 风险词密度分（越高表示风险词越少；无风险词=25）
+
+同时在句内识别可能引发受众理解偏差的风险短语（按句内字符偏移给出 [start, end] 区间，基于上面的「待评估译文」文本）。
+
+判断本次评分的句子是否可能影响相邻句子的接受度（如代词指代、跨句逻辑）。
+
+输出严格 JSON，不要包含任何其他文字、解释、markdown 代码围栏：
+{{
+  "audience": <0-25 整数>,
+  "cultural": <0-25 整数>,
+  "naturalness": <0-25 整数>,
+  "risk": <0-25 整数>,
+  "risk_phrase_offsets": [[start, end], ...],
+  "affects_neighbors": true 或 false,
+  "rationale": "<一句中文理由，解释评分依据与未命中现有标注的风险短语>"
+}}
+"""
