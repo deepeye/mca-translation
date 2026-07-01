@@ -12,10 +12,16 @@ from app.core.database import get_db
 from app.models.job import TranslationJob, TranslationResult
 from app.models.user import User
 from app.schemas.job import (
-    AcceptAllRequest, AcceptRiskRequest, CreateJobRequest, DismissRiskRequest,
-    JobListItem, JobResponse, RevertRiskRequest, SuggestionResponse, TranslationResultResponse,
+    AcceptAllRequest, AcceptRiskRequest, AcceptanceScoreDeltaRequest,
+    AcceptanceScoreRequest, AcceptanceScoreResponse, CreateJobRequest,
+    DismissRiskRequest, JobListItem, JobResponse, RevertRiskRequest,
+    SuggestionResponse, TranslationResultResponse,
 )
+from app.services.acceptance_aggregator import aggregate
+from app.services.acceptance_segmenter import segment
+from app.services.acceptance_scorer import AcceptanceScorer
 from app.services.decision_log import save_decision_logs
+from app.services.risk_phrase_mapper import map_risk_phrases
 from app.services.suggestion import suggestion_service
 from app.tasks import run_translation
 
@@ -346,6 +352,77 @@ async def _get_lang_result(job_id: uuid.UUID, lang: str, db: AsyncSession) -> Tr
     return result
 
 
+# 接受度评分器单例（llm_client=None → 运行时惰性取模块全局 bailian_client，便于测试 monkeypatch）
+_acceptance_scorer = AcceptanceScorer()
+
+
+async def _run_acceptance_scoring(
+    result: TranslationResult,
+    audience_baseline: str,
+    db: AsyncSession,
+    job_id: uuid.UUID,
+) -> dict:
+    """编排：切句 → 逐句评分 → 映射 → 聚合 → 写 DB + decision_log。"""
+    text = result.translated_text or ""
+    lang = result.language
+    sents = segment(text, lang)
+    sent_index = {s.id: s for s in sents}
+
+    # 逐句评分（scorer 内部信号量节流）
+    sentence_scores = []
+    for s in sents:
+        ss = await _acceptance_scorer.score_sentence(
+            s.text, lang, audience_baseline,
+            genre="", cultural_sphere="",
+        )
+        ss.sentence_id = s.id  # 回填 id
+        sentence_scores.append(ss)
+
+    risk_annotations = result.risk_annotations or []
+    mapped = map_risk_phrases(sentence_scores, sent_index, risk_annotations)
+    agg = aggregate(sentence_scores, risk_annotations)
+
+    # 写回 TranslationResult
+    result.acceptance_score = agg["total_score"]
+    result.audience_baseline = audience_baseline
+    result.acceptance_confidence = agg["confidence"]
+    result.acceptance_dimensions = agg["dimensions"]
+    result.acceptance_sentence_scores = [s.model_dump() for s in sentence_scores]
+    flag_modified(result, "acceptance_dimensions")
+    flag_modified(result, "acceptance_sentence_scores")
+
+    # 写 decision_log（阶段=acceptance）
+    entries = [{
+        "stage": "acceptance",
+        "decision_type": "acceptance_scoring",
+        "decision": f"接受度评分 {agg['total_score']}/100（受众基准 {audience_baseline}）",
+        "reasoning": " | ".join(s.rationale for s in sentence_scores if s.rationale),
+        "confidence": "low" if agg["confidence"] < 0.7 else "high",
+        "metadata": {
+            "audience_baseline": audience_baseline,
+            "total_score": agg["total_score"],
+            "dimensions": agg["dimensions"],
+            "unmapped_phrases": mapped["unmapped_phrases"],
+            "trigger": "initial",
+        },
+    }]
+    log_ids = await save_decision_logs(db, job_id, result.id, entries)
+    if result.decision_log_ids is None:
+        result.decision_log_ids = []
+    result.decision_log_ids.extend(log_ids)
+    flag_modified(result, "decision_log_ids")
+    await db.commit()
+    await db.refresh(result)
+
+    return {
+        "total_score": agg["total_score"],
+        "dimensions": agg["dimensions"],
+        "confidence": agg["confidence"],
+        "top3_risk_indices": mapped["top3_risk_indices"],
+        "audience_baseline": audience_baseline,
+    }
+
+
 def _recalculate_offsets(text: str, annotations: list[dict]) -> list[dict]:
     """Recalculate offsets for all open risk annotations after text change."""
     used_offsets = set()
@@ -384,3 +461,18 @@ def _build_job_response(job: TranslationJob, results: list[TranslationResult]) -
         ],
         created_at=job.created_at,
     )
+
+
+@router.post("/{job_id}/acceptance-score", response_model=AcceptanceScoreResponse)
+async def score_acceptance(
+    job_id: uuid.UUID,
+    body: AcceptanceScoreRequest,
+    user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+):
+    """首次接受度评分（转译完成后调用）。"""
+    job = await _get_user_job(job_id, user, db)
+    result = await _get_lang_result(job.id, body.lang, db)
+    if not result.translated_text:
+        raise HTTPException(status_code=400, detail="Translation not ready")
+    return await _run_acceptance_scoring(result, body.audience_baseline, db, job.id)

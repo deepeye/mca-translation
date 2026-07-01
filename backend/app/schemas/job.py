@@ -83,3 +83,29 @@ class RevertRiskRequest(BaseModel):
 
 class AcceptAllRequest(BaseModel):
     lang: str
+
+
+# ---- 接受度评分（acceptance scoring）请求/响应 ----
+from app.schemas.acceptance import AcceptanceResult  # noqa: E402
+
+
+class AcceptanceScoreRequest(BaseModel):
+    """首次接受度评分请求体。"""
+    lang: str
+    audience_baseline: Literal["policy_media", "academic", "social_media"] = "policy_media"
+
+
+class AcceptanceScoreDeltaRequest(BaseModel):
+    """单句改写后 delta 重算请求体。"""
+    lang: str
+    sentence_id: str
+    new_text: str
+
+
+class AcceptanceScoreResponse(BaseModel):
+    """接受度评分响应 — 镜像 AcceptanceResult 公开字段。"""
+    total_score: int
+    dimensions: dict
+    confidence: float
+    top3_risk_indices: list[int] = Field(default_factory=list)
+    audience_baseline: str
