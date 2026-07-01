@@ -864,7 +864,8 @@ _SINGLE_SAMPLE_CONFIDENCE = 0.5
 
 class AcceptanceScorer:
     def __init__(self, llm_client=None, semaphore_limit: int = 5):
-        self._client = llm_client or bailian_client
+        # llm_client=None → 运行时从模块全局 bailian_client 取（便于测试 monkeypatch）
+        self._client = llm_client
         self._sem = asyncio.Semaphore(semaphore_limit)
 
     async def score_sentence(
@@ -955,8 +956,9 @@ class AcceptanceScorer:
             sentence_text=sentence_text,
         )
         async with self._sem:
+            client = self._client if self._client is not None else bailian_client
             try:
-                result = await self._client.chat(
+                result = await client.chat(
                     model=settings.BAILIAN_MODEL_PLUS,
                     messages=[{"role": "user", "content": prompt}],
                     temperature=0.3,
@@ -974,7 +976,7 @@ class AcceptanceScorer:
             # 重试 1 次（schema 不合规重试）
             async with self._sem:
                 try:
-                    result = await self._client.chat(
+                    result = await client.chat(
                         model=settings.BAILIAN_MODEL_PLUS,
                         messages=[{"role": "user", "content": prompt + "\n\n上次输出格式错误，请严格按 JSON schema 输出。"}],
                         temperature=0.3,
@@ -1248,10 +1250,12 @@ async def test_first_scoring_returns_result(db, mock_user):
                                translated_text="Hello world.", acceptance_score=-1)
     db.add(result); await db.commit(); await db.refresh(result)
 
-    fake_db = _FakeDbSession(db)
+    fake_db = db  # 直接复用 db fixture 的真实 session（route 会 commit/refresh）
+    async def fake_get_db():
+        yield fake_db
     app.dependency_overrides[get_current_user] = lambda: mock_user
-    app.dependency_overrides[get_db] = lambda: (yield fake_db)
-    # patch bailian_client inside scorer
+    app.dependency_overrides[get_db] = fake_get_db
+    # patch bailian_client inside scorer（scorer 运行时惰性取模块全局，故 monkeypatch 生效）
     orig = scorer_mod.bailian_client
     scorer_mod.bailian_client = FakeClient(_payload())
     try:
@@ -1267,17 +1271,9 @@ async def test_first_scoring_returns_result(db, mock_user):
     finally:
         scorer_mod.bailian_client = orig
         app.dependency_overrides.clear()
-
-
-class _FakeDbSession:
-    """包装真实 db session，但 commit/refresh 透传。"""
-    def __init__(self, real):
-        self._real = real
-    def __getattr__(self, name):
-        return getattr(self._real, name)
 ```
 
-> Note: the `_FakeDbSession` wrapper passes through to the real async session so the route's `db.commit()` / `db.refresh()` work. If the route uses `db.execute(...)`, that also passes through.
+> Note: `mock_user` is a fixture returning a `User` with a random id; seed the job with `user_id=mock_user.id` so the ownership check passes. `get_current_user` override returns `mock_user` directly (FastAPI accepts a sync return for a non-dependency override). The route commits to the real `db` session.
 
 - [ ] **Step 2: Run test to verify it fails**
 
@@ -1465,9 +1461,10 @@ async def test_delta_rescoring_updates_score(db, mock_user):
     )
     db.add(result); await db.commit(); await db.refresh(result)
 
-    fake_db = _FakeDbSession(db)
+    async def fake_get_db():
+        yield db
     app.dependency_overrides[get_current_user] = lambda: mock_user
-    app.dependency_overrides[get_db] = lambda: (yield fake_db)
+    app.dependency_overrides[get_db] = fake_get_db
     # delta re-scores s1 to a lower score
     scorer_mod.bailian_client = FakeClient(json.dumps({
         "audience": 10, "cultural": 10, "naturalness": 10, "risk": 10,
@@ -1523,16 +1520,9 @@ async def _run_acceptance_delta(
     new_ss.sentence_id = sentence_id
     by_id[sentence_id] = new_ss
 
-    # 邻接句：若目标句 affects_neighbors，重算前后句
+    # 邻接句：若目标句 affects_neighbors，重算前后句（重切全文以拿邻接句文本）
     if new_ss.affects_neighbors:
         idx = next(i for i, s in enumerate(scores) if s.sentence_id == sentence_id)
-        for neighbor_idx in (idx - 1, idx + 1):
-            if 0 <= neighbor_idx < len(scores):
-                nsid = scores[neighbor_idx].sentence_id
-                # 用缓存的句文本无法精确还原，需重切；为简单起见用 cached rationale 指代的文本片段
-                # 这里用 acceptance_sentence_scores 中无文本 → 改用 result.translated_text 重切
-                break
-        # 重切全文以拿邻接句文本
         sents = segment(result.translated_text or "", lang)
         sent_by_id = {s.id: s for s in sents}
         for neighbor_idx in (idx - 1, idx + 1):
@@ -1666,12 +1656,10 @@ async def test_full_chain_first_then_delta(db):
     job_id = job.id
     result_id = result.id
 
-    class FakeDB:
-        def __init__(self, r): self._r = r
-        def __getattr__(self, n): return getattr(self._r, n)
-    fake_db = FakeDB(db)
+    async def fake_get_db():
+        yield db
     app.dependency_overrides[get_current_user] = lambda: user
-    app.dependency_overrides[get_db] = lambda: (yield fake_db)
+    app.dependency_overrides[get_db] = fake_get_db
     scorer_mod.bailian_client = FakeClient([_p(), _p()])  # 2 sentences
     try:
         transport = ASGITransport(app=app)
