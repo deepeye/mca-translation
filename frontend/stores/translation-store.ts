@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import { apiClient, type DecisionLogEntry } from "@/lib/api-client";
 
 export type ResultStatus = "idle" | "streaming" | "completed" | "failed" | "partial";
 
@@ -65,6 +66,10 @@ interface TranslationState {
     acceptance_score: number;
     cultural_adaptation: CulturalAdaptation | null;
   }>) => void;
+  decisionLogs: DecisionLogEntry[];
+  isLoadingDecisions: boolean;
+  loadDecisionLogs: (resultId: string) => Promise<void>;
+  clearDecisionLogs: () => void;
 }
 
 export const useTranslationStore = create<TranslationState>((set) => ({
@@ -120,4 +125,19 @@ export const useTranslationStore = create<TranslationState>((set) => ({
       }
       return { results: { ...s.results, ...newResults } };
     }),
+  decisionLogs: [],
+  isLoadingDecisions: false,
+
+  loadDecisionLogs: async (resultId: string) => {
+    set({ isLoadingDecisions: true });
+    try {
+      const logs = await apiClient.getResultDecisions(resultId);
+      set({ decisionLogs: logs, isLoadingDecisions: false });
+    } catch (e) {
+      // 尽力而为 — 失败时显示空状态
+      set({ decisionLogs: [], isLoadingDecisions: false });
+    }
+  },
+
+  clearDecisionLogs: () => set({ decisionLogs: [] }),
 }));
