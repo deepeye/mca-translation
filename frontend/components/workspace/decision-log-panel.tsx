@@ -10,9 +10,11 @@ import { DecisionStageGroup } from "./decision-stage-group";
 
 const STAGE_ORDER = ["preprocess", "glossary", "translate", "risk", "suggestion"];
 
+// TODO(spec §6.8.3): implement <mark> click → expand panel + scrollIntoView on
+// matching risk entry (by target_phrase). Deferred — infrastructure (entryRefs,
+// registerEntryRef) is in place. Full linkage is out of scope for this fix pass.
 export function DecisionLogPanel() {
   const languages = useWorkspaceStore((s) => s.languages);
-  const jobId = useWorkspaceStore((s) => s.currentJobId);
   const [activeLang, setActiveLang] = useState(languages[0] || "en-GB");
   const results = useTranslationStore((s) => s.results);
   const decisionLogs = useTranslationStore((s) => s.decisionLogs);
@@ -20,6 +22,7 @@ export function DecisionLogPanel() {
   const loadDecisionLogs = useTranslationStore((s) => s.loadDecisionLogs);
   const clearDecisionLogs = useTranslationStore((s) => s.clearDecisionLogs);
   const [collapsed, setCollapsed] = useState(true);
+  // TODO(spec §6.8.3): entryRefs 用于将来的 <mark> 点击 → 滚动到对应风险条目
   const entryRefs = useRef<Map<string, HTMLElement | null>>(new Map());
 
   // Sync active lang with workspace languages

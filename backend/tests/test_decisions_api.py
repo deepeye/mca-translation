@@ -59,6 +59,9 @@ async def test_list_result_decisions_returns_logs(mock_user):
     assert len(data) == 1
     assert data[0]["stage"] == "risk"
     assert data[0]["confidence"] == "high"
+    # FastAPI 按序列化别名输出 metadata（而非 metadata_），承载 risk-linkage 数据
+    assert data[0]["metadata"] == {"risk_level": "high"}
+    assert "metadata_" not in data[0]
 
 
 @pytest.mark.asyncio

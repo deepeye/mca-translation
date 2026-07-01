@@ -1,4 +1,5 @@
 import asyncio
+import logging
 import uuid
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
@@ -17,6 +18,8 @@ from app.schemas.job import (
 from app.services.decision_log import save_decision_logs
 from app.services.suggestion import suggestion_service
 from app.tasks import run_translation
+
+logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/api/jobs", tags=["jobs"])
 
@@ -161,8 +164,7 @@ async def get_suggestions(
             result.decision_log_ids = existing
             await db.commit()
         except Exception as e:
-            import logging
-            logging.getLogger(__name__).warning(f"Suggestion decision log save failed: {e}")
+            logger.warning(f"Suggestion decision log save failed: {e}")
 
     return SuggestionResponse(suggestions=suggestions)
 

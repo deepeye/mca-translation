@@ -23,6 +23,9 @@ class DecisionLogResponse(BaseModel):
     reasoning: str
     confidence: str | None = None  # high / medium / low / None
     # ORM 模型上属性名为 metadata_（metadata 是 SQLAlchemy 保留属性），
-    # 用 alias 读取 ORM 实例的 metadata_，但对外 JSON key 仍为 metadata。
-    metadata: dict | None = Field(default=None, alias="metadata_")
+    # 用 alias 读取 ORM 实例的 metadata_（验证阶段，from_attributes），
+    # 用 serialization_alias 让对外 JSON key 仍为 metadata（FastAPI 响应序列化）。
+    metadata: dict | None = Field(
+        default=None, alias="metadata_", serialization_alias="metadata"
+    )
     created_at: datetime

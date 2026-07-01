@@ -48,3 +48,17 @@ def test_metadata_json_output_key_is_metadata():
     assert "metadata" in dumped
     assert dumped["metadata"] == {"risk_level": "high"}
     assert "metadata_" not in dumped
+
+
+def test_metadata_json_by_alias_emits_metadata():
+    """FastAPI 的 APIRoute 默认 response_model_by_alias=True，
+    所以 model_dump(by_alias=True) 必须输出 key metadata（而非 metadata_）。
+    这是 FastAPI 实际序列化响应的路径。"""
+    orm = _make_orm_instance()
+
+    response = DecisionLogResponse.model_validate(orm)
+    dumped = response.model_dump(by_alias=True)
+
+    assert "metadata" in dumped
+    assert dumped["metadata"] == {"risk_level": "high"}
+    assert "metadata_" not in dumped

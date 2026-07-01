@@ -136,7 +136,7 @@ export const useTranslationStore = create<TranslationState>((set) => ({
     try {
       const logs = await apiClient.getResultDecisions(resultId);
       set({ decisionLogs: logs, isLoadingDecisions: false });
-    } catch (e) {
+    } catch {
       // 尽力而为 — 失败时显示空状态
       set({ decisionLogs: [], isLoadingDecisions: false });
     }
