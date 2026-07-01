@@ -7,6 +7,7 @@ import { LanguageTabs } from "./language-tabs";
 import { TranslationResult } from "./translation-result";
 import { RiskDetailList } from "./risk-detail-list";
 import { ResultActions } from "./result-actions";
+import { DecisionLogPanel } from "./decision-log-panel";
 
 export function OutputPanel() {
   const languages = useWorkspaceStore((s) => s.languages);
@@ -24,6 +25,7 @@ export function OutputPanel() {
       <LanguageTabs activeLang={activeLang} onSwitch={setActiveLang} />
       <TranslationResult language={activeLang} />
       <RiskDetailList language={activeLang} jobId={jobId} />
+      <DecisionLogPanel />
       <div className="flex items-center justify-between">
         <span className="text-xs text-muted-foreground">
           {result?.status === "completed" && "转译完成"}
