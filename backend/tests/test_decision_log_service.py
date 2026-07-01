@@ -141,3 +141,10 @@ def test_stage_order_includes_cultural_detect():
     stages = [r.stage for r in ordered]
     # preprocess 与 cultural_detect 同序(0)，按 created_at 升序；glossary=1；risk=3
     assert stages == ["cultural_detect", "preprocess", "glossary", "risk"]
+
+
+@pytest.mark.asyncio
+async def test_acceptance_stage_ordered_after_suggestion(db):
+    from app.services.decision_log import _STAGE_ORDER
+    assert "acceptance" in _STAGE_ORDER
+    assert _STAGE_ORDER["acceptance"] > _STAGE_ORDER["suggestion"]
