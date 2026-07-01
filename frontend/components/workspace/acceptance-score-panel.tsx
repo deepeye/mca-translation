@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { useTranslationStore } from "@/stores/translation-store";
-import { useWorkspaceStore } from "@/stores/workspace-store";
 import { AcceptanceDimensionBar } from "./acceptance-dimension-bar";
 import { AcceptanceScoreSkeleton } from "./acceptance-score-skeleton";
 import { Button } from "@/components/ui/button";
@@ -19,9 +18,8 @@ const AUDIENCES: { key: AudienceBaseline; label: string }[] = [
 
 const RISK_LABEL: Record<string, string> = { high: "高", medium: "中", low: "低" };
 
-export function AcceptanceScorePanel() {
-  const languages = useWorkspaceStore((s) => s.languages);
-  const activeLang = languages[0] || "en-GB";
+export function AcceptanceScorePanel({ language }: { language: string }) {
+  const activeLang = language;
 
   const result = useTranslationStore((s) => s.results[activeLang]);
   const triggerFirstScoring = useTranslationStore((s) => s.triggerFirstScoring);
@@ -31,12 +29,12 @@ export function AcceptanceScorePanel() {
   // 折叠状态 — 默认展开（评分是首要反馈，转译完成即可见；区别于 DecisionLogPanel 默认折叠）
   const [collapsed, setCollapsed] = useState(false);
 
-  // 转译完成后自动首次评分（幂等：仅 completed + acceptanceScore===-1 + 未在评分中）
+  // 转译完成后自动首次评分（幂等：仅 completed + acceptanceScore===-1 + 未在评分中 + 未尝试过）
   useEffect(() => {
-    if (result?.status === "completed" && result.acceptanceScore === -1 && !result.isScoringAcceptance) {
+    if (result?.status === "completed" && result.acceptanceScore === -1 && !result.isScoringAcceptance && !result.firstScoringAttempted) {
       triggerFirstScoring(activeLang, result.audienceBaseline || "policy_media");
     }
-  }, [result?.status, result?.acceptanceScore, result?.isScoringAcceptance, activeLang, triggerFirstScoring]);
+  }, [result?.status, result?.acceptanceScore, result?.isScoringAcceptance, result?.firstScoringAttempted, activeLang, triggerFirstScoring]);
 
   // 切换语言时清空（新 lang 的评分由其自身 effect 触发）
   useEffect(() => {
@@ -67,7 +65,8 @@ export function AcceptanceScorePanel() {
 
   const handleAudienceSwitch = (ab: AudienceBaseline) => {
     if (scoring || ab === baseline) return;
-    triggerFirstScoring(activeLang, ab);
+    void triggerFirstScoring(activeLang, ab)
+      .then((ok) => { if (!ok) alert("受众基准切换失败"); });
   };
 
   return (

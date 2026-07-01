@@ -25,7 +25,7 @@ export function OutputPanel() {
     <div className="flex h-full flex-col gap-4">
       <LanguageTabs activeLang={activeLang} onSwitch={setActiveLang} />
       <TranslationResult language={activeLang} />
-      <AcceptanceScorePanel />
+      <AcceptanceScorePanel language={activeLang} />
       <RiskDetailList language={activeLang} jobId={jobId} />
       <DecisionLogPanel />
       <div className="flex items-center justify-between">

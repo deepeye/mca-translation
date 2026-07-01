@@ -98,7 +98,8 @@ function RiskDetailCard({
         acceptRisk(language, index, suggestion, result.translated_text, mapAnnotations(result.risk_annotations || []));
         setSuggestions(null);
         // 接受替换后触发接受度评分 delta 重算（失败保留旧分，不阻塞）
-        void useTranslationStore.getState().triggerDeltaScoring(language, index);
+        void useTranslationStore.getState().triggerDeltaScoring(language, index)
+          .then((ok) => { if (!ok) alert("评分刷新失败，已显示旧分"); });
       }
     } finally {
       setActionLoading(false);
@@ -126,7 +127,8 @@ function RiskDetailCard({
       const result = data.results?.find((r: { language: string }) => r.language === language);
       if (result) {
         revertRisk(language, index, result.translated_text, mapAnnotations(result.risk_annotations || []));
-        void useTranslationStore.getState().triggerDeltaScoring(language, index);
+        void useTranslationStore.getState().triggerDeltaScoring(language, index)
+          .then((ok) => { if (!ok) alert("评分刷新失败，已显示旧分"); });
       }
     } finally {
       setActionLoading(false);
@@ -334,7 +336,8 @@ export function RiskDetailList({ language, jobId }: { language: string; jobId: s
         acceptRisk(language, -1, "", resultData.translated_text, mapAnnotations(resultData.risk_annotations || []));
         // 多句改动 → 全文重算（首次评分端点），非单句 delta
         const ab = useTranslationStore.getState().results[language]?.audienceBaseline || "policy_media";
-        void useTranslationStore.getState().triggerFirstScoring(language, ab);
+        void useTranslationStore.getState().triggerFirstScoring(language, ab)
+          .then((ok) => { if (!ok) alert("评分刷新失败，已显示旧分"); });
       }
     } catch (err) {
       if (err instanceof Error && err.message.includes("409")) {

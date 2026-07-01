@@ -14,11 +14,6 @@ const state: Record<string, unknown> = {
 vi.mock("@/stores/translation-store", () => ({
   useTranslationStore: vi.fn((selector: (s: unknown) => unknown) => selector(state)),
 }));
-vi.mock("@/stores/workspace-store", () => ({
-  useWorkspaceStore: vi.fn((selector: (s: unknown) => unknown) =>
-    selector({ languages: ["en-GB"], currentJobId: "job-1" }),
-  ),
-}));
 
 function setState(patch: Record<string, unknown>) {
   const cur = (state.results as Record<string, object>)["en-GB"];
@@ -42,12 +37,12 @@ describe("AcceptanceScorePanel", () => {
 
   it("does not render when status != completed", () => {
     setState({ results: { "en-GB": { status: "streaming", translatedText: "Hello.", acceptanceScore: -1 } } });
-    const { container } = render(<AcceptanceScorePanel />);
+    const { container } = render(<AcceptanceScorePanel language="en-GB" />);
     expect(container.firstChild).toBeNull();
   });
 
   it("triggers first scoring on completed + score=-1 (idempotent)", async () => {
-    render(<AcceptanceScorePanel />);
+    render(<AcceptanceScorePanel language="en-GB" />);
     await waitFor(() => {
       expect(state.triggerFirstScoring).toHaveBeenCalledWith("en-GB", "policy_media");
     });
@@ -58,7 +53,7 @@ describe("AcceptanceScorePanel", () => {
 
   it("renders skeleton while scoring", () => {
     setState({ results: { "en-GB": { status: "completed", translatedText: "Hello.", acceptanceScore: -1, isScoringAcceptance: true } } });
-    const { container } = render(<AcceptanceScorePanel />);
+    const { container } = render(<AcceptanceScorePanel language="en-GB" />);
     expect(container.querySelectorAll(".animate-pulse").length).toBeGreaterThan(0);
   });
 
@@ -68,7 +63,7 @@ describe("AcceptanceScorePanel", () => {
       acceptanceDimensions: { audience: 20, cultural: 20, naturalness: 20, risk: 20 },
       acceptanceConfidence: 0.9, acceptanceTop3Risks: [], audienceBaseline: "policy_media",
     } } });
-    render(<AcceptanceScorePanel />);
+    render(<AcceptanceScorePanel language="en-GB" />);
     expect(screen.getByText("80")).toBeInTheDocument();
     expect(screen.getByText("受众匹配度")).toBeInTheDocument();
   });
@@ -79,15 +74,28 @@ describe("AcceptanceScorePanel", () => {
       acceptanceDimensions: { audience: 12, cultural: 13, naturalness: 12, risk: 13 },
       acceptanceConfidence: 0.2, acceptanceTop3Risks: [], audienceBaseline: "policy_media",
     } } });
-    render(<AcceptanceScorePanel />);
+    render(<AcceptanceScorePanel language="en-GB" />);
     expect(screen.getByText(/评分置信度低/)).toBeInTheDocument();
   });
 
   it("shows retry button on first-scoring failure (completed, -1, not scoring)", () => {
     setState({ results: { "en-GB": { status: "completed", translatedText: "Hello.", acceptanceScore: -1, isScoringAcceptance: false } } });
-    render(<AcceptanceScorePanel />);
+    render(<AcceptanceScorePanel language="en-GB" />);
     const retry = screen.getByText("重试");
     fireEvent.click(retry);
+    expect(state.triggerFirstScoring).toHaveBeenCalledWith("en-GB", "policy_media");
+  });
+
+  it("shows empty state + retry after first-scoring failure (no re-trigger)", async () => {
+    setState({ results: { "en-GB": { status: "completed", translatedText: "Hello.", acceptanceScore: -1, isScoringAcceptance: false, firstScoringAttempted: true } } });
+    render(<AcceptanceScorePanel language="en-GB" />);
+    // 失败后已尝试 → 空状态可见
+    expect(screen.getByText("接受度评分暂不可用")).toBeInTheDocument();
+    expect(screen.getByText("重试")).toBeInTheDocument();
+    // firstScoringAttempted=true → effect 不应再次自动触发
+    expect(state.triggerFirstScoring).not.toHaveBeenCalled();
+    // 点击重试 → 手动触发
+    fireEvent.click(screen.getByText("重试"));
     expect(state.triggerFirstScoring).toHaveBeenCalledWith("en-GB", "policy_media");
   });
 
@@ -97,7 +105,7 @@ describe("AcceptanceScorePanel", () => {
       acceptanceDimensions: { audience: 20, cultural: 20, naturalness: 20, risk: 20 },
       acceptanceConfidence: 0.9, acceptanceTop3Risks: [], audienceBaseline: "policy_media",
     } } });
-    render(<AcceptanceScorePanel />);
+    render(<AcceptanceScorePanel language="en-GB" />);
     fireEvent.click(screen.getByText("学术界"));
     expect(state.triggerFirstScoring).toHaveBeenCalledWith("en-GB", "academic");
   });
@@ -109,7 +117,7 @@ describe("AcceptanceScorePanel", () => {
       acceptanceConfidence: 0.9, acceptanceTop3Risks: [], audienceBaseline: "policy_media",
       isScoringAcceptance: true,
     } } });
-    render(<AcceptanceScorePanel />);
+    render(<AcceptanceScorePanel language="en-GB" />);
     expect(screen.getByText("主流媒体")).toBeDisabled();
   });
 
@@ -126,7 +134,7 @@ describe("AcceptanceScorePanel", () => {
       audienceBaseline: "policy_media",
     } } });
     const dispatchSpy = vi.spyOn(window, "dispatchEvent");
-    render(<AcceptanceScorePanel />);
+    render(<AcceptanceScorePanel language="en-GB" />);
     fireEvent.click(screen.getByText("c"));  // top3 first item = risk_index 2, phrase "c"
     expect(state.setResult).toHaveBeenCalledWith("en-GB", { highlightedIndex: 2 });
     expect(dispatchSpy).toHaveBeenCalled();
@@ -142,7 +150,7 @@ describe("AcceptanceScorePanel", () => {
       acceptanceDimensions: { audience: 20, cultural: 20, naturalness: 20, risk: 20 },
       acceptanceConfidence: 0.9, acceptanceTop3Risks: [], audienceBaseline: "policy_media",
     } } });
-    render(<AcceptanceScorePanel />);
+    render(<AcceptanceScorePanel language="en-GB" />);
     expect(screen.getByText(/非审计级，仅供参考/)).toBeInTheDocument();
   });
 
@@ -152,14 +160,14 @@ describe("AcceptanceScorePanel", () => {
       acceptanceDimensions: { audience: 20, cultural: 20, naturalness: 20, risk: 20 },
       acceptanceConfidence: 0.9, acceptanceTop3Risks: [], audienceBaseline: "policy_media",
     } } });
-    render(<AcceptanceScorePanel />);
+    render(<AcceptanceScorePanel language="en-GB" />);
     fireEvent.click(screen.getByText("主流媒体")); // 当前已激活的基准 — 应为 no-op
     expect(state.triggerFirstScoring).not.toHaveBeenCalled();
   });
 
   it("clears acceptance score when status is not completed", () => {
     setState({ results: { "en-GB": { status: "streaming", translatedText: "Hello.", acceptanceScore: -1 } } });
-    const { container } = render(<AcceptanceScorePanel />);
+    const { container } = render(<AcceptanceScorePanel language="en-GB" />);
     expect(container.firstChild).toBeNull();
     expect(state.clearAcceptanceScore).toHaveBeenCalledWith("en-GB");
   });

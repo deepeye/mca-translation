@@ -52,8 +52,22 @@ interface LangResult {
   acceptanceTop3Risks?: number[];
   audienceBaseline?: AudienceBaseline;
   isScoringAcceptance?: boolean;
+  firstScoringAttempted?: boolean;  // 首次评分是否已尝试（成功或失败均置 true，防止失败后 effect 死循环）
   highlightedIndex: number | null;
   culturalAdaptation: CulturalAdaptation | null;
+}
+
+// 把 AcceptanceScorePayload 合并进现有 LangResult（成功路径复用，避免 3 处重复）
+function mergeAcceptancePayload(existing: LangResult, payload: AcceptanceScorePayload, isScoring: boolean): LangResult {
+  return {
+    ...existing,
+    acceptanceScore: payload.total_score,
+    acceptanceDimensions: payload.dimensions,
+    acceptanceConfidence: payload.confidence,
+    acceptanceTop3Risks: payload.top3_risk_indices,
+    audienceBaseline: payload.audience_baseline,
+    isScoringAcceptance: isScoring,
+  };
 }
 
 interface TranslationState {
@@ -170,15 +184,7 @@ export const useTranslationStore = create<TranslationState>((set) => ({
       set((s) => {
         const existing = s.results[lang];
         if (!existing) return {};
-        return { results: { ...s.results, [lang]: {
-          ...existing,
-          acceptanceScore: payload.total_score,
-          acceptanceDimensions: payload.dimensions,
-          acceptanceConfidence: payload.confidence,
-          acceptanceTop3Risks: payload.top3_risk_indices,
-          audienceBaseline: payload.audience_baseline,
-          isScoringAcceptance: false,
-        } } };
+        return { results: { ...s.results, [lang]: { ...mergeAcceptancePayload(existing, payload, false), firstScoringAttempted: true } } };
       });
       return true;
     } catch (e) {
@@ -186,7 +192,7 @@ export const useTranslationStore = create<TranslationState>((set) => ({
       set((s) => {
         const existing = s.results[lang];
         if (!existing) return {};
-        return { results: { ...s.results, [lang]: { ...existing, isScoringAcceptance: false } } };
+        return { results: { ...s.results, [lang]: { ...existing, isScoringAcceptance: false, firstScoringAttempted: true } } };
       });
       return false;
     }
@@ -204,15 +210,7 @@ export const useTranslationStore = create<TranslationState>((set) => ({
       set((s) => {
         const existing = s.results[lang];
         if (!existing) return {};
-        return { results: { ...s.results, [lang]: {
-          ...existing,
-          acceptanceScore: payload.total_score,
-          acceptanceDimensions: payload.dimensions,
-          acceptanceConfidence: payload.confidence,
-          acceptanceTop3Risks: payload.top3_risk_indices,
-          audienceBaseline: payload.audience_baseline,
-          isScoringAcceptance: false,
-        } } };
+        return { results: { ...s.results, [lang]: mergeAcceptancePayload(existing, payload, false) } };
       });
       return true;
     } catch (e) {
@@ -229,15 +227,7 @@ export const useTranslationStore = create<TranslationState>((set) => ({
     set((s) => {
       const existing = s.results[lang];
       if (!existing) return {};
-      return { results: { ...s.results, [lang]: {
-        ...existing,
-        acceptanceScore: payload.total_score,
-        acceptanceDimensions: payload.dimensions,
-        acceptanceConfidence: payload.confidence,
-        acceptanceTop3Risks: payload.top3_risk_indices,
-        audienceBaseline: payload.audience_baseline,
-        isScoringAcceptance: false,
-      } } };
+      return { results: { ...s.results, [lang]: mergeAcceptancePayload(existing, payload, false) } };
     }),
   clearAcceptanceScore: (lang) =>
     set((s) => {
@@ -251,6 +241,7 @@ export const useTranslationStore = create<TranslationState>((set) => ({
         acceptanceTop3Risks: undefined,
         audienceBaseline: undefined,
         isScoringAcceptance: false,
+        firstScoringAttempted: false,
       } } };
     }),
 }));
