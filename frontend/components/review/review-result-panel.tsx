@@ -131,7 +131,7 @@ export function ReviewResultPanel() {
       </div>
 
       {/* Inline annotated text */}
-      <div className="flex-1 min-h-0 overflow-y-auto rounded-md border border-border bg-white p-3 text-sm leading-relaxed">
+      <div className="flex-1 min-h-0 overflow-y-auto rounded-md border border-border bg-white p-3 text-sm leading-relaxed" dir="auto">
         {content}
       </div>
 

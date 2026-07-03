@@ -140,7 +140,7 @@ export function TranslationResult({ language }: { language: string }) {
   return (
     <div className="h-full overflow-y-auto rounded-md border border-border bg-white p-3 text-sm leading-relaxed text-foreground">
       <CulturalAdaptationPanel language={language} />
-      <div className="whitespace-pre-wrap">{content}</div>
+      <div className="whitespace-pre-wrap" dir="auto">{content}</div>
     </div>
   );
 }

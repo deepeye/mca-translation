@@ -280,7 +280,7 @@ function RiskDetailCard({
         <div className="mt-1.5 flex flex-col gap-1">
           {suggestions.map((s, si) => (
             <div key={si} className="rounded border border-teal/20 bg-teal-lightest/60 p-2">
-              <p className="text-[11px] font-medium text-teal-dark">{s.text}</p>
+              <p className="text-[11px] font-medium text-teal-dark" dir="auto">{s.text}</p>
               <p className="text-[11px] text-muted-foreground mt-0.5">{s.reason}</p>
               <Button
                 variant="outline"
