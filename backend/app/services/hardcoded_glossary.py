@@ -10,6 +10,9 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
+import json
+import pathlib
+
 
 @dataclass
 class GlossaryTerm:
@@ -307,3 +310,34 @@ def format_glossary_block(
 
     lines.append("</glossary_terms>")
     return "\n".join(lines)
+
+
+_GENERATED_FILE = (
+    pathlib.Path(__file__).resolve().parent.parent / "data" / "glossary_translations_generated.json"
+)
+
+
+def apply_generated_translations(generated: dict) -> None:
+    """将 LLM 生成的译文合并入内存术语条目。手编译文优先，不被覆盖。
+
+    generated 结构：{source_term: {lang_code: {"rendering": str, "alternatives": [str], "notes": str}}}
+    """
+    for term in _HARDCODED_TERMS:
+        gen = generated.get(term.source_term, {})
+        if gen:
+            term.translations = {**gen, **term.translations}
+
+
+def _load_generated_translations() -> dict:
+    if not _GENERATED_FILE.exists():
+        return {}
+    try:
+        raw = json.loads(_GENERATED_FILE.read_text(encoding="utf-8"))
+    except (json.JSONDecodeError, OSError):
+        return {}
+    if isinstance(raw, dict) and "translations" in raw:
+        return raw["translations"]
+    return raw if isinstance(raw, dict) else {}
+
+
+apply_generated_translations(_load_generated_translations())
