@@ -2,7 +2,16 @@ import uuid
 from datetime import datetime
 from typing import Literal, Optional
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
+
+from app.constants.languages import is_supported_language
+
+
+def _validate_lang_code(code: str) -> str:
+    """校验 BCP-47 目标语言 code，未知则抛 ValueError（pydantic 转 422）。"""
+    if not is_supported_language(code):
+        raise ValueError(f"unsupported target language code: {code}")
+    return code
 
 
 class CulturalLoadedTerm(BaseModel):
@@ -26,6 +35,13 @@ class CreateJobRequest(BaseModel):
     target_languages: list[str]  # BCP-47 codes
     cultural_sphere: Optional[str] = None
     audience_type: Optional[str] = None
+
+    @field_validator("target_languages")
+    @classmethod
+    def _check_target_languages(cls, v: list[str]) -> list[str]:
+        for code in v:
+            _validate_lang_code(code)
+        return v
 
 
 class TranslationResultResponse(BaseModel):
@@ -72,17 +88,37 @@ class AcceptRiskRequest(BaseModel):
     suggestion: str
     lang: str
 
+    @field_validator("lang")
+    @classmethod
+    def _check_lang(cls, v: str) -> str:
+        return _validate_lang_code(v)
+
 
 class DismissRiskRequest(BaseModel):
     lang: str
+
+    @field_validator("lang")
+    @classmethod
+    def _check_lang(cls, v: str) -> str:
+        return _validate_lang_code(v)
 
 
 class RevertRiskRequest(BaseModel):
     lang: str
 
+    @field_validator("lang")
+    @classmethod
+    def _check_lang(cls, v: str) -> str:
+        return _validate_lang_code(v)
+
 
 class AcceptAllRequest(BaseModel):
     lang: str
+
+    @field_validator("lang")
+    @classmethod
+    def _check_lang(cls, v: str) -> str:
+        return _validate_lang_code(v)
 
 
 # ---- 接受度评分（acceptance scoring）请求/响应 ----
@@ -94,11 +130,21 @@ class AcceptanceScoreRequest(BaseModel):
     lang: str
     audience_baseline: Literal["policy_media", "academic", "social_media"] = "policy_media"
 
+    @field_validator("lang")
+    @classmethod
+    def _check_lang(cls, v: str) -> str:
+        return _validate_lang_code(v)
+
 
 class AcceptanceScoreDeltaRequest(BaseModel):
     """风险词替换后 delta 重算请求体（按 risk_index 定位被改句）。"""
     lang: str
     risk_index: int
+
+    @field_validator("lang")
+    @classmethod
+    def _check_lang(cls, v: str) -> str:
+        return _validate_lang_code(v)
 
 
 class AcceptanceScoreResponse(BaseModel):

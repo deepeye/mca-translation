@@ -75,3 +75,23 @@ def test_translation_result_response_cultural_adaptation_optional():
         created_at=datetime.now(timezone.utc),
     )
     assert resp.cultural_adaptation is None
+
+
+def test_create_job_request_rejects_unknown_language():
+    with pytest.raises(ValidationError):
+        CreateJobRequest(source_text="x", genre="political", target_languages=["xx-XX"])
+
+
+def test_create_job_request_accepts_all_18_languages():
+    from app.constants.languages import SUPPORTED_LANGUAGE_CODES
+    req = CreateJobRequest(
+        source_text="x", genre="political",
+        target_languages=list(SUPPORTED_LANGUAGE_CODES),
+    )
+    assert len(req.target_languages) == 18
+
+
+def test_accept_risk_request_rejects_unknown_lang():
+    from app.schemas.job import AcceptRiskRequest
+    with pytest.raises(ValidationError):
+        AcceptRiskRequest(suggestion="x", lang="xx-XX")

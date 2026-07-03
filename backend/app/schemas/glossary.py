@@ -2,8 +2,9 @@ import uuid
 from datetime import datetime
 from typing import Literal, Optional
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 
+from app.constants.languages import is_supported_language
 from app.constants.glossary_categories import SYSTEM_GLOSSARY_TERM_TYPES, USER_GLOSSARY_TERM_TYPES
 
 SystemGlossaryTermType = Literal[*SYSTEM_GLOSSARY_TERM_TYPES]
@@ -83,6 +84,13 @@ class GlossarySearchRequest(BaseModel):
     genre: Optional[str] = None
     strategy: str = "semantic_equivalence"
     top_k: int = 5
+
+    @field_validator("language")
+    @classmethod
+    def _check_language(cls, v: str) -> str:
+        if not is_supported_language(v):
+            raise ValueError(f"unsupported target language code: {v}")
+        return v
 
 
 class GlossarySearchResultItem(BaseModel):

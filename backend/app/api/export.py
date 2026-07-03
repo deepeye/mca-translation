@@ -1,10 +1,11 @@
 """Export API — download translations as .docx."""
 
 from fastapi import APIRouter, HTTPException
-from pydantic import BaseModel
+from pydantic import BaseModel, field_validator
 from fastapi.responses import Response
 
 from app.services.export_docx import generate_translation_docx
+from app.constants.languages import is_supported_language
 
 router = APIRouter(prefix="/api/export", tags=["export"])
 
@@ -14,6 +15,13 @@ class _ExportDocxRequest(BaseModel):
     translated_text: str
     risk_annotations: list[dict] = []
     language: str = "en-GB"
+
+    @field_validator("language")
+    @classmethod
+    def _check_language(cls, v: str) -> str:
+        if not is_supported_language(v):
+            raise ValueError(f"unsupported target language code: {v}")
+        return v
 
 
 @router.post("/docx")
