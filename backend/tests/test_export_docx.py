@@ -1,9 +1,12 @@
 """Tests for .docx export service."""
 
 import io
+from io import BytesIO
 
 import pytest
 from docx import Document as DocxDocument
+from docx import Document
+from docx.oxml.ns import qn
 
 
 @pytest.fixture
@@ -173,3 +176,27 @@ class TestExportApi:
         )
         assert resp.status_code == 200
         assert len(resp.content) > 0
+
+
+def test_docx_rtl_for_arabic_sets_bidi():
+    from app.services.export_docx import generate_translation_docx
+    data = generate_translation_docx(
+        source_text="测试", translated_text="اختبار", risk_annotations=[], language="ar"
+    )
+    doc = Document(BytesIO(data))
+    tr_paras = [p for p in doc.paragraphs if "اختبار" in p.text]
+    assert tr_paras, "translation paragraph not found"
+    pPr = tr_paras[0]._p.pPr
+    assert pPr is not None and pPr.find(qn("w:bidi")) is not None
+
+
+def test_docx_ltr_for_english_no_bidi():
+    from app.services.export_docx import generate_translation_docx
+    data = generate_translation_docx(
+        source_text="测试", translated_text="test", risk_annotations=[], language="en-GB"
+    )
+    doc = Document(BytesIO(data))
+    tr_paras = [p for p in doc.paragraphs if "test" in p.text]
+    assert tr_paras
+    pPr = tr_paras[0]._p.pPr
+    assert pPr is None or pPr.find(qn("w:bidi")) is None
