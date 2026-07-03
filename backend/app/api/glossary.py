@@ -6,6 +6,7 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.api.deps import get_current_user
+from app.constants.languages import SUPPORTED_LANGUAGE_CODES
 from app.core.database import get_db
 from app.llm.bailian import bailian_client
 from app.models.glossary import GlossaryEntry, UserGlossaryEntry
@@ -292,7 +293,7 @@ async def detect_terms(
     items = []
     for term in matched:
         trans = {}
-        for lang in ["en-GB", "de-DE", "ja-JP", "es-ES", "fr-FR"]:
+        for lang in SUPPORTED_LANGUAGE_CODES:
             t = get_term_translation(term, lang)
             if t["preferred"]:
                 trans[lang] = t
