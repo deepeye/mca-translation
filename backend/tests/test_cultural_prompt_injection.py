@@ -46,7 +46,7 @@ def test_prompt_without_cultural_constraints_omits_section():
         audience_type=None,
     )
     assert "<cultural_constraints>" not in prompt
-    assert "en-GB" in prompt
+    assert "English" in prompt
     assert "political" in prompt
 
 

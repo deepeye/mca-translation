@@ -14,6 +14,7 @@ from app.core.config import settings
 from app.llm.bailian import bailian_client
 from app.llm.prompts import ACCEPTANCE_SCORE_PROMPT
 from app.schemas.acceptance import DimensionScores, SentenceScore
+from app.constants.languages import language_descriptor
 
 logger = logging.getLogger(__name__)
 
@@ -108,7 +109,7 @@ class AcceptanceScorer:
 
     async def _one_sample(self, sentence_text, lang, audience_baseline, genre, cultural_sphere):
         prompt = ACCEPTANCE_SCORE_PROMPT.format(
-            target_language=lang,
+            target_language=language_descriptor(lang),
             audience_baseline=audience_baseline,
             genre=genre or "未指定",
             cultural_sphere=cultural_sphere or "未指定",

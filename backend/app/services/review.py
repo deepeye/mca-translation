@@ -6,6 +6,7 @@ from datetime import datetime
 from app.llm.bailian import bailian_client
 from app.llm.prompts import DUAL_REVIEW_PROMPT, SINGLE_REVIEW_PROMPT
 from app.schemas.review import ReviewCategory, ReviewIssue, ReviewResult
+from app.constants.languages import language_descriptor
 
 logger = logging.getLogger(__name__)
 
@@ -24,7 +25,7 @@ class ReviewService:
         prompt = DUAL_REVIEW_PROMPT.format(
             source_text=source_text,
             translated_text=translated_text,
-            target_language=target_language,
+            target_language=language_descriptor(target_language),
             audience=audience,
             cultural_sphere=cultural_sphere,
         )
@@ -42,7 +43,7 @@ class ReviewService:
     ) -> ReviewResult:
         prompt = SINGLE_REVIEW_PROMPT.format(
             translated_text=translated_text,
-            target_language=target_language,
+            target_language=language_descriptor(target_language),
             audience=audience,
             cultural_sphere=cultural_sphere,
         )

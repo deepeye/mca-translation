@@ -10,6 +10,7 @@ from app.llm.prompts import RISK_ANNOTATION_PROMPT, STRATEGY_DESCRIPTIONS, TRANS
 from app.schemas.job import CulturalPreprocessResult
 from app.services.cultural import cultural_preprocess
 from app.services.glossary_rag import retrieve_glossary_terms
+from app.constants.languages import language_descriptor
 
 logger = logging.getLogger(__name__)
 
@@ -31,7 +32,7 @@ def build_translation_system_prompt(
     """构建主翻译的 system prompt。可选注入 <cultural_constraints> 段。"""
     strategy_desc = STRATEGY_DESCRIPTIONS.get(strategy, STRATEGY_DESCRIPTIONS["semantic_equivalence"])
     base = TRANSLATION_SYSTEM_PROMPT.format(
-        target_language=target_language,
+        target_language=language_descriptor(target_language),
         genre=genre,
         strategy_description=strategy_desc,
     )
@@ -290,7 +291,7 @@ class TranslationPipeline:
 
     async def _risk_annotation(self, source_text: str, translated_text: str, target_language: str) -> list:
         prompt = RISK_ANNOTATION_PROMPT.format(
-            source_text=source_text, translated_text=translated_text, target_language=target_language
+            source_text=source_text, translated_text=translated_text, target_language=language_descriptor(target_language)
         )
         messages = [{"role": "user", "content": prompt}]
         try:
@@ -328,7 +329,7 @@ class TranslationPipeline:
         """
         strategy_desc = STRATEGY_DESCRIPTIONS.get(strategy, STRATEGY_DESCRIPTIONS["semantic_equivalence"])
         system_prompt = TRANSLATION_SYSTEM_PROMPT.format(
-            target_language=target_language, genre=genre, strategy_description=strategy_desc
+            target_language=language_descriptor(target_language), genre=genre, strategy_description=strategy_desc
         )
         messages = [
             {"role": "system", "content": system_prompt},

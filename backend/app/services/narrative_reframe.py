@@ -6,6 +6,7 @@ from pydantic import ValidationError
 from app.core.config import settings
 from app.llm.bailian import bailian_client
 from app.schemas.narrative_reframe import NarrativePreviewMode, NarrativeReframeAnalysis
+from app.constants.languages import language_descriptor
 
 
 def compute_text_hash(text: str) -> str:
@@ -93,6 +94,7 @@ class NarrativeReframeService:
         cultural_sphere: str | None,
         audience_type: str | None,
     ) -> str:
+        target_language = language_descriptor(target_language)
         return f"""请分析以下译文的叙事结构是否适合目标受众，并只输出 JSON。
 
 输出 schema:
@@ -137,6 +139,7 @@ class NarrativeReframeService:
         analysis: NarrativeReframeAnalysis,
         target_language: str,
     ) -> str:
+        target_language = language_descriptor(target_language)
         return f"""请根据叙事结构分析，对当前译文生成 light_cohesion 模式的重排预览。
 
 要求:

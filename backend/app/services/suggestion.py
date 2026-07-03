@@ -3,6 +3,7 @@ import logging
 
 from app.llm.bailian import bailian_client
 from app.llm.prompts import SUGGESTION_PROMPT
+from app.constants.languages import language_descriptor
 
 logger = logging.getLogger(__name__)
 
@@ -22,7 +23,7 @@ class SuggestionService:
         prompt = SUGGESTION_PROMPT.format(
             source_text=source_text,
             translated_text=translated_text,
-            target_language=target_language,
+            target_language=language_descriptor(target_language),
             phrase=phrase,
             risk_type=risk_type,
             explanation=explanation,
