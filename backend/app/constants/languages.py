@@ -18,7 +18,7 @@ _SCRIPT_NAMES: dict[str, str] = {
     "Thai": "Thai",
     "Grek": "Greek",
     "Deva": "Devanagari",
-    "Japn": "Japanese",
+    "Jpan": "Japanese",
 }
 
 
@@ -37,7 +37,7 @@ class LanguageInfo:
 SUPPORTED_LANGUAGES: list[LanguageInfo] = [
     LanguageInfo("en-GB", "英语(英)", "English", "Latn", "ltr", "western_english"),
     LanguageInfo("de-DE", "德语", "German", "Latn", "ltr", "european_continental"),
-    LanguageInfo("ja-JP", "日语", "Japanese", "Japn", "ltr", "east_asian_confucian"),
+    LanguageInfo("ja-JP", "日语", "Japanese", "Jpan", "ltr", "east_asian_confucian"),
     LanguageInfo("es-ES", "西班牙语", "Spanish", "Latn", "ltr", "latin_american"),
     LanguageInfo("fr-FR", "法语", "French", "Latn", "ltr", "european_continental"),
     LanguageInfo("ru-RU", "俄语", "Russian", "Cyrl", "ltr", "russian_sphere"),

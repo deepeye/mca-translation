@@ -164,7 +164,7 @@ _SCRIPT_NAMES: dict[str, str] = {
     "Thai": "Thai",
     "Grek": "Greek",
     "Deva": "Devanagari",
-    "Japn": "Japanese",
+    "Jpan": "Japanese",
 }
 
 
@@ -183,7 +183,7 @@ class LanguageInfo:
 SUPPORTED_LANGUAGES: list[LanguageInfo] = [
     LanguageInfo("en-GB", "英语(英)", "English", "Latn", "ltr", "western_english"),
     LanguageInfo("de-DE", "德语", "German", "Latn", "ltr", "european_continental"),
-    LanguageInfo("ja-JP", "日语", "Japanese", "Japn", "ltr", "east_asian_confucian"),
+    LanguageInfo("ja-JP", "日语", "Japanese", "Jpan", "ltr", "east_asian_confucian"),
     LanguageInfo("es-ES", "西班牙语", "Spanish", "Latn", "ltr", "latin_american"),
     LanguageInfo("fr-FR", "法语", "French", "Latn", "ltr", "european_continental"),
     LanguageInfo("ru-RU", "俄语", "Russian", "Cyrl", "ltr", "russian_sphere"),
@@ -564,7 +564,7 @@ export interface LanguageInfo {
 export const LANGUAGES: LanguageInfo[] = [
   { code: "en-GB", labelZh: "英语(英)", nameEn: "English", script: "Latn", direction: "ltr", affinitySphere: "western_english" },
   { code: "de-DE", labelZh: "德语", nameEn: "German", script: "Latn", direction: "ltr", affinitySphere: "european_continental" },
-  { code: "ja-JP", labelZh: "日语", nameEn: "Japanese", script: "Japn", direction: "ltr", affinitySphere: "east_asian_confucian" },
+  { code: "ja-JP", labelZh: "日语", nameEn: "Japanese", script: "Jpan", direction: "ltr", affinitySphere: "east_asian_confucian" },
   { code: "es-ES", labelZh: "西班牙语", nameEn: "Spanish", script: "Latn", direction: "ltr", affinitySphere: "latin_american" },
   { code: "fr-FR", labelZh: "法语", nameEn: "French", script: "Latn", direction: "ltr", affinitySphere: "european_continental" },
   { code: "ru-RU", labelZh: "俄语", nameEn: "Russian", script: "Cyrl", direction: "ltr", affinitySphere: "russian_sphere" },
