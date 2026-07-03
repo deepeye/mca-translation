@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import { affinitySphereFor } from "@/lib/languages";
 
 export type Genre = "political" | "news" | "policy" | "brand";
 export type Strategy = "semantic_equivalence" | "audience_first" | "literal_reference";
@@ -39,6 +40,7 @@ interface WorkspaceInput {
 interface WorkspaceState {
   input: WorkspaceInput;
   languages: string[];
+  sphereTouched: boolean;
   isTranslating: boolean;
   currentJobId: string | null;
   upload: UploadState;
@@ -82,6 +84,7 @@ const initialState = {
     audienceType: "general_public" as AudienceType,
   },
   languages: ["en-GB"],
+  sphereTouched: false,
   isTranslating: false,
   currentJobId: null as string | null,
   upload: initialUploadState,
@@ -92,9 +95,22 @@ export const useWorkspaceStore = create<WorkspaceState>((set) => ({
   setText: (text) => set((s) => ({ input: { ...s.input, text } })),
   setGenre: (genre) => set((s) => ({ input: { ...s.input, genre } })),
   setStrategy: (strategy) => set((s) => ({ input: { ...s.input, strategy } })),
-  setCulturalSphere: (culturalSphere) => set((s) => ({ input: { ...s.input, culturalSphere } })),
+  setCulturalSphere: (culturalSphere) =>
+    set((s) => ({ input: { ...s.input, culturalSphere }, sphereTouched: true })),
   setAudienceType: (audience) => set((s) => ({ input: { ...s.input, audienceType: audience } })),
-  setLanguages: (languages) => set({ languages }),
+  setLanguages: (languages) =>
+    set((s) => {
+      const next: { languages: string[]; input?: typeof s.input } = { languages };
+      if (!s.sphereTouched && languages.length > 0) {
+        const affinity = languages
+          .map((code) => affinitySphereFor(code))
+          .find((a): a is string => a !== null);
+        if (affinity) {
+          next.input = { ...s.input, culturalSphere: affinity as CulturalSphere };
+        }
+      }
+      return next;
+    }),
   setIsTranslating: (isTranslating) => set({ isTranslating }),
   setCurrentJobId: (currentJobId) => set({ currentJobId }),
   loadFromHistory: (job) =>
@@ -107,6 +123,7 @@ export const useWorkspaceStore = create<WorkspaceState>((set) => ({
         audienceType: (job.audience_type || "general_public") as AudienceType,
       },
       languages: job.target_languages,
+      sphereTouched: true,
       currentJobId: job.id,
       isTranslating: false,
     }),

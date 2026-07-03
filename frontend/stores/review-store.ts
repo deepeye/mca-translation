@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import { affinitySphereFor } from "@/lib/languages";
 
 export type ReviewMode = "dual" | "single";
 export type ReviewSeverity = "low" | "medium" | "high";
@@ -44,6 +45,7 @@ interface ReviewState {
   highlightedIssueIndex: number | null;
   isLoading: boolean;
   error: string | null;
+  sphereTouched: boolean;
 
   setMode: (mode: ReviewMode) => void;
   setSourceText: (text: string) => void;
@@ -71,6 +73,7 @@ const initialState = {
   highlightedIssueIndex: null as number | null,
   isLoading: false,
   error: null as string | null,
+  sphereTouched: false,
 };
 
 export const useReviewStore = create<ReviewState>((set) => ({
@@ -78,9 +81,17 @@ export const useReviewStore = create<ReviewState>((set) => ({
   setMode: (mode) => set({ mode }),
   setSourceText: (text) => set({ sourceText: text }),
   setTranslatedText: (text) => set({ translatedText: text }),
-  setTargetLanguage: (lang) => set({ targetLanguage: lang }),
+  setTargetLanguage: (lang) =>
+    set((s) => {
+      const next: { targetLanguage: string; culturalSphere?: string } = { targetLanguage: lang };
+      const affinity = affinitySphereFor(lang);
+      if (!s.sphereTouched && affinity) {
+        next.culturalSphere = affinity;
+      }
+      return next;
+    }),
   setGenre: (genre) => set({ genre }),
-  setCulturalSphere: (sphere) => set({ culturalSphere: sphere }),
+  setCulturalSphere: (sphere) => set({ culturalSphere: sphere, sphereTouched: true }),
   setAudienceType: (audience) => set({ audienceType: audience }),
   setResult: (result) => set({ result }),
   setHighlightedIssue: (index) => set({ highlightedIssueIndex: index }),
