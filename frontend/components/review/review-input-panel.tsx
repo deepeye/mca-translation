@@ -3,14 +3,7 @@
 import { useReviewStore } from "@/stores/review-store";
 import { apiClient } from "@/lib/api-client";
 import { Button } from "@/components/ui/button";
-
-const AVAILABLE_LANGUAGES = [
-  { code: "en-GB", label: "英语(英)" },
-  { code: "de-DE", label: "德语" },
-  { code: "ja-JP", label: "日语" },
-  { code: "es-ES", label: "西班牙语" },
-  { code: "fr-FR", label: "法语" },
-];
+import { LANGUAGES } from "@/lib/languages";
 
 const GENRES = [
   { value: "political", label: "政治话语" },
@@ -127,8 +120,8 @@ export function ReviewInputPanel() {
             onChange={(e) => store.setTargetLanguage(e.target.value)}
             className="rounded border border-border bg-white px-2 py-1 text-xs text-foreground"
           >
-            {AVAILABLE_LANGUAGES.map((l) => (
-              <option key={l.code} value={l.code}>{l.label}</option>
+            {LANGUAGES.map((l) => (
+              <option key={l.code} value={l.code}>{l.labelZh}</option>
             ))}
           </select>
         </div>

@@ -1,10 +1,7 @@
 "use client";
 
 import { useWorkspaceStore } from "@/stores/workspace-store";
-
-const LANGUAGE_LABELS: Record<string, string> = {
-  "en-GB": "英语(英)", "de-DE": "德语", "ja-JP": "日语", "es-ES": "西班牙语", "fr-FR": "法语",
-};
+import { LANGUAGE_LABELS } from "@/lib/languages";
 
 export function LanguageTabs({ activeLang, onSwitch }: { activeLang: string; onSwitch: (lang: string) => void }) {
   const languages = useWorkspaceStore((s) => s.languages);

@@ -12,14 +12,7 @@ import { apiClient } from "@/lib/api-client";
 import { wsClient } from "@/lib/ws-client";
 import { Button } from "@/components/ui/button";
 import { isLiteralMode } from "@/lib/translation-conflicts";
-
-const AVAILABLE_LANGUAGES = [
-  { code: "en-GB", label: "英语(英)" },
-  { code: "de-DE", label: "德语" },
-  { code: "ja-JP", label: "日语" },
-  { code: "es-ES", label: "西班牙语" },
-  { code: "fr-FR", label: "法语" },
-];
+import { LANGUAGES } from "@/lib/languages";
 
 export function InputPanel() {
   const store = useWorkspaceStore();
@@ -112,7 +105,7 @@ export function InputPanel() {
       <TextEditor />
       <StrategySelector />
       <div className="flex flex-wrap gap-1.5">
-        {AVAILABLE_LANGUAGES.map((l) => (
+        {LANGUAGES.map((l) => (
           <button
             key={l.code}
             onClick={() => toggleLanguage(l.code)}
@@ -120,7 +113,7 @@ export function InputPanel() {
               store.languages.includes(l.code) ? "bg-terracotta text-white" : "bg-muted text-muted-foreground hover:bg-teal-lightest"
             }`}
           >
-            {l.label}
+            {l.labelZh}
           </button>
         ))}
       </div>
