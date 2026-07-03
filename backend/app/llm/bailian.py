@@ -25,7 +25,7 @@ class BailianClient:
             "messages": messages,
             "temperature": temperature,
         }
-        async with httpx.AsyncClient(timeout=60.0) as client:
+        async with httpx.AsyncClient(timeout=180.0) as client:
             resp = await client.post(f"{self.base_url}/chat/completions", json=payload, headers=headers)
             resp.raise_for_status()
             data = resp.json()
