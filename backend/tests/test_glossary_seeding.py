@@ -16,10 +16,11 @@ def _term(source_term):
 def test_apply_generated_translations_merges_new_language():
     original = {t.source_term: dict(t.translations) for t in _HARDCODED_TERMS}
     try:
-        gen = {"五位一体": {"ru-RU": {"rendering": "Пять сфер", "alternatives": [], "notes": "x"}}}
+        # 用虚构 code xx-XX 隔离测试，避免与已加载的 JSON 生成译文冲突
+        gen = {"五位一体": {"xx-XX": {"rendering": "TEST_RENDERING", "alternatives": [], "notes": "x"}}}
         apply_generated_translations(gen)
-        info = get_term_translation(_term("五位一体"), "ru-RU")
-        assert info["preferred"] == "Пять сфер"
+        info = get_term_translation(_term("五位一体"), "xx-XX")
+        assert info["preferred"] == "TEST_RENDERING"
     finally:
         for t in _HARDCODED_TERMS:
             t.translations = original[t.source_term]

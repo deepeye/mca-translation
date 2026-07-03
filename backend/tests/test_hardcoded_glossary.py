@@ -63,7 +63,7 @@ def test_get_term_translation_semantic_default():
 
 def test_get_term_translation_unknown_language():
     term = _term_by_source["以人民为中心"]
-    info = get_term_translation(term, "fr-FR")
+    info = get_term_translation(term, "xx-XX")
     assert info["preferred"] == ""
     assert info["alternatives"] == []
 

@@ -1,0 +1,1953 @@
+{
+  "_comment": "LLM 生成的政治术语译文基线，待人工校对。结构：{source_term: {lang_code: {rendering, alternatives, notes}}}。手编译文优先。",
+  "translations": {
+    "五位一体": {
+      "ja-JP": {
+        "rendering": "五つの一体的総合計画",
+        "alternatives": [
+          "五領域一体型総合計画",
+          "五位一体総合戦略"
+        ],
+        "notes": "中国共産党の公式政策用語。日本語訳は「五つの」を明示し、構成要素（経済・政治・文化・社会・生態文明）を含意させる必要があるが、訳語内に具体化は避ける。直訳調の「五位一体」単独使用は不適切。"
+      },
+      "es-ES": {
+        "rendering": "Plan integral de cinco ámbitos",
+        "alternatives": [
+          "Plan integral de cinco dimensiones",
+          "Estrategia integral de cinco esferas"
+        ],
+        "notes": "‘五位一体’是中共十八大提出的总体布局，指经济建设、政治建设、文化建设、社会建设、生态文明建设五位一体；翻译需避免直译‘five positions’引发歧义，强调‘integral’和‘ámbitos’的系统性；西班牙语中‘ámbitos’比‘esferas’更常用且中性。"
+      },
+      "fr-FR": {
+        "rendering": "plan intégré à cinq volets",
+        "alternatives": [
+          "plan global à cinq dimensions",
+          "stratégie globale à cinq sphères"
+        ],
+        "notes": "官方法译固定为« plan intégré à cinq volets »；避免直译« cinq unités »，易引发概念混淆。"
+      },
+      "ru-RU": {
+        "rendering": "Пятикомпонентный комплексный план",
+        "alternatives": [
+          "Пятисторонний общий план",
+          "Пятиаспектный всеобъемлющий план"
+        ],
+        "notes": "官方译法强调‘五位’为政治、经济、文化、社会、生态文明五个领域，俄译需避免误译为‘五位领导人’等歧义；‘一体’指有机统一，不可直译为‘один корпус’。"
+      },
+      "ar": {
+        "rendering": "خطة شاملة من خمسة محاور",
+        "alternatives": [
+          "خطة وطنية متكاملة من خمسة أبعاد",
+          "مخطط خماسي متكامل"
+        ],
+        "notes": "‘五位一体’是中共十八大提出的总体布局，指经济建设、政治建设、文化建设、社会建设、生态文明建设五位一体。翻译需避免字面直译‘خمسة في واحد’，强调系统性与整体性；阿拉伯语中‘محور’较‘بعد’更常用且政治语境适配度高。"
+      },
+      "ko-KR": {
+        "rendering": "오위일체",
+        "alternatives": [
+          "오대분야 종합계획",
+          "오대영역 통합발전 전략"
+        ],
+        "notes": "중국 공산당의 정책 용어로, 경제·정치·문화·사회·생태문명을 통합적으로 추진하는 전략을 가리킴. '오위일체'는 중국 내 공식 번역으로 널리 사용되며, 직역보다는 개념적 일관성을 우선시해야 함."
+      },
+      "pt-BR": {
+        "rendering": "Plano Integral de Cinco Dimensões",
+        "alternatives": [
+          "Plano Geral de Cinco Esferas",
+          "Estratégia Integral de Cinco Domínios"
+        ],
+        "notes": "‘五位一体’是中共十八大提出的总体布局，指经济建设、政治建设、文化建设、社会建设、生态文明建设五位一体；译法需体现系统性与整体性，避免拆解为孤立概念。"
+      },
+      "sw-KE": {
+        "rendering": "Miongozo ya Jumla ya Sita",
+        "alternatives": [
+          "Miongozo ya Jumla ya Nane",
+          "Miongozo ya Jumla ya Tano"
+        ],
+        "notes": "‘Sita’ ni kwa sababu ya uwekezaji wa ‘uchumi’, ‘kijamii’, ‘mazingira’, ‘kisiasa’, na ‘kiroho’ kama sehemu za mfumo wa kujumuisha; ‘Tano’ inaweza kusababisha ufanisi wa uhamisho wa mafundisho ya Kiingereza, hivyo inapaswa kuwa na maelezo ya kisayansi."
+      },
+      "it-IT": {
+        "rendering": "Piano integrato a cinque livelli",
+        "alternatives": [
+          "Piano complessivo a cinque dimensioni",
+          "Modello integrato a cinque sfere"
+        ],
+        "notes": "‘Cinque livelli’ è preferito in contesti ufficiali italiani per evitare ambiguità con ‘sfere’ (che potrebbe richiamare concezioni filosofiche o religiose); evitare traduzioni letterali come ‘cinque unità’ che risultano oscure."
+      },
+      "kk-KZ": {
+        "rendering": "Бес бағытты жалпы жоспар",
+        "alternatives": [
+          "Бес салалы жалпы жоспар",
+          "Бес құрамдас бөліктен тұратын жалпы жоспар"
+        ],
+        "notes": "‘五位’指经济、政治、文化、社会、生态文明建设，译文需体现系统性与整体性，避免字面直译为‘бес орын’等易引发歧义的表达。"
+      },
+      "th-TH": {
+        "rendering": "แผนภาพรวมห้าด้าน",
+        "alternatives": [
+          "แผนภาพรวมห้ามิติ",
+          "แผนยุทธศาสตร์ห้าด้าน"
+        ],
+        "notes": "ควรหลีกเลี่ยงการแปลแบบตัวต่อตัว (เช่น 'ห้าหน่วยงาน') ซึ่งอาจทำให้เข้าใจผิดว่าเป็นสถาบันหรือองค์กร; ต้องสื่อสารแนวคิด 'ภาพรวม' และ 'ความเชื่อมโยงแบบบูรณาการ'"
+      },
+      "ms-MY": {
+        "rendering": "Rancangan Keseluruhan Lima Dimensi",
+        "alternatives": [
+          "Rancangan Komprehensif Lima Aspek",
+          "Rancangan Terpadu Lima Bidang"
+        ],
+        "notes": "需避免直译'Five-in-One'，因该短语在马来语政治语境中易被误解为机械叠加；应强调'keseluruhan'（整体性）与'lima dimensi'（经济、政治、文化、社会、生态文明）的有机统一。"
+      },
+      "el-GR": {
+        "rendering": "Πενταπλό Ολοκληρωμένο Σχέδιο",
+        "alternatives": [
+          "Πενταπλό Σύνολο",
+          "Πενταπλή Ολοκληρωμένη Προσέγγιση"
+        ],
+        "notes": "‘五位一体’是中共十八大提出的总体布局，指经济建设、政治建设、文化建设、社会建设、生态文明建设五位一体。希腊语译法需避免字面直译（如‘πέντε θέσεις’）引发歧义；‘Πενταπλό Ολοκληρωμένο Σχέδιο’为官方文件常用译法，强调系统性与整体性。"
+      },
+      "vi-VN": {
+        "rendering": "Kế hoạch tổng thể năm trụ cột",
+        "alternatives": [
+          "Kế hoạch tổng thể năm lĩnh vực",
+          "Chiến lược phát triển toàn diện năm phương diện"
+        ],
+        "notes": "Thuật ngữ chính trị quan trọng, cần giữ tính hệ thống và tính chính thống; tránh dịch theo nghĩa đen như 'năm vị trí nhất thể' gây hiểu nhầm."
+      },
+      "ur-PK": {
+        "rendering": "پانچ شعبوں کا جامع منصوبہ",
+        "alternatives": [
+          "پانچ جامع شعبے",
+          "پانچ جہتی جامع منصوبہ"
+        ],
+        "notes": "官方术语，需严格对应‘经济、政治、文化、社会、生态文明’五领域；避免简化为‘五方面’等模糊表述。"
+      },
+      "hi-IN": {
+        "rendering": "पाँच-क्षेत्रीय समग्र योजना",
+        "alternatives": [
+          "पाँच-आयामी समग्र योजना",
+          "पाँच-प्रवर्तक समग्र योजना"
+        ],
+        "notes": "‘पाँच-क्षेत्रीय’ शब्द का प्रयोग आर्थिक, राजनीतिक, सामाजिक, सांस्कृतिक और पर्यावरणीय क्षेत्रों के संदर्भ में है; ‘एकीकृत’ या ‘समन्वित’ जैसे शब्दों का प्रयोग अस्पष्टता या गलत व्याख्या का कारण बन सकता है।"
+      }
+    },
+    "以人民为中心": {
+      "ja-JP": {
+        "rendering": "人民中心主義",
+        "alternatives": [
+          "人民を中心とした発展思想",
+          "人民本位"
+        ],
+        "notes": "「人民中心主義」は中国共産党の核心理念として定着した和製漢語訳。誤解を招く「人本主義」との混同を避けるため、「人民」を明記する必要あり。政治的文脈では「主義」表記が必須。"
+      },
+      "es-ES": {
+        "rendering": "centrado en el pueblo",
+        "alternatives": [
+          "orientado al pueblo",
+          "con el pueblo como centro"
+        ],
+        "notes": "该表述强调人民主体地位，非西方语境下‘people-centered’易被误读为个人主义；西语‘centrado en el pueblo’符合拉美左翼话语习惯，但需注意避免与‘populismo’混淆；建议搭配上下文明确其制度性内涵。"
+      },
+      "fr-FR": {
+        "rendering": "centré sur le peuple",
+        "alternatives": [
+          "orienté vers le peuple",
+          "fondé sur le peuple"
+        ],
+        "notes": "需与西方« people-centered »话语区分，强调人民主体性而非服务对象；避免使用« human-centered »等泛化表述。"
+      },
+      "ru-RU": {
+        "rendering": "Ориентация на народ",
+        "alternatives": [
+          "Народоцентричный подход",
+          "Центр — народ"
+        ],
+        "notes": "‘以人民为中心’是核心政治表述，俄译须体现价值主体性，避免使用中性词如‘с участием народа’；不可简化为‘народная политика’。"
+      },
+      "ar": {
+        "rendering": "مركزية الشعب",
+        "alternatives": [
+          "التركيز على الشعب",
+          "وضع الشعب في المقام الأول"
+        ],
+        "notes": "该表述体现执政理念核心，‘مركزية’为最简练、权威译法，常见于阿盟及联合国文件；避免使用‘شعبوي’（populist）等含贬义词；‘التركيز على’虽达意但弱化了哲学本体论意味。"
+      },
+      "ko-KR": {
+        "rendering": "인민 중심",
+        "alternatives": [
+          "인민을 중심으로 한 발전 사상",
+          "인민 본위"
+        ],
+        "notes": "중국 공산당의 핵심 이념 중 하나로, 정치·경제·사회 정책 전반에 적용됨. '인민'은 한국어에서 '국민'과 혼동될 수 있으나, 중국 맥락에서는 당과 국가가 대표하는 집단적 주체를 의미함."
+      },
+      "pt-BR": {
+        "rendering": "centrado no povo",
+        "alternatives": [
+          "orientado para o povo",
+          "com o povo no centro"
+        ],
+        "notes": "该表述强调人民主体地位，非单纯‘以人为本’（human-centered），须区别于西方人本主义语境；‘povo’在中文政治语境中特指作为整体的人民群众，不可替换为‘indivíduos’或‘cidadãos’。"
+      },
+      "sw-KE": {
+        "rendering": "Kiwango cha Watu",
+        "alternatives": [
+          "Kiwango cha Kila Mtu",
+          "Ushirikiano wa Watu"
+        ],
+        "notes": "Hakuna mlinganyo wa moja kwa moja na ‘people-centered’ ya Kiingereza; ‘Kiwango cha Watu’ inaonyesha uwezo wa watu kushiriki katika uamuzi bila kutaja ‘kuwajibika’ au ‘utawala’, ambayo inaweza kuhusiana na misingi ya utawala wa kisiasa."
+      },
+      "it-IT": {
+        "rendering": "centrato sul popolo",
+        "alternatives": [
+          "orientato al popolo",
+          "focalizzato sul benessere del popolo"
+        ],
+        "notes": "‘Centrato sul popolo’ è la formula consolidata nelle traduzioni ufficiali italiane dell’ambasciata cinese; evitare ‘popolo-centrico’, termine non esistente in italiano e potenzialmente associabile a ideologie critiche."
+      },
+      "kk-KZ": {
+        "rendering": "Халыққа негізделген",
+        "alternatives": [
+          "Халық орталығында",
+          "Халықтың басымдығы"
+        ],
+        "notes": "强调人民主体地位，不可译为‘халықтың ортасында’（字面中心），应体现价值取向和政策导向。"
+      },
+      "th-TH": {
+        "rendering": "มุ่งเน้นประชาชนเป็นศูนย์กลาง",
+        "alternatives": [
+          "ประชาชนเป็นศูนย์กลาง",
+          "ยึดประชาชนเป็นหลัก"
+        ],
+        "notes": "ไม่ควรแปลว่า 'ประชาธิปไตยแบบประชาชนเป็นศูนย์กลาง' เพราะอาจถูกตีความเชื่อมโยงกับแนวคิดทางการเมืองตะวันตกที่แตกต่าง; ต้องคงน้ำหนักของ 'การวางประชาชนเป็นจุดเริ่มต้นและจุดหมายปลายทางของนโยบาย'"
+      },
+      "ms-MY": {
+        "rendering": "berpusat pada rakyat",
+        "alternatives": [
+          "berorientasi kepada rakyat",
+          "berfokus pada kesejahteraan rakyat"
+        ],
+        "notes": "不可译作'people-centric'（含西方个人主义暗示），'berpusat pada rakyat'是官方标准译法，强调人民作为发展主体和价值归宿，非简单服务对象。"
+      },
+      "el-GR": {
+        "rendering": "Κεντρική θέση του λαού",
+        "alternatives": [
+          "Λαοκεντρικότητα",
+          "Με τον λαό ως κέντρο"
+        ],
+        "notes": "该表述体现执政理念核心，非字面‘people-centered’直译（如‘κεντραρισμένο στον λαό’易被误解为方法论倾向）。‘Κεντρική θέση του λαού’系中国驻希使馆及希腊主流媒体采用译法，强调人民在治国理政中的根本地位。"
+      },
+      "vi-VN": {
+        "rendering": "lấy nhân dân làm trung tâm",
+        "alternatives": [
+          "lấy con người làm trung tâm",
+          "lấy người dân làm trọng tâm"
+        ],
+        "notes": "Không được dịch thành 'people-centered' theo tiếng Anh vì dễ gây liên tưởng đến chủ nghĩa cá nhân hoặc tư tưởng phương Tây; phải nhấn mạnh tính tập thể và vai trò lãnh đạo của Đảng."
+      },
+      "ur-PK": {
+        "rendering": "عوام مرکزی حیثیت رکھتے ہیں",
+        "alternatives": [
+          "عوام پر مبنی",
+          "عوام کو مرکز بنانا"
+        ],
+        "notes": "强调人民主体性，不可译为‘以民为本’（易与儒家概念混淆）或弱化动词性；避免宗教语境联想。"
+      },
+      "hi-IN": {
+        "rendering": "लोगों को केंद्र में रखना",
+        "alternatives": [
+          "लोग-केंद्रित",
+          "जन-केंद्रित दृष्टिकोण"
+        ],
+        "notes": "‘लोगों को केंद्र में रखना’ अधिकारिक भाषा में प्रचलित है; ‘जनता-केंद्रित’ या ‘जन-केंद्रित’ जैसे शब्दों का प्रयोग राजनीतिक संदर्भ में संवेदनशील हो सकता है।"
+      }
+    },
+    "新型举国体制": {
+      "ja-JP": {
+        "rendering": "新時代の国家総動員体制",
+        "alternatives": [
+          "国家主導型総合動員制度",
+          "新形態国家協調体制"
+        ],
+        "notes": "「举国体制」は中国特有の政治概念で、単なる「国家体制」や「官民連携」では不十分。「総動員」は軍事的ニュアンスを含むため、文脈に応じて「協調」「統合」などの補足説明が必要な場合あり。"
+      },
+      "es-ES": {
+        "rendering": "sistema nacional coordinado por el Estado",
+        "alternatives": [
+          "modelo estatal de movilización nacional",
+          "sistema estatal de coordinación integral"
+        ],
+        "notes": "‘举国体制’特指中国集中力量办大事的制度优势，直译‘sistema nacional unificado’易被误解为极权体制；‘coordinado por el Estado’突出组织性与合法性，规避‘mobilización’一词在拉美可能唤起的负面历史联想。"
+      },
+      "fr-FR": {
+        "rendering": "système national coordonné par l'État",
+        "alternatives": [
+          "mécanisme national unifié piloté par l'État",
+          "système de mobilisation nationale centralisée"
+        ],
+        "notes": "忌直译« nouveau système national »或« système de tous les citoyens »；须体现国家主导性与制度化协同特征。"
+      },
+      "ru-RU": {
+        "rendering": "Новая государственная система мобилизации ресурсов",
+        "alternatives": [
+          "Государственно координируемая национальная мобилизационная система",
+          "Инновационная система всенациональной координации"
+        ],
+        "notes": "‘举国体制’特指中国集中力量办大事的制度优势，俄译需区别于一般‘национальная система’，强调国家主导性与资源统筹性；避免使用带有军事色彩的‘мобилизация’单独出现。"
+      },
+      "ar": {
+        "rendering": "نظام وطني منسق من قبل الدولة",
+        "alternatives": [
+          "آلية وطنية موحدة بقيادة الدولة",
+          "نظام تعبئة وطنية حكومي متكامل"
+        ],
+        "notes": "‘举国体制’特指中国集中力量办大事的制度优势，不可直译为‘نظام يشمل الأمة بأكملها’（易引发泛民族主义联想）；‘منسق من قبل الدولة’准确传达‘state-coordinated’内涵，规避‘تعبئة’（mobilization）在阿拉伯语中潜在的军事/紧急状态联想。"
+      },
+      "ko-KR": {
+        "rendering": "신형 전국 체제",
+        "alternatives": [
+          "국가 주도 전국 동원 체계",
+          "국가 조율형 전국 협력 체제"
+        ],
+        "notes": "중국 특유의 국가 주도 자원 동원 모델을 지칭하며, '전국 체제'는 한국어에서 과도한 중앙집권 이미지를 유발할 수 있음. '신형'은 기존 계획경제 체제와의 차별성을 강조하므로 번역 시 역사적 맥락 주의 필요."
+      },
+      "pt-BR": {
+        "rendering": "sistema nacional de mobilização coordenado pelo Estado",
+        "alternatives": [
+          "modelo nacional inovador de coordenação estatal",
+          "sistema estatal de mobilização nacional integrada"
+        ],
+        "notes": "指在关键领域（如科技攻关）由国家主导、跨部门协同的组织机制；‘举国体制’不宜直译为‘sistema nacional unificado’或‘sistema totalitário’，易引发意识形态误读；须突出‘coordenação’与‘mobilização estratégica’。"
+      },
+      "sw-KE": {
+        "rendering": "Mfumo wa Uhamisho wa Taifa wa Kipya",
+        "alternatives": [
+          "Mfumo wa Uhamisho wa Serikali ya Taifa",
+          "Mfumo wa Uhamisho wa Kitaifa"
+        ],
+        "notes": "‘Uhamisho’ unapunguza mchango wa maneno ya ‘kushirikiana’ au ‘kukusanya’, lakini inahakikisha uwezo wa serikali kufanya maamuzi ya taifa; inapaswa kuepuka matumizi ya maneno ya ‘dikteta’ au ‘kudhibiti’."
+      },
+      "it-IT": {
+        "rendering": "sistema nazionale di mobilitazione coordinato dallo Stato",
+        "alternatives": [
+          "modello nazionale innovativo di coordinamento statale",
+          "sistema statale di mobilitazione su scala nazionale"
+        ],
+        "notes": "‘Mobilitazione’ richiede attenzione: in italiano ha connotazioni militari o autoritarie; si raccomanda l’uso contestuale con verbi neutri (es. ‘mobilizzare risorse’) e chiarimento esplicito del fine (sviluppo scientifico, emergenze sanitarie)."
+      },
+      "kk-KZ": {
+        "rendering": "Мемлекеттік координацияланған ұлттық қозғалыс жүйесі",
+        "alternatives": [
+          "Ұлттық деңгейде ұйымдастырылған мемлекеттік жүйе",
+          "Жаңа типтегі ұлттық ынтымақтастық жүйесі"
+        ],
+        "notes": "‘举国’非字面‘бүкіл ел’, 而指国家统筹动员能力；需规避‘жаппай’‘массалық’等可能暗示强制性的词。"
+      },
+      "th-TH": {
+        "rendering": "ระบบการจัด mobilization ระดับชาติแบบใหม่ที่มีรัฐเป็นผู้ประสาน",
+        "alternatives": [
+          "ระบบการบูรณาการทรัพยากรแห่งชาติแบบใหม่",
+          "ระบบรัฐนำการขับเคลื่อนระดับชาติแบบบูรณาการ"
+        ],
+        "notes": "คำว่า '举国' ไม่ใช่ 'การระดมพลทั้งประเทศ' แบบทหารหรือภาวะฉุกเฉิน แต่หมายถึงการบูรณาการทรัพยากรอย่างมีเป้าหมายในบริบทเศรษฐกิจ-เทคโนโลยี; ต้องหลีกเลี่ยงคำว่า 'เผด็จการ' หรือ 'ควบคุมแบบเบ็ดเสร็จ'"
+      },
+      "ms-MY": {
+        "rendering": "sistem mobilisasi nasional terkoordinasi oleh negara",
+        "alternatives": [
+          "mekanisme nasional baru berbasis koordinasi kerajaan",
+          "sistem koordinasi nasional berbasis negara"
+        ],
+        "notes": "须规避'national system'直译引发的极权联想；'terkoordinasi oleh negara'突出国家统筹而非行政命令，'mobilisasi nasional'强调资源跨部门整合能力。"
+      },
+      "el-GR": {
+        "rendering": "Νέο Εθνικό Σύστημα Συντονισμένης Δράσης",
+        "alternatives": [
+          "Εθνικό Σύστημα Συντονισμένης Κινητοποίησης",
+          "Νέο Σύστημα Εθνικής Συνεργασίας"
+        ],
+        "notes": "‘举国体制’特指中国集中力量办大事的制度优势，不可简化为‘εθνικό σύστημα’（易混淆于一般国家体制）。‘Συντονισμένης Δράσης’突出跨部门协同，符合希腊语政治术语习惯；避免使用‘κινητοποίηση’（含军事动员联想），故首选更中性的‘Δράσης’。"
+      },
+      "vi-VN": {
+        "rendering": "hệ thống huy động quốc gia theo mô hình mới",
+        "alternatives": [
+          "cơ chế điều phối quốc gia do Nhà nước dẫn dắt",
+          "hệ thống động viên toàn quốc kiểu mới"
+        ],
+        "notes": "Cần tránh từ 'độc tài' hoặc 'tập quyền' trong các bản dịch không chính thức; nhấn mạnh tính khoa học, tổ chức và hiệu quả trong bối cảnh đổi mới."
+      },
+      "ur-PK": {
+        "rendering": "ریاستی سازشی قومی موبائلائزیشن کا نظام",
+        "alternatives": [
+          "نئی قسم کا قومی انتظامی نظام",
+          "ریاستی ہم آہنگی والے قومی نظام"
+        ],
+        "notes": "‘举国’非字面‘全体国家’，而指国家主导的跨部门协同机制；避免直译‘قوم کا مکمل نظام’引发集权误解。"
+      },
+      "hi-IN": {
+        "rendering": "राज्य-समन्वित राष्ट्रीय गतिशीलता प्रणाली",
+        "alternatives": [
+          "राज्य-नेतृत्व वाली राष्ट्रीय प्रणाली",
+          "समन्वित राष्ट्रीय प्रयास प्रणाली"
+        ],
+        "notes": "‘गतिशीलता’ (mobilization) का अनुवाद सामाजिक/सैन्य संदर्भ में गलत धारणा दे सकता है; ‘प्रयास’ या ‘सहयोग’ जैसे शब्दों का प्रयोग अत्यधिक सामान्यीकृत हो सकता है।"
+      }
+    },
+    "四个自信": {
+      "ja-JP": {
+        "rendering": "四つの自信",
+        "alternatives": [
+          "四つの確信",
+          "四つの自立的自信"
+        ],
+        "notes": "公式訳として「四つの自信」が定着。各構成要素（道徳・理論・制度・文化）を括弧内に併記することが多いが、訳語本体には含めない。単独使用時は必ず「中国共産党の」や「中国の」などの修飾語を伴うべき。"
+      },
+      "es-ES": {
+        "rendering": "cuatro confianzas",
+        "alternatives": [
+          "cuatro certezas",
+          "cuatro fuentes de confianza"
+        ],
+        "notes": "‘自信’在此为政治认同概念，非心理学意义的‘autoconfianza’；‘cuatro confianzas’（道路自信、理论自信、制度自信、文化自信）已成标准译法，但需警惕西语读者将‘confianza’简单等同于‘trust’而忽略其意识形态建构性。"
+      },
+      "fr-FR": {
+        "rendering": "quatre confiances",
+        "alternatives": [
+          "quatre certitudes",
+          "quatre convictions fondamentales"
+        ],
+        "notes": "法语官方文件统一用« quatre confiances »；不可译为« quatre fiertés »（含傲慢歧义）或添加修饰词如« socialistes »。"
+      },
+      "ru-RU": {
+        "rendering": "Четыре уверенности",
+        "alternatives": [
+          "Четыре сферы уверенности",
+          "Четыре составляющие уверенности"
+        ],
+        "notes": "官方固定译法为‘Четыре уверенности’，后接具体所指（道路、理论、制度、文化），俄译不可增补形容词或改写结构；‘自信’必须译为‘уверенность’，禁用‘самоуверенность’（含贬义）。"
+      },
+      "ar": {
+        "rendering": "الثقة الأربعة",
+        "alternatives": [
+          "أربعة أنواع من الثقة",
+          "الثبات الأيديولوجي الأربعة"
+        ],
+        "notes": "官方标准译法为‘الثقة الأربعة’（道路自信、理论自信、制度自信、文化自信），须保持术语统一性；‘أنواع’或‘جوانب’属冗余添加，削弱政治术语庄重性；‘ثبات أيديولوجي’系误译，混淆‘自信’与‘坚定’概念。"
+      },
+      "ko-KR": {
+        "rendering": "사대자신",
+        "alternatives": [
+          "사대 분야 자신심",
+          "사대 자신감"
+        ],
+        "notes": "도덕·이론·제도·문화에 대한 자각적 신념을 의미하며, 중국 공산당의 이념적 정당성 기반. '자신'은 한국어에서 일반적 자존감과 혼동되지 않도록 '사대자신'이라는 고유명사화된 용어로 고정 번역 권장."
+      },
+      "pt-BR": {
+        "rendering": "Quatro Confianças",
+        "alternatives": [
+          "Quatro Confianças Estratégicas",
+          "Confiança nas Quatro Esferas"
+        ],
+        "notes": "指道路自信、理论自信、制度自信、文化自信；作为专有政治术语，首字母大写且不加冠词；不可译为‘quatro autoconfianças’（含主观心理暗示），须保持官方术语庄重性。"
+      },
+      "sw-KE": {
+        "rendering": "Imani ya Nne",
+        "alternatives": [
+          "Imani ya Kitaifa ya Nne",
+          "Imani ya Kupatikana ya Nne"
+        ],
+        "notes": "‘Imani ya Nne’ inaonyesha uwezo wa kujitambua kwa taifa bila kujumuisha mifano ya ‘imani’ ya dini; inapaswa kuepuka mlinganyo na ‘faith’ ya Kiingereza ili kuepuka mchanganyiko wa maadili ya kidini na ya kisiasa."
+      },
+      "it-IT": {
+        "rendering": "quattro fiducie",
+        "alternatives": [
+          "quattro certezze",
+          "quattro autonome fiducie"
+        ],
+        "notes": "‘Fiducie’ è il termine adottato dalla stampa italiana ufficiale (AGI, ANSA) e dalle traduzioni diplomatiche; ‘certezze’ è meno comune ma accettabile; evitare ‘fiducia’ al singolare o ‘confidenze’, che alterano il significato collettivo e istituzionale."
+      },
+      "kk-KZ": {
+        "rendering": "Төрт саладағы сенім",
+        "alternatives": [
+          "Төрт тұрақтылық сенімі",
+          "Төрт бағыттағы өзіндік сенім"
+        ],
+        "notes": "‘自信’指道路、理论、制度、文化自信，译文须保持‘төрт’与‘саладағы’对应，避免使用‘қуаныш’‘мақтаныш’等情感化词汇。"
+      },
+      "th-TH": {
+        "rendering": "ความมั่นใจสี่ด้าน",
+        "alternatives": [
+          "ความเชื่อมั่นสี่ประการ",
+          "ความมั่นใจในเส้นทาง ทฤษฎี ระบบ และวัฒนธรรมสังคมนิยมแบบจีน"
+        ],
+        "notes": "ต้องไม่แปลแยกชื่อแต่ละด้านโดยไม่ระบุบริบท เพราะอาจทำให้เกิดการตีความผิดพลาดหรือลดทอนความหมายเชิงอุดมการณ์; ควรใช้ 'สี่ด้าน' แทน 'สี่ประการ' เพื่อสอดคล้องกับการใช้ภาษาไทยเชิงนโยบาย"
+      },
+      "ms-MY": {
+        "rendering": "Empat Keyakinan",
+        "alternatives": [
+          "Empat Kepercayaan Diri",
+          "Empat Keyakinan Strategik"
+        ],
+        "notes": "官方固定译法为'Empat Keyakinan'，特指道路、理论、制度、文化自信；不可添加'ideologi'或'doktrin'等词，避免被曲解为意识形态灌输。"
+      },
+      "el-GR": {
+        "rendering": "Τέσσερις Τομείς Αυτοπεποίθησης",
+        "alternatives": [
+          "Τέσσερις Μορφές Αυτοπεποίθησης",
+          "Τέσσερα Στοιχεία Αυτοπεποίθησης"
+        ],
+        "notes": "‘四个自信’指道路自信、理论自信、制度自信、文化自信。希腊语须明确‘τομείς’（领域）以对应中文‘四个’的结构性含义，避免‘τύποι’（类型）或‘είδη’（种类）等弱化政治内涵的措辞。"
+      },
+      "vi-VN": {
+        "rendering": "bốn niềm tin",
+        "alternatives": [
+          "bốn tự tin",
+          "bốn niềm tin vững chắc"
+        ],
+        "notes": "Không dịch cụm 'tự tin' riêng lẻ (như 'tự tin về đường lối') vì mất tính khái niệm và dễ bị hiểu sai thành thái độ chủ quan; phải giữ nguyên cấu trúc 'bốn niềm tin' như một thuật ngữ cố định."
+      },
+      "ur-PK": {
+        "rendering": "چار شعبوں کا اعتماد",
+        "alternatives": [
+          "چار اعتمادات",
+          "چار شعبائی خوداعتمادی"
+        ],
+        "notes": "须明确对应‘道路、理论、制度、文化’四维度；不可省略‘شعبوں’或泛译为‘خوداعتمادی’而丢失结构性。"
+      },
+      "hi-IN": {
+        "rendering": "चार-क्षेत्रीय आत्मविश्वास",
+        "alternatives": [
+          "चार प्रकार का आत्मविश्वास",
+          "चार-आधारित आत्मविश्वास"
+        ],
+        "notes": "‘चार-क्षेत्रीय’ स्पष्ट रूप से राजनीतिक, सांस्कृतिक, सामाजिक और मार्ग-आधारित आत्मविश्वास को संदर्भित करता है; ‘चार प्रकार’ जैसा अनुवाद अस्पष्ट है।"
+      }
+    },
+    "共同富裕": {
+      "ja-JP": {
+        "rendering": "共同富裕",
+        "alternatives": [
+          "包摂的繁栄",
+          "普遍的豊かさ"
+        ],
+        "notes": "中国語そのままの漢字表記が日本メディア・学界で広く通用。「均等な富」や「再分配」を連想させる誤訳は政治的リスクあり。原則としてカタカナ転写や意訳は避け、原語表記を維持。"
+      },
+      "es-ES": {
+        "rendering": "prosperidad común",
+        "alternatives": [
+          "riqueza compartida",
+          "bienestar compartido"
+        ],
+        "notes": "该术语有明确政策内涵（非平均主义），‘prosperidad común’是联合国西语文件及拉美多国官方文本采用的标准译法；‘riqueza compartida’易被曲解为财富再分配激进主张，需谨慎使用。"
+      },
+      "fr-FR": {
+        "rendering": "prospérité commune",
+        "alternatives": [
+          "richesse partagée",
+          "prospérité collective"
+        ],
+        "notes": "« prospérité commune »为标准译法，已载入联合国文件；避免使用« égalité économique »或« nivellement »等带有平均主义暗示的词汇。"
+      },
+      "ru-RU": {
+        "rendering": "Общее процветание",
+        "alternatives": [
+          "Совместное благосостояние",
+          "Общедоступное процветание"
+        ],
+        "notes": "‘共同’强调全体人民共享发展成果，非平均主义；俄译须规避‘равенство’‘уравниловка’等敏感联想，‘процветание’为标准政治术语。"
+      },
+      "ar": {
+        "rendering": "الرخاء المشترك",
+        "alternatives": [
+          "الازدهار الجماعي",
+          "التقدم الاقتصادي الشامل"
+        ],
+        "notes": "‘رخاء’对应‘富’（物质丰裕），‘مشترك’精准传达‘共同’的共享性与制度性，优于‘جماعي’（易误解为集体所有制）；联合国开发计划署阿拉伯语文件亦采用此译法。"
+      },
+      "ko-KR": {
+        "rendering": "공동부유",
+        "alternatives": [
+          "공동 번영",
+          "보편적 부유"
+        ],
+        "notes": "사회주의 초급단계에서의 분배 정책 목표로, '공동'은 평등주의적 해석보다는 '단계적 실현'과 '차별화된 기여에 따른 공유'를 함의함. 한국어 '공동부유'는 사회주의적 맥락을 충분히 전달하지 못할 수 있어 주의 필요."
+      },
+      "pt-BR": {
+        "rendering": "prosperidade comum",
+        "alternatives": [
+          "riqueza compartilhada",
+          "prosperidade coletiva"
+        ],
+        "notes": "非均贫富之‘平均主义’，而是发展成果公平共享；‘comum’强调共建共享过程，不可译为‘igualitária’或‘uniforme’，以免关联再分配激进主张。"
+      },
+      "sw-KE": {
+        "rendering": "Ustawi wa Pamoja",
+        "alternatives": [
+          "Ustawi wa Kitaifa",
+          "Ustawi wa Watu Wote"
+        ],
+        "notes": "‘Ustawi wa Pamoja’ unasimama kwa ufanisi kwenye muktadha wa uchumi wa kijamii bila kujumuisha misingi ya ‘utawala wa kisiasa’; inapaswa kuepuka matumizi ya maneno ya ‘haki ya kisheria’ au ‘utawala wa kisiasa’."
+      },
+      "it-IT": {
+        "rendering": "prosperità condivisa",
+        "alternatives": [
+          "prosperità comune",
+          "benessere diffuso"
+        ],
+        "notes": "‘Prosperità condivisa’ è la forma standardizzata dall’Unione Europea nei documenti bilaterali; ‘prosperità comune’ può essere fraintesa come sinonimo di ‘comunismo’; ‘benessere diffuso’ è una parafrasi neutrale utile in contesti divulgativi."
+      },
+      "kk-KZ": {
+        "rendering": "Ортақ байлық",
+        "alternatives": [
+          "Жалпы байлық",
+          "Барлық халықтың байлығы"
+        ],
+        "notes": "需区别于‘теңдік’（平等）或‘әлеуметтік әділет’（社会正义），强调发展成果共享而非平均主义。"
+      },
+      "th-TH": {
+        "rendering": "ความมั่งคั่งร่วมกัน",
+        "alternatives": [
+          "ความมั่งคั่งอย่างเท่าเทียม",
+          "ความร่ำรวยร่วมกัน"
+        ],
+        "notes": "ต้องระวังการแปลว่า 'ความเท่าเทียมทางเศรษฐกิจ' ซึ่งอาจนำไปสู่การตีความว่าเป็นการแบ่งรายได้แบบเท่าๆ กัน; ควรเน้นว่าเป็นเป้าหมายเชิงกระบวนการ ไม่ใช่ผลลัพธ์แบบทันทีทันใด"
+      },
+      "ms-MY": {
+        "rendering": "kesejahteraan bersama",
+        "alternatives": [
+          "kemakmuran bersama",
+          "kesejahteraan inklusif"
+        ],
+        "notes": "'kesejahteraan bersama'是财政部与国家发展委员会联合文件采用译法，强调发展成果共享机制；'kemakmuran bersama'易被误读为平均主义，需配合上下文说明非同步同等富裕。"
+      },
+      "el-GR": {
+        "rendering": "Κοινή Ευημερία",
+        "alternatives": [
+          "Κοινωνική Ευημερία",
+          "Ισόρροπη Ευημερία"
+        ],
+        "notes": "‘共同’强调全体人民共享发展成果，非平均主义（‘ισότητα ευημερίας’错误）。‘Κοινή Ευημερία’为联合国开发计划署希腊语报告及中国驻希使馆文件标准译法，已获希腊学术界接受。"
+      },
+      "vi-VN": {
+        "rendering": "giàu có chung",
+        "alternatives": [
+          "thịnh vượng chung",
+          "phú quý đồng đều"
+        ],
+        "notes": "Không dùng 'công bằng giàu có' hay 'chia sẻ của cải' vì làm méo mó nội hàm chính sách: đây là mục tiêu phát triển có bước đi, không phải phân phối lại cơ học."
+      },
+      "ur-PK": {
+        "rendering": "مشترکہ خوشحالی",
+        "alternatives": [
+          "جامع خوشحالی",
+          "ہمہ جہتی خوشحالی"
+        ],
+        "notes": "‘共同’强调共享性与发展成果普惠，非平均主义；避免使用‘مساواتی خوشحالی’（平等富裕）引发意识形态误读。"
+      },
+      "hi-IN": {
+        "rendering": "सामूहिक समृद्धि",
+        "alternatives": [
+          "सामूहिक समृद्धि और समानता",
+          "साझा समृद्धि"
+        ],
+        "notes": "‘सामूहिक समृद्धि’ आधिकारिक अनुवाद है; ‘सामाजिक समृद्धि’ या ‘समान समृद्धि’ जैसे प्रयोग गलत व्याख्या का कारण बन सकते हैं।"
+      }
+    },
+    "全过程人民民主": {
+      "ja-JP": {
+        "rendering": "全過程人民民主",
+        "alternatives": [
+          "全過程型人民民主",
+          "継続的人民民主"
+        ],
+        "notes": "中国共産党が提唱する独自の民主概念。「全過程」は時間的・手続き的包括性を意味し、「参与型民主」など既存概念との混同を厳禁。漢字表記が公式かつ中立的。"
+      },
+      "es-ES": {
+        "rendering": "democracia popular de todo el proceso",
+        "alternatives": [
+          "democracia popular integral",
+          "democracia del pueblo en todas sus etapas"
+        ],
+        "notes": "强调民主的全链条性（选举、协商、决策、管理、监督），‘de todo el proceso’准确对应‘全过程’；避免使用‘participativa’或‘directa’等标签化词汇，防止与西方代议制民主形成不当对比。"
+      },
+      "fr-FR": {
+        "rendering": "démocratie populaire en continu",
+        "alternatives": [
+          "démocratie populaire intégrale",
+          "démocratie populaire à toutes les étapes"
+        ],
+        "notes": "« en continu »强调时间维度上的全周期覆盖，区别于西方选举民主；禁用« démocratie directe »或« participative »等简化定性。"
+      },
+      "ru-RU": {
+        "rendering": "Народная демократия на всех этапах",
+        "alternatives": [
+          "Демократия, охватывающая весь процесс",
+          "Всеэтапная народная демократия"
+        ],
+        "notes": "‘全过程’指民主选举、决策、管理、监督各环节全覆盖，俄译需体现时间维度与过程完整性，不可简化为‘полная демократия’或‘народная демократия’单列。"
+      },
+      "ar": {
+        "rendering": "ديمقراطية شعبية شاملة العملية",
+        "alternatives": [
+          "ديمقراطية شعبية تغطي جميع مراحل صنع القرار",
+          "ديمقراطية شعبية مستمرة ومترابطة"
+        ],
+        "notes": "‘شاملة العملية’直译‘全过程’，符合阿语政治话语习惯（如‘عملية انتخابية شاملة’）；避免使用‘كاملة’（易被解读为‘完美无缺’而引发质疑）；‘مستمرة’侧重时间维度但弱化制度闭环特征。"
+      },
+      "ko-KR": {
+        "rendering": "전과정 인민 민주주의",
+        "alternatives": [
+          "전 과정 인민 민주",
+          "지속적 인민 민주주의"
+        ],
+        "notes": "선거·의결·관리·감독 등 모든 단계에서 인민의 참여를 보장한다는 중국식 민주주의 개념. '전과정'은 시간적·절차적 포괄성을 강조하므로 '전체 과정'보다 '전과정'이 공식 용어로 정착됨."
+      },
+      "pt-BR": {
+        "rendering": "democracia popular de processo integral",
+        "alternatives": [
+          "democracia popular abrangente",
+          "democracia popular contínua"
+        ],
+        "notes": "强调民主实践贯穿选举、决策、管理、监督各环节；‘processo integral’比‘total’更准确，避免与‘totalitarismo’产生语义联想；须区别于西方代议制民主话语体系。"
+      },
+      "sw-KE": {
+        "rendering": "Demokrasia ya Watu ya Mchakato Wote",
+        "alternatives": [
+          "Demokrasia ya Watu ya Kupitia Mchakato Wote",
+          "Demokrasia ya Kitaifa ya Mchakato Wote"
+        ],
+        "notes": "‘Mchakato Wote’ inaonyesha ushirikiano wa watu katika kila hatua ya uamuzi bila kujumuisha mifano ya ‘demokrasia ya kisasa’; inapaswa kuepuka mlinganyo na ‘direct democracy’ ili kuepuka mchanganyiko wa mfano wa kisiasa."
+      },
+      "it-IT": {
+        "rendering": "democrazia popolare a tutto campo",
+        "alternatives": [
+          "democrazia popolare integrale",
+          "democrazia partecipativa continua"
+        ],
+        "notes": "‘A tutto campo’ rende l’idea di completezza e pervasività senza implicare ‘processo’ (termine tecnico giuridico ambiguo in italiano); evitare ‘democrazia di processo integrale’, che suona artificioso e non è attestato in fonti istituzionali italiane."
+      },
+      "kk-KZ": {
+        "rendering": "Барлық кезеңде жүзеге асатын халықтық демократия",
+        "alternatives": [
+          "Толық циклды халықтық демократия",
+          "Қадам-қадам жүзеге асатын халықтық демократия"
+        ],
+        "notes": "‘全过程’强调民主实践的全链条、全覆盖，不可简化为‘тұрақты’或‘жалпы’，须体现程序性与参与性。"
+      },
+      "th-TH": {
+        "rendering": "ประชาธิปไตยของประชาชนแบบครบวงจร",
+        "alternatives": [
+          "ประชาธิปไตยของประชาชนที่ครอบคลุมทุกขั้นตอน",
+          "ประชาธิปไตยแบบมีส่วนร่วมตลอดกระบวนการ"
+        ],
+        "notes": "ห้ามแปลว่า 'ประชาธิปไตยแบบสมบูรณ์' หรือ 'ประชาธิปไตยแบบทั้งหมด' เพราะอาจถูกตีความว่าขัดแย้งกับระบอบประชาธิปไตยแบบตะวันตก; ต้องสื่อสารแนวคิด 'การมีส่วนร่วมตั้งแต่การวางแผน การตัดสินใจ การดำเนินการ ไปจนถึงการประเมินผล'"
+      },
+      "ms-MY": {
+        "rendering": "demokrasi rakyat berproses penuh",
+        "alternatives": [
+          "demokrasi rakyat menyeluruh",
+          "demokrasi partisipatif berkelanjutan"
+        ],
+        "notes": "必须保留'berproses penuh'体现决策、执行、监督全链条参与；禁用'demokrasi langsung'（直接民主）以免混淆代议制本质。"
+      },
+      "el-GR": {
+        "rendering": "Λαϊκή Δημοκρατία Ολοκληρωτικής Διαδικασίας",
+        "alternatives": [
+          "Ολοκληρωτική Λαϊκή Δημοκρατία",
+          "Δημοκρατία Πλήρους Διαδικασίας"
+        ],
+        "notes": "‘全过程’指民主选举、协商、决策、管理、监督各环节闭环，非时间维度‘ολόκληρη διάρκεια’。‘Ολοκληρωτικής Διαδικασίας’准确传达制度性、全链条特征，区别于西方‘representative democracy’。"
+      },
+      "vi-VN": {
+        "rendering": "dân chủ nhân dân toàn trình",
+        "alternatives": [
+          "dân chủ nhân dân suốt quá trình",
+          "dân chủ nhân dân ở mọi khâu"
+        ],
+        "notes": "Phải loại bỏ cách dịch 'dân chủ toàn diện' hoặc 'dân chủ trực tiếp' vì sai bản chất: đây là khái niệm đặc thù chỉ tính liên tục, toàn diện và thực chất của dân chủ xã hội chủ nghĩa dưới sự lãnh đạo của Đảng."
+      },
+      "ur-PK": {
+        "rendering": "تمام عملی مراحل میں عوامی جمہوریت",
+        "alternatives": [
+          "مستقل عوامی جمہوریت",
+          "عملی طور پر جاری رہنے والی جمہوریت"
+        ],
+        "notes": "‘全过程’指决策、执行、监督全链条，非时间长度；避免译为‘مستمر’（持续）而弱化制度性内涵。"
+      },
+      "hi-IN": {
+        "rendering": "पूर्ण-प्रक्रिया जन-प्रजातांत्रिकता",
+        "alternatives": [
+          "समग्र प्रक्रिया जन-प्रजातांत्रिकता",
+          "सभी चरणों की जन-प्रजातांत्रिकता"
+        ],
+        "notes": "‘पूर्ण-प्रक्रिया’ शब्द चुनावी, नीति निर्माण और निगरानी जैसे सभी चरणों को संदर्भित करता है; ‘सीधी लोकतंत्र’ या ‘प्रत्यक्ष लोकतंत्र’ जैसे अनुवाद गलत तुलना का कारण बन सकते हैं।"
+      }
+    },
+    "人类命运共同体": {
+      "ja-JP": {
+        "rendering": "人類運命共同体",
+        "alternatives": [
+          "人類共通の未来のための共同体",
+          "人類運命共有体"
+        ],
+        "notes": "中国外務省公式訳として「人類運命共同体」が確定。宗教的・哲学的ニュアンス（「運命」）を削減する意訳は、中国側の反発を招く可能性あり。"
+      },
+      "es-ES": {
+        "rendering": "comunidad con futuro compartido para la humanidad",
+        "alternatives": [
+          "comunidad de destino compartido de la humanidad",
+          "comunidad humana con futuro común"
+        ],
+        "notes": "‘futuro compartido’比‘destino compartido’更契合中文原意（强调共建共享而非宿命论），且符合联合国《2030议程》西语表述惯例；‘destino’在西班牙语中具强烈宿命色彩，需规避。"
+      },
+      "fr-FR": {
+        "rendering": "communauté de destin pour l'humanité",
+        "alternatives": [
+          "communauté partageant un avenir commun pour l'humanité"
+        ],
+        "notes": "联合国决议正式采用« communauté de destin pour l'humanité »；不可省略« pour l'humanité »，否则弱化普世性内涵。"
+      },
+      "ru-RU": {
+        "rendering": "Сообщество единой судьбы человечества",
+        "alternatives": [
+          "Сообщество с общей судьбой человечества",
+          "Сообщество совместного будущего человечества"
+        ],
+        "notes": "‘命运共同体’是特定政治概念，俄译须采用官方定名‘Сообщество единой судьбы’，禁用‘союз’‘блок’‘альянс’等暗示结盟或排他性的词汇。"
+      },
+      "ar": {
+        "rendering": "مجتمع إنساني يتقاسم المستقبل",
+        "alternatives": [
+          "مشروع مستقبل مشترك للبشرية",
+          "تجمع بشري مبني على المصير المشترك"
+        ],
+        "notes": "官方指定译法，‘يُشارك’比‘مشترك’更强调主动共建；‘مشروع’为备选但偏重倡议属性，弱化‘共同体’的实体性与道义深度；需规避‘إمبراطورية’‘هيمنة’等敏感联想词。"
+      },
+      "ko-KR": {
+        "rendering": "인류 운명 공동체",
+        "alternatives": [
+          "인류 공동 운명체",
+          "공동의 미래를 위한 인류 공동체"
+        ],
+        "notes": "중국 외교 정책의 핵심 구호로, 국제 질서 재구성 담론과 연결됨. '운명 공동체'는 한국어에서 종교적·결속적 뉘앙스를 강하게 줄 수 있으나, 공식 문서에서는 '인류 운명 공동체'가 표준 번역."
+      },
+      "pt-BR": {
+        "rendering": "comunidade de futuro compartilhado para a humanidade",
+        "alternatives": [
+          "comunidade com futuro comum da humanidade",
+          "comunidade global de destino comum"
+        ],
+        "notes": "‘destino’在葡语中易触发宿命论联想，官方推荐用‘futuro compartilhado’；须避免‘comunidade de destino’直译，防止被解读为强制性历史决定论。"
+      },
+      "sw-KE": {
+        "rendering": "Jumuiya ya Hali ya Pamoja ya Binadamu",
+        "alternatives": [
+          "Jumuiya ya Ushirikiano wa Binadamu",
+          "Jumuiya ya Hali ya Kitaifa ya Binadamu"
+        ],
+        "notes": "‘Hali ya Pamoja’ inaonyesha uhusiano wa kina wa mazingira, uchumi na usalama bila kujumuisha mifano ya ‘utawala wa kimataifa’; inapaswa kuepuka matumizi ya maneno ya ‘utawala’ au ‘kudhibiti’."
+      },
+      "it-IT": {
+        "rendering": "comunità con un futuro condiviso per l’umanità",
+        "alternatives": [
+          "comunità umana del futuro condiviso",
+          "comunità globale del destino comune"
+        ],
+        "notes": "La forma ufficiale italiana dell’ONU e del MAECI usa ‘futuro condiviso’ (non ‘destino’), per evitare connotazioni fatalistiche o hegeliane; ‘destino comune’ è da usare solo in citazioni dirette o testi filosofici."
+      },
+      "kk-KZ": {
+        "rendering": "Адамзаттың ортақ тағдыры туралы қауымдастық",
+        "alternatives": [
+          "Адамзат қауымдастығы",
+          "Ортақ тағдыр қауымдастығы"
+        ],
+        "notes": "官方标准译法已固定，须完整保留‘ортақ тағдыры’表述，不可省略‘тағдыры’或替换为‘болашағы’。"
+      },
+      "th-TH": {
+        "rendering": "ชุมชนแห่งอนาคตที่มนุษยชาติแบ่งปันร่วมกัน",
+        "alternatives": [
+          "ชุมชนแห่งชะตากรรมร่วมของมวลมนุษย์",
+          "ชุมชนโลกที่มีอนาคตเชื่อมโยงกัน"
+        ],
+        "notes": "ต้องหลีกเลี่ยงการแปลว่า 'ชุมชนแห่งชะตากรรม' โดยตรง เพราะคำว่า 'ชะตากรรม' ในภาษาไทยมีน้ำหนักเชิงลบและอาจสื่อถึงความจำยอมหรือความไม่สามารถหลีกเลี่ยงได้; ควรเน้นมิติของ 'อนาคต' และ 'การร่วมมือ' มากกว่า 'ชะตากรรม'"
+      },
+      "ms-MY": {
+        "rendering": "komuniti masa depan bersama umat manusia",
+        "alternatives": [
+          "komuniti bersama untuk masa depan umat manusia",
+          "komuniti global berdasarkan takdir bersama"
+        ],
+        "notes": "官方标准译法强调'bersama'（共同）与'masa depan'（未来）的积极导向；禁用'fate'直译'nasib'（含宿命论色彩），'takdir bersama'仅作学术讨论备选。"
+      },
+      "el-GR": {
+        "rendering": "Κοινότητα Κοινού Μέλλοντος για την Ανθρωπότητα",
+        "alternatives": [
+          "Κοινότητα Κοινής Τύχης της Ανθρωπότητας"
+        ],
+        "notes": "‘命运’在希腊语中‘τύχη’含偶然性，易削弱‘共同责任’内涵；‘μέλλον’（未来）更契合中方强调的合作共建导向。该译法为中国—希腊政府联合声明正式用语，具权威性。"
+      },
+      "vi-VN": {
+        "rendering": "cộng đồng chung vận mệnh nhân loại",
+        "alternatives": [
+          "cộng đồng vận mệnh chung cho nhân loại",
+          "cộng đồng tương lai chung của nhân loại"
+        ],
+        "notes": "Không được rút gọn thành 'cộng đồng nhân loại' hoặc 'cộng đồng toàn cầu' vì làm mất yếu tố 'vận mệnh chung' — nội hàm cốt lõi về trách nhiệm chung và lợi ích gắn bó."
+      },
+      "ur-PK": {
+        "rendering": "انسانیت کا مشترکہ مستقبل کا اتحاد",
+        "alternatives": [
+          "انسانیت کا مشترکہ قسمت کا اتحاد",
+          "بین الاقوامی اتحاد برائے مشترکہ مستقبل"
+        ],
+        "notes": "‘命运’译为‘مستقبل’（未来）更符合乌尔都语政治语境，避免‘قسمت’（宿命）的消极/宗教暗示；‘共同体’宜用‘اتحاد’而非‘جماعت’。"
+      },
+      "hi-IN": {
+        "rendering": "मानवता का साझा भाग्य समुदाय",
+        "alternatives": [
+          "मानवता का संयुक्त भाग्य समुदाय",
+          "मानव जाति का साझा भविष्य समुदाय"
+        ],
+        "notes": "‘साझा भाग्य’ शब्द का प्रयोग अधिकारिक दस्तावेज़ों में स्थापित है; ‘वैश्विक समुदाय’ या ‘अंतर्राष्ट्रीय समुदाय’ जैसे प्रयोग इसके विशिष्ट दार्शनिक अर्थ को कमजोर कर सकते हैं।"
+      }
+    },
+    "一带一路": {
+      "ja-JP": {
+        "rendering": "一帯一路",
+        "alternatives": [
+          "ベルト・アンド・ロード",
+          "一帯一路構想"
+        ],
+        "notes": "中国語音訳の「一帯一路」が日本政府・メディアで標準。カタカナ表記「ベルト・アンド・ロード」は非公式・口語的。正式文書では必ず漢字表記＋「構想」または「イニシアティブ」の補足が必要。"
+      },
+      "es-ES": {
+        "rendering": "Iniciativa de la Franja y la Ruta",
+        "alternatives": [
+          "Franja Económica de la Ruta de la Seda y la Ruta Marítima de la Seda del Siglo XXI",
+          "Iniciativa de la Ruta de la Seda"
+        ],
+        "notes": "‘Iniciativa de la Franja y la Ruta’是西班牙外交部及拉美多国官方文件标准译名；全称冗长且‘Ruta de la Seda’易引发历史浪漫化误读，正式场合须用简称并加注‘Iniciativa’以体现其当代政策属性。"
+      },
+      "fr-FR": {
+        "rendering": "Ceinture et Route",
+        "alternatives": [
+          "Initiative Ceinture et Route",
+          "Belt and Road Initiative (BRI)"
+        ],
+        "notes": "法语官方场合首推« Ceinture et Route »（带冠词）；缩写BRI仅限括号内首次出现时标注，正文禁用英文缩写。"
+      },
+      "ru-RU": {
+        "rendering": "Пояс и путь",
+        "alternatives": [
+          "Экономический пояс Шелкового пути и Морской шелковый путь",
+          "Инициатива «Пояс и путь»"
+        ],
+        "notes": "中文简称‘一带一路’在俄语中已通用‘Пояс и путь’，首字母大写，不加引号；全称冗长，正式文件可括注，但标题及高频场合必须用简称。"
+      },
+      "ar": {
+        "rendering": "الحزام والطريق",
+        "alternatives": [
+          "مبادرة الحزام والطريق",
+          "مشروع الحزام والطريق"
+        ],
+        "notes": "中文简称‘一带一路’在阿语中固定译为‘الحزام والطريق’，首字母大写；加‘مبادرة’或‘مشروع’虽语法正确，但稀释品牌标识性，且‘مبادرة’易被西方媒体曲解为临时性外交工具。"
+      },
+      "ko-KR": {
+        "rendering": "일대일로",
+        "alternatives": [
+          "실크로드 경제벨트 및 21세기 해상 실크로드",
+          "일대일로 이니셔티브"
+        ],
+        "notes": "중국 정부의 공식 명칭을 음차한 '일대일로'가 한국 언론·외교 문서에서 압도적 표준. '실크로드'는 역사적 연상이 강해 현대 경제 협력 프로젝트임을 명시할 필요가 있음."
+      },
+      "pt-BR": {
+        "rendering": "Cinturão e Rota",
+        "alternatives": [
+          "Iniciativa do Cinturão e Rota",
+          "Belt and Road (Cinturão e Rota)"
+        ],
+        "notes": "作为专有名词，首字母大写，无需翻译‘Iniciativa’；在正式文件中首次出现可加注‘(Belt and Road Initiative)’，但葡语正文应优先使用‘Cinturão e Rota’。"
+      },
+      "sw-KE": {
+        "rendering": "Belt na Road",
+        "alternatives": [
+          "Belt na Road ya China",
+          "Msimamo wa Belt na Road"
+        ],
+        "notes": "Inapaswa kubaki kama jina la kisasa la mradi bila kubadilisha kwa kiswahili ili kuhakikisha ubunifu wa jina la rasmi; hakuna tafsiri ya moja kwa moja kwa sababu ni jina la kisasa la mradi."
+      },
+      "it-IT": {
+        "rendering": "Belt and Road",
+        "alternatives": [
+          "Iniziativa Belt and Road",
+          "Nuova Via della Seta"
+        ],
+        "notes": "‘Belt and Road’ è il nome ufficiale registrato in italiano (MAECI, Banca d’Italia); ‘Nuova Via della Seta’ è accettata come denominazione descrittiva ma non sostituisce il nome proprio nei documenti formali."
+      },
+      "kk-KZ": {
+        "rendering": "Белдеу мен Жол",
+        "alternatives": [
+          "Экономикалық белдеу мен құрлықтық жол",
+          "Белдеу мен Жол инициативасы"
+        ],
+        "notes": "专有名词，须首字母大写并加引号（如文本中需标注），不可意译为‘сауда жолдары’等泛化表达。"
+      },
+      "th-TH": {
+        "rendering": "แถบเศรษฐกิจเส้นทางสายไหมและเส้นทางสายไหมทางทะเล",
+        "alternatives": [
+          "โครงการแถบและเส้นทาง",
+          "เส้นทางสายไหมใหม่"
+        ],
+        "notes": "ต้องใช้ชื่อเต็มอย่างเป็นทางการในการแปลครั้งแรก พร้อมย่อหน้าอธิบายสั้นๆ; ห้ามใช้เพียง 'Belt and Road' แบบไม่แปล เพราะไม่สอดคล้องกับมาตรฐานการแปลทางการของไทย"
+      },
+      "ms-MY": {
+        "rendering": "Sabuk dan Jalan",
+        "alternatives": [
+          "Inisiatif Sabuk dan Jalan",
+          "Jaringan Sabuk dan Jalan"
+        ],
+        "notes": "马来西亚政府文件及《星洲日报》等主流媒体统一采用'Sabuk dan Jalan'；首字母无需大写，不加冠词，避免使用'Belt and Road Initiative'全称以防被误认为国际组织。"
+      },
+      "el-GR": {
+        "rendering": "Ζώνη της Ζώνης και της Οδού",
+        "alternatives": [
+          "Οικονομική Ζώνη της Ζώνης και της Οδού",
+          "Πρωτοβουλία της Ζώνης και της Οδού"
+        ],
+        "notes": "希腊语中‘Ζώνη της Ζώνης’为固定专名译法（音译+意译结合），首字母大写且重复‘Ζώνης’以保留中文‘一带’（经济带）与‘一路’（丝绸之路）的并列结构。避免直译‘Belt and Road’为‘Ζώνη και Οδός’（失去专有名词属性）。"
+      },
+      "vi-VN": {
+        "rendering": "Vành đai và Con đường",
+        "alternatives": [
+          "Sáng kiến Vành đai và Con đường",
+          "Sáng kiến Một vành đai, một con đường"
+        ],
+        "notes": "Luôn giữ tên gọi chính thức do Bộ Ngoại giao Trung Quốc công bố; không dịch ý hoặc dùng từ 'dự án', 'chiến lược' nếu không có ngữ cảnh rõ ràng."
+      },
+      "ur-PK": {
+        "rendering": "کمر اور راستہ",
+        "alternatives": [
+          "کمر اور راستہ کا منصوبہ",
+          "اقتصادی کمر اور تجارتی راستہ"
+        ],
+        "notes": "专有名词，首字母大写不适用乌尔都语；须保留音译结构，不可意译为‘تجارتی راستہ’而丢失品牌标识性。"
+      },
+      "hi-IN": {
+        "rendering": "बेल्ट एंड रोड",
+        "alternatives": [
+          "मार्ग और क्षेत्र इनिशिएटिव",
+          "आर्थिक मार्ग और सागर पहल"
+        ],
+        "notes": "अंग्रेजी नाम का अक्षरशः अनुवाद ‘बेल्ट एंड रोड’ भारतीय और अंतर्राष्ट्रीय मीडिया में प्रचलित है; हिंदी अनुवाद का प्रयोग अस्पष्टता या भू-राजनीतिक व्याख्या का कारण बन सकता है।"
+      }
+    },
+    "高质量发展": {
+      "ja-JP": {
+        "rendering": "高品質発展",
+        "alternatives": [
+          "質重視型発展",
+          "持続可能な高付加価値発展"
+        ],
+        "notes": "「高品質発展」は経済政策文脈で定着。ただし「品質」は日本語の「製品品質」ではなく、効率性・公平性・持続可能性を含む広義概念。初出時は定義説明を添えるのが望ましい。"
+      },
+      "es-ES": {
+        "rendering": "desarrollo de alta calidad",
+        "alternatives": [
+          "desarrollo sostenible y de calidad",
+          "desarrollo integral y eficiente"
+        ],
+        "notes": "直译‘alta calidad’已获国际货币基金组织、OECD西语报告广泛采用；‘sostenible’虽常见但弱化了‘创新、协调、绿色、开放、共享’的复合内涵，不宜替代主译法。"
+      },
+      "fr-FR": {
+        "rendering": "développement de haute qualité",
+        "alternatives": [
+          "développement qualitatif",
+          "développement durable et innovant"
+        ],
+        "notes": "严格对应« haute qualité »，不可替换为« élevé niveau »或« excellence »；需与« développement rapide »形成明确对比。"
+      },
+      "ru-RU": {
+        "rendering": "Высококачественное развитие",
+        "alternatives": [
+          "Развитие высокого качества",
+          "Инновационное устойчивое развитие"
+        ],
+        "notes": "‘高质量’指更有效率、更加公平、更可持续的发展，俄译须保持‘высококачественный’复合形容词结构，不可替换为‘эффективное’或‘современное’等泛化表述。"
+      },
+      "ar": {
+        "rendering": "تنمية عالية الجودة",
+        "alternatives": [
+          "تنمية مستدامة وفعالة",
+          "نمو اقتصادي نوعي"
+        ],
+        "notes": "‘عالية الجودة’为直译且获阿拉伯国家主流媒体广泛采用；‘مستدامة’（可持续）属政策延伸义，非原词本义；‘نوعي’多用于学术语境，政治文本中力度不足。"
+      },
+      "ko-KR": {
+        "rendering": "고질량 발전",
+        "alternatives": [
+          "고품질 발전",
+          "지속가능한 고효율 발전"
+        ],
+        "notes": "성장 속도보다 구조적 개선·혁신·녹색 전환을 중시하는 발전 패러다임. '고질량'은 한국어에서 '고품질'과 혼용되나, 중국 정책 문서에서는 '고질량 발전'이 공식 용어로 고정됨."
+      },
+      "pt-BR": {
+        "rendering": "desenvolvimento de alta qualidade",
+        "alternatives": [
+          "desenvolvimento qualitativo avançado",
+          "crescimento sustentável e de excelência"
+        ],
+        "notes": "‘alta qualidade’是固定搭配，不可简化为‘qualidade elevada’；需区别于单纯GDP增速，强调创新、协调、绿色、开放、共享内涵。"
+      },
+      "sw-KE": {
+        "rendering": "Maendeleo ya Ubora wa Juu",
+        "alternatives": [
+          "Maendeleo ya Kikamilifu",
+          "Maendeleo ya Kipekee"
+        ],
+        "notes": "‘Ubora wa Juu’ inaonyesha uwezo wa kuboresha mizani ya uchumi, mazingira na jamii bila kujumuisha mifano ya ‘maendeleo ya kisiasa’; inapaswa kuepuka mlinganyo na ‘sustainable development’ ili kuepuka mchanganyiko wa mfano wa kisiasa."
+      },
+      "it-IT": {
+        "rendering": "sviluppo di alta qualità",
+        "alternatives": [
+          "sviluppo qualitativamente elevato",
+          "sviluppo sostenibile e innovativo"
+        ],
+        "notes": "‘Di alta qualità’ è la traduzione diretta e universalmente adottata; le alternative sono parafrasi utili in comunicazione istituzionale, ma non sostituiscono il termine tecnico nei testi normativi."
+      },
+      "kk-KZ": {
+        "rendering": "Жоғары сапалы даму",
+        "alternatives": [
+          "Сапалы даму",
+          "Тиімді даму"
+        ],
+        "notes": "‘高质量’强调效益、协调、可持续，非单纯‘жылдам’或‘көлемді’，须避免与‘жылдам даму’混淆。"
+      },
+      "th-TH": {
+        "rendering": "การพัฒนาคุณภาพสูง",
+        "alternatives": [
+          "การพัฒนาที่มีคุณภาพ",
+          "การเติบโตอย่างมีคุณภาพ"
+        ],
+        "notes": "ต้องไม่แปลว่า 'การพัฒนาแบบยั่งยืน' หรือ 'การพัฒนาสีเขียว' โดยเฉพาะ เพราะแม้จะเกี่ยวข้อง แต่ไม่ครอบคลุมมิติทางเทคโนโลยี นวัตกรรม และประสิทธิภาพเชิงโครงสร้างทั้งหมด"
+      },
+      "ms-MY": {
+        "rendering": "pembangunan berkualiti tinggi",
+        "alternatives": [
+          "pembangunan berdaya saing tinggi",
+          "pembangunan lestari dan inovatif"
+        ],
+        "notes": "须保持'berkualiti tinggi'直译以对应'quality'核心内涵；'lestari'（可持续）和'inovatif'（创新）仅为补充说明，不可替代主译法。"
+      },
+      "el-GR": {
+        "rendering": "Ανάπτυξη Υψηλής Ποιότητας",
+        "alternatives": [
+          "Υψηλού Επιπέδου Ανάπτυξη",
+          "Βιώσιμη Ανάπτυξη Υψηλής Ποιότητας"
+        ],
+        "notes": "‘高质量’强调创新、协调、绿色、开放、共享五大发展理念，非单纯技术指标。‘Ανάπτυξη Υψηλής Ποιότητας’为中国—希腊经贸合作文件标准译法，‘Ποιότητας’需与‘Ανάπτυξη’紧密连接，不可拆分。"
+      },
+      "vi-VN": {
+        "rendering": "phát triển chất lượng cao",
+        "alternatives": [
+          "phát triển nâng cao chất lượng",
+          "phát triển bền vững và hiệu quả"
+        ],
+        "notes": "Không dịch là 'phát triển cao cấp' hoặc 'phát triển tinh hoa' vì sai nghĩa: đây là khái niệm kinh tế chỉ chuyển đổi mô hình tăng trưởng từ số lượng sang chất lượng, hiệu quả và bền vững."
+      },
+      "ur-PK": {
+        "rendering": "اعلیٰ معیار کی ترقی",
+        "alternatives": [
+          "معیاری ترقی",
+          "کیفیت پر مبنی ترقی"
+        ],
+        "notes": "‘高质量’强调创新、协调、绿色、开放、共享特征，非单纯技术标准；避免单一译为‘بہترین’（最好）而失焦。"
+      },
+      "hi-IN": {
+        "rendering": "उच्च-गुणवत्ता विकास",
+        "alternatives": [
+          "गुणवत्तापूर्ण विकास",
+          "स्थायी उच्च-गुणवत्ता विकास"
+        ],
+        "notes": "‘उच्च-गुणवत्ता’ शब्द आर्थिक दक्षता, पर्यावरणीय स्थायित्व और सामाजिक न्याय को संदर्भित करता है; ‘स्थायी विकास’ जैसा अनुवाद अत्यधिक सामान्यीकृत है।"
+      }
+    },
+    "新质生产力": {
+      "ja-JP": {
+        "rendering": "新質生産力",
+        "alternatives": [
+          "新次元生産力",
+          "革新型生産力"
+        ],
+        "notes": "2023年以降の新造語。中国共産党中央が定義する「技術革新・データ駆動・グリーン化」を核とする概念。「新質」は「質的飛躍」を意味し、単なる「新しい」ではない。現時点では漢字表記が唯一の公認訳。"
+      },
+      "es-ES": {
+        "rendering": "fuerzas productivas de nueva calidad",
+        "alternatives": [
+          "fuerzas productivas innovadoras",
+          "capacidad productiva de vanguardia"
+        ],
+        "notes": "该概念强调技术革命性突破与生产关系变革，‘de nueva calidad’直译自官方西语发布稿，但需注意西语读者可能困惑于‘calidad’的抽象性；暂无公认简明替代词，须辅以定义性说明。"
+      },
+      "fr-FR": {
+        "rendering": "forces productives de nouvelle qualité",
+        "alternatives": [
+          "forces productives innovantes",
+          "nouvelles forces productives qualitatives"
+        ],
+        "notes": "必须保留« de nouvelle qualité »结构以体现理论原创性；禁用« nouvelles forces productives »（丢失« qualité »核心语义）。"
+      },
+      "ru-RU": {
+        "rendering": "Новые качественные производительные силы",
+        "alternatives": [
+          "Инновационные производительные силы",
+          "Производительные силы нового качества"
+        ],
+        "notes": "该术语为近年提出的新概念，强调技术革命性突破与生产要素跃升，俄译需保留‘новые качественные’字面结构以体现理论原创性，避免过度意译导致内涵稀释。"
+      },
+      "ar": {
+        "rendering": "قوى إنتاجية نوعية جديدة",
+        "alternatives": [
+          "قوى إنتاجية متطورة جذريًا",
+          "عوامل إنتاج مبتكرة"
+        ],
+        "notes": "‘نوعية جديدة’平衡‘新质’的‘质’（本质性变革）与‘新’（创新性），优于‘متطورة’（仅表渐进升级）；‘عوامل إنتاج’为经济学通用词，但丢失‘生产力’作为马克思主义政治经济学核心范畴的理论重量。"
+      },
+      "ko-KR": {
+        "rendering": "신질 생산력",
+        "alternatives": [
+          "신형 생산력",
+          "혁신 기반 생산력"
+        ],
+        "notes": "기술 혁신·디지털 전환·신에너지 등에 기반한 생산력의 질적 전환을 의미. '신질'은 '새로운 성질/질'을 강조하는 중국식 신조어로, '신형'이나 '첨단'보다 원문의 철학적 함의(질적 도약)를 살리는 번역이 바람직."
+      },
+      "pt-BR": {
+        "rendering": "forças produtivas de nova qualidade",
+        "alternatives": [
+          "forças produtivas inovadoras",
+          "produtividade de nova geração"
+        ],
+        "notes": "2023年中共政治局集体学习提出的新概念，指以科技创新为主导、符合新发展理念的生产力形态；‘nova qualidade’是核心，不可译为‘novas forças’（丢失质变内涵）或‘tecnológicas’（窄化范畴）。"
+      },
+      "sw-KE": {
+        "rendering": "Nguvu za Uzalishaji ya Aina Mpya",
+        "alternatives": [
+          "Nguvu za Uzalishaji ya Kipya",
+          "Nguvu za Uzalishaji ya Kipekee"
+        ],
+        "notes": "‘Aina Mpya’ inaonyesha mabadiliko ya kisasa ya teknolojia, mbinu za uzalishaji na mfumo wa uchumi bila kujumuisha mifano ya ‘nguvu za kisiasa’; inapaswa kuepuka matumizi ya maneno ya ‘utawala’ au ‘kudhibiti’."
+      },
+      "it-IT": {
+        "rendering": "forze produttive di nuova qualità",
+        "alternatives": [
+          "forze produttive innovative",
+          "nuove forze produttive qualitative"
+        ],
+        "notes": "‘Di nuova qualità’ è la resa più fedele e usata nel rapporto del Congresso del PCC 2023 tradotto in italiano; evitare ‘produttività di nuova natura’, che introduce un concetto non presente nel termine originale e rischia di confondere con teorie economiche occidentali."
+      },
+      "kk-KZ": {
+        "rendering": "Жаңа сапалы өндірістік күштер",
+        "alternatives": [
+          "Инновациялық өндірістік күштер",
+          "Сапасы жаңартылған өндірістік күштер"
+        ],
+        "notes": "属新创术语，须保留‘жаңа сапалы’结构以对应‘新质’，不可简化为‘жаңа технологиялық күштер’而丢失哲学内涵。"
+      },
+      "th-TH": {
+        "rendering": "แรงขับเคลื่อนการผลิตเชิงคุณภาพใหม่",
+        "alternatives": [
+          "กำลังการผลิตเชิงนวัตกรรมใหม่",
+          "แรงผลิตแบบใหม่ที่เน้นคุณภาพ"
+        ],
+        "notes": "ไม่ควรแปลว่า 'แรงผลิตใหม่' อย่างเดียว เพราะสูญเสียความหมายของ 'คุณภาพ' และ 'การเปลี่ยนผ่านเชิงโครงสร้าง'; ต้องสะท้อนแนวคิด 'การเปลี่ยนผ่านจากปริมาณสู่คุณภาพ' และ 'การผสานเทคโนโลยีขั้นสูงกับปัจจัยการผลิตแบบดั้งเดิม'"
+      },
+      "ms-MY": {
+        "rendering": "kuasa pengeluaran bermutu baharu",
+        "alternatives": [
+          "kuasa pengeluaran baharu berbasis teknologi",
+          "kuasa pengeluaran inovatif"
+        ],
+        "notes": "采用'bermutu baharu'兼顾'new'与'quality'双重属性；避免直译'produktif'造成语义重复，'berbasis teknologi'仅限科技领域语境下使用。"
+      },
+      "el-GR": {
+        "rendering": "Νέες Παραγωγικές Δυνάμεις Υψηλής Ποιότητας",
+        "alternatives": [
+          "Νέες Ποιοτικές Παραγωγικές Δυνάμεις",
+          "Προηγμένες Παραγωγικές Δυνάμεις"
+        ],
+        "notes": "‘新质’指以科技创新为主导、摆脱传统增长路径的生产力跃升，非简单‘νέες’（新）或‘ποιοτικές’（定性）。‘Υψηλής Ποιότητας’呼应‘高质量发展’术语体系，确保概念一致性；避免‘μετα-ποιοτικές’等生造词。"
+      },
+      "vi-VN": {
+        "rendering": "lực lượng sản xuất chất lượng mới",
+        "alternatives": [
+          "lực lượng sản xuất tiên tiến mới",
+          "lực lượng sản xuất mang tính đột phá"
+        ],
+        "notes": "Thuật ngữ lý luận mới, chưa có tương đương chuẩn trong tiếng Việt; tránh dịch cứng 'sản xuất chất lượng mới' gây hiểu nhầm là tiêu chuẩn kỹ thuật; cần làm rõ đây là lực lượng sản xuất dựa trên đổi mới khoa học-công nghệ và chuyển đổi số."
+      },
+      "ur-PK": {
+        "rendering": "نئی نوعیت کی پیداواری طاقتوں",
+        "alternatives": [
+          "جدید کیفیت کی پیداواری صلاحیتیں",
+          "غیر روایتی پیداواری طاقتیں"
+        ],
+        "notes": "‘新质’指技术革命驱动的质变性跃升，非一般‘新’或‘现代’；避免译为‘جدید’（new）而模糊其范式变革内涵。"
+      },
+      "hi-IN": {
+        "rendering": "नई गुणवत्ता वाली उत्पादक शक्तियाँ",
+        "alternatives": [
+          "नवीन गुणात्मक उत्पादक शक्तियाँ",
+          "गुणात्मक रूपांतरित उत्पादक शक्तियाँ"
+        ],
+        "notes": "‘नई गुणवत्ता वाली’ शब्द तकनीकी नवाचार, डिजिटल रूपांतरण और गहन ज्ञान-आधारित उत्पादन को संदर्भित करता है; ‘नवीन उत्पादक शक्तियाँ’ जैसा संक्षिप्त अनुवाद अर्थ को कमजोर कर सकता है।"
+      }
+    },
+    "中国式现代化": {
+      "ja-JP": {
+        "rendering": "中国式現代化",
+        "alternatives": [
+          "中国モデル現代化",
+          "社会主義現代化"
+        ],
+        "notes": "「中国式」は「中国独特の方法論」を意味し、『中国風』や『中国流』といった文化的ニュアンスではない。政治的属性（社会主義）を隠蔽する意訳は、中国側から修正要求が出るリスクあり。"
+      },
+      "es-ES": {
+        "rendering": "modernización a la china",
+        "alternatives": [
+          "modernización china",
+          "modernización con características chinas"
+        ],
+        "notes": "‘a la china’是西班牙皇家语言学院（RAE）认可的固定短语结构（如‘a la francesa’），体现模式独特性；‘china’作形容词易被误读为种族主义表述，必须带冠词‘la’并小写，且不可省略‘a la’。"
+      },
+      "fr-FR": {
+        "rendering": "modernisation à la chinoise",
+        "alternatives": [
+          "modernisation chinoise",
+          "modernisation spécifique chinoise"
+        ],
+        "notes": "« à la chinoise »为外交部标准译法，强调路径独特性；避免« moderne chinoise »（语法错误）或« modernisation socialiste »（政治定性超前）。"
+      },
+      "ru-RU": {
+        "rendering": "Китайская модернизация",
+        "alternatives": [
+          "Модернизация китайского типа",
+          "Специфическая китайская модернизация"
+        ],
+        "notes": "‘中国式’强调中国特色社会主义道路的独特性，俄译必须用‘Китайская модернизация’（首字母大写），不可添加‘социалистическая’等限定词，以免与苏联模式混淆。"
+      },
+      "ar": {
+        "rendering": "التحديث الصيني",
+        "alternatives": [
+          "نمط صيني من التحديث",
+          "التحديث وفق النموذج الصيني"
+        ],
+        "notes": "‘التحديث الصيني’是中共中央对外宣介标准译法，简洁有力；‘نمط’‘نموذج’易被解读为地域性变体，削弱其作为人类现代化新形态的普遍意义；需防范‘صيني’一词在部分阿拉伯舆论中触发文化例外主义联想。"
+      },
+      "ko-KR": {
+        "rendering": "중국식 현대화",
+        "alternatives": [
+          "중국형 현대화",
+          "사회주의 현대화"
+        ],
+        "notes": "서방 중심의 현대화 패턴과 구별되는 중국 특유의 현대화 모델을 지칭. '중국식'은 한국어에서 문화적 특수성보다는 제도적·이념적 독자성을 강조하므로, '중국형'은 다소 중립적이지만 공식 문서는 '중국식' 선호."
+      },
+      "pt-BR": {
+        "rendering": "modernização à moda chinesa",
+        "alternatives": [
+          "modernização com características chinesas",
+          "modernização socialista chinesa"
+        ],
+        "notes": "‘à moda chinesa’为官方推荐译法（见外交部葡语文件），强调路径独特性而非文化表象；避免‘modernização chinesa’（缺失‘式’所蕴含的范式意义）或‘modelo chinês’（易被理解为输出模式）。"
+      },
+      "sw-KE": {
+        "rendering": "Ukuaji wa Kichina",
+        "alternatives": [
+          "Ukuaji wa Kitaifa cha China",
+          "Ukuaji wa Kichina cha Kijamii"
+        ],
+        "notes": "‘Ukuaji wa Kichina’ unasimama kwa ufanisi kwenye muktadha wa historia, mazingira na jamii ya China bila kujumuisha mifano ya ‘modernization’ ya Kiingereza; inapaswa kuepuka mlinganyo na ‘western modernization’."
+      },
+      "it-IT": {
+        "rendering": "modernizzazione alla cinese",
+        "alternatives": [
+          "modernizzazione cinese",
+          "modernizzazione con caratteristiche cinesi"
+        ],
+        "notes": "‘Alla cinese’ è la formula stabilita dal MAECI e dai media italiani (Corriere, Repubblica); ‘con caratteristiche cinesi’ è più lunga ma utile in testi analitici per sottolineare l’aspetto distintivo rispetto ai modelli occidentali."
+      },
+      "kk-KZ": {
+        "rendering": "Қытайдың заманғылық жолы",
+        "alternatives": [
+          "Қытай модернизациясы",
+          "Қытай тәсілімен заманғылыққа айналу"
+        ],
+        "notes": "‘中国式’强调独特路径而非‘Қытайға тән’，译文须体现道路选择的主体性，避免‘Қытай стилі’等轻率表述。"
+      },
+      "th-TH": {
+        "rendering": "การทันสมัยแบบจีน",
+        "alternatives": [
+          "การทันสมัยตามแบบฉบับจีน",
+          "การพัฒนาสู่ความทันสมัยแบบจีน"
+        ],
+        "notes": "ห้ามแปลว่า 'การทันสมัยแบบสังคมนิยม' หรือ 'การทันสมัยแบบคอมมิวนิสต์' เพราะไม่สอดคล้องกับการนำเสนออย่างเป็นทางการของจีน; ต้องเน้นว่าเป็นแนวทางที่ 'ไม่เลียนแบบตะวันตก' และ 'สอดคล้องกับบริบทเฉพาะของจีน'"
+      },
+      "ms-MY": {
+        "rendering": "modernisasi bergaya Tiongkok",
+        "alternatives": [
+          "modernisasi khas Tiongkok",
+          "modernisasi berlandaskan model Tiongkok"
+        ],
+        "notes": "马来西亚华文媒体及学术界通用'bergaya Tiongkok'，强调文明特质而非制度输出；禁用'modernisasi komunis'等标签化表述。"
+      },
+      "el-GR": {
+        "rendering": "Κινεζική Μοντερνοποίηση",
+        "alternatives": [
+          "Μοντερνοποίηση Κινεζικού Τύπου",
+          "Μοντερνοποίηση με Κινεζικά Χαρακτηριστικά"
+        ],
+        "notes": "‘中国式’强调中国特色社会主义道路的独特性，非‘κινεζικό μοντέλο’（易被解读为排他性模式）。‘Κινεζική Μοντερνοποίηση’为中国驻希使馆及希腊国际关系研究所通用译法，隐含历史纵深与文明主体性。"
+      },
+      "vi-VN": {
+        "rendering": "hiện đại hóa kiểu Trung Quốc",
+        "alternatives": [
+          "hiện đại hóa theo mô hình Trung Quốc",
+          "hiện đại hóa mang đặc sắc Trung Quốc"
+        ],
+        "notes": "Không được dịch là 'hiện đại hóa Trung Quốc' (thiếu yếu tố 'kiểu/cách thức') hoặc 'hiện đại hóa xã hội chủ nghĩa' (làm mất tính đặc thù); phải nhấn mạnh đây là con đường hiện đại hóa độc lập, không bắt chước phương Tây."
+      },
+      "ur-PK": {
+        "rendering": "چینی نمونہ کی جدیدیت",
+        "alternatives": [
+          "چین کی جدیدیت",
+          "چینی طرزِ جدیدیت"
+        ],
+        "notes": "‘中国式’强调道路自主性与文明根基，不可简化为‘چینی جدیدیت’（Chinese modernity）而消解其制度比较意义。"
+      },
+      "hi-IN": {
+        "rendering": "चीनी शैली का आधुनिकीकरण",
+        "alternatives": [
+          "चीन-विशिष्ट आधुनिकीकरण",
+          "चीनी प्रकार का आधुनिकीकरण"
+        ],
+        "notes": "‘चीनी शैली का आधुनिकीकरण’ अधिकारिक अनुवाद है; ‘चीनी मॉडल’ या ‘चीनी रास्ता’ जैसे प्रयोग राजनीतिक व्याख्या का कारण बन सकते हैं।"
+      }
+    },
+    "绿水青山就是金山银山": {
+      "ja-JP": {
+        "rendering": "青い空・澄んだ水・豊かな山は、金と銀の山である",
+        "alternatives": [
+          "绿水青山＝金山銀山",
+          "生態資源は最大の資産"
+        ],
+        "notes": "比喩的表現のため、直訳＋解説が不可欠。単なる「緑の山・青い川」では環境政策の政治的意図（経済成長と環境保護の統一）が伝わらない。公式文書では必ず原文漢字＋日本語訳を併記。"
+      },
+      "es-ES": {
+        "rendering": "las aguas límpidas y las montañas verdes son riquezas invaluables",
+        "alternatives": [
+          "la naturaleza sana es una riqueza incalculable",
+          "los ecosistemas prístinos equivalen a activos económicos"
+        ],
+        "notes": "官方西语版采用直译加意译平衡策略；‘richezas invaluables’比直译‘montañas de oro y plata’更准确传达生态价值不可量化性；避免使用‘tesoro’等隐含可开采性的词汇，防止环保话语被工具化解读。"
+      },
+      "fr-FR": {
+        "rendering": "les eaux limpides et les montagnes verdoyantes sont des richesses inestimables",
+        "alternatives": [
+          "les paysages naturels préservés constituent un trésor national",
+          "la protection écologique est une richesse fondamentale"
+        ],
+        "notes": "须完整传达比喻逻辑，禁用直译« montagnes vertes et eaux bleues »（失文化意象）或删减「就是」的判断关系。"
+      },
+      "ru-RU": {
+        "rendering": "Чистые воды и пышные горы — это неоценимое богатство",
+        "alternatives": [
+          "Зелёные горы и голубые воды — величайшее достояние",
+          "Экологическое благополучие равно экономическому богатству"
+        ],
+        "notes": "该比喻性表述需兼顾诗意与政策内涵，俄译应保留自然意象（горы/воды）与价值判断（неоценимое богатство），禁用直白经济术语如‘активы’‘капитал’，避免削弱生态哲学深度。"
+      },
+      "ar": {
+        "rendering": "المياه الصافية والجبال الخضراء هي كنوز لا تقدر بثمن",
+        "alternatives": [
+          "البيئة الصحية ثروة استراتيجية",
+          "الاستدامة البيئية أساس الرخاء الاقتصادي"
+        ],
+        "notes": "采用意译兼顾诗意与政策内涵，‘كنوز لا تقدر بثمن’呼应‘金山银山’的比喻张力；直译‘جبال من الذهب والفضة’将引发拜金主义误读；‘الاستدامة البيئية’为政策术语但丧失原文修辞力量。"
+      },
+      "ko-KR": {
+        "rendering": "청산록수는 금산은산이다",
+        "alternatives": [
+          "푸른 산과 푸른 물은 금과 은의 산이다",
+          "생태자원은 최고의 부"
+        ],
+        "notes": "시진핑의 생태문명 구호로, 직역보다는 시적 표현과 철학적 함의를 고려해 '청산록수'가 가장 널리 채택됨. '금산은산'은 비유적 표현이므로 한국어에서도 은유적 번역 유지 권장."
+      },
+      "pt-BR": {
+        "rendering": "águas límpidas e montanhas frondosas são ativos inestimáveis",
+        "alternatives": [
+          "natureza preservada equivale a riqueza econômica",
+          "ecossistemas saudáveis são patrimônio nacional"
+        ],
+        "notes": "‘inestimáveis’比‘valiosos’更贴近‘invaluable’的政治修辞力度；须保留比喻结构，不可直译‘montanhas verdes e águas azuis’（丢失生态价值转化逻辑）。"
+      },
+      "sw-KE": {
+        "rendering": "Maji ya Wazi na Milima ya Kijani Ni Rasilimali Zinazoweza Kutumika",
+        "alternatives": [
+          "Maji ya Wazi na Milima ya Kijani Ni Rasilimali Za Thamani",
+          "Maji ya Wazi na Milima ya Kijani Ni Rasilimali Za Kipekee"
+        ],
+        "notes": "‘Rasilimali Zinazoweza Kutumika’ inaonyesha thamani ya mazingira kwa uchumi na jamii bila kujumuisha mifano ya ‘thamani ya fedha’; inapaswa kuepuka mlinganyo na ‘invaluable assets’ ili kuepuka mchanganyiko wa thamani ya fedha na ya kisiasa."
+      },
+      "it-IT": {
+        "rendering": "acque limpide e montagne rigogliose sono ricchezze inestimabili",
+        "alternatives": [
+          "acque cristalline e foreste lussureggianti equivalgono a tesori",
+          "la natura preservata è un patrimonio economico"
+        ],
+        "notes": "La traduzione letterale ‘montagne verdi e acque azzurre’ è fuorviante (‘verde/azzurro’ non corrisponde a ‘lucid/lush’); ‘ricchezze inestimabili’ rende meglio il concetto di valore intrinseco ed economico senza ridurlo a mera metafora ambientale."
+      },
+      "kk-KZ": {
+        "rendering": "Асылы жасыл таулар мен ақ көлдер — қазына",
+        "alternatives": [
+          "Табиғи байлық — ең үлкен қазына",
+          "Жасыл табиғат — ақшаға тең"
+        ],
+        "notes": "比喻性表述，须保留‘асылы’‘қазына’等文化对应词，不可直译‘金山银山’为‘алтын таулар/күміс көлдер’造成荒诞感。"
+      },
+      "th-TH": {
+        "rendering": "ภูเขาเขียวขจีและลำน้ำใสสะอาดคือทรัพย์สมบัติอันล้ำค่า",
+        "alternatives": [
+          "ธรรมชาติที่บริสุทธิ์คือฐานทรัพย์สินที่แท้จริง",
+          "สิ่งแวดล้อมที่ดีคือความมั่งคั่งที่ยั่งยืน"
+        ],
+        "notes": "ต้องหลีกเลี่ยงการแปลแบบตรงตัวว่า 'ภูเขาสีเขียวและน้ำสีฟ้าคือภูเขาทองคำและภูเขาเงิน' ซึ่งฟังดูไร้สาระในภาษาไทย; ควรใช้ภาษาเชิงอุปมาที่สื่อสารเจตนาเชิงนโยบายได้ชัดเจน"
+      },
+      "ms-MY": {
+        "rendering": "air yang jernih dan gunung yang hijau adalah harta karun yang tak ternilai",
+        "alternatives": [
+          "alam semula jadi yang terpelihara adalah aset bernilai tinggi",
+          "lingkungan lestari setara kekayaan ekonomi"
+        ],
+        "notes": "必须保留比喻修辞（'harta karun'对应'金山银山'），'tak ternilai'强调生态价值不可货币化；避免直译'gunung emas dan gunung perak'引发拜金联想。"
+      },
+      "el-GR": {
+        "rendering": "Τα Διαυγή Νερά και τα Πράσινα Βουνά είναι Ανεκτίμητοι Πόροι",
+        "alternatives": [
+          "Τα Διαυγή Νερά και τα Πράσινα Βουνά είναι Πλούτος",
+          "Οι Φυσικοί Πόροι είναι Ανεκτίμητοι"
+        ],
+        "notes": "‘金山银山’为比喻，直译‘χρυσούν και αργυρούν βουνά’将引发荒诞联想。‘Ανεκτίμητοι Πόροι’（无可估量的资源）准确传递生态价值不可货币化的哲学内涵，符合希腊语环境政策文本惯例。"
+      },
+      "vi-VN": {
+        "rendering": "núi xanh nước biếc chính là núi vàng núi bạc",
+        "alternatives": [
+          "môi trường sinh thái tốt chính là tài nguyên quý giá nhất",
+          "bảo vệ môi trường chính là phát triển kinh tế"
+        ],
+        "notes": "Phải giữ hình ảnh ẩn dụ gốc ('núi xanh nước biếc' / 'núi vàng núi bạc') để bảo toàn tính văn hóa và tuyên truyền; bản dịch ý làm mất tính biểu tượng và sức thuyết phục chính trị."
+      },
+      "ur-PK": {
+        "rendering": "صاف پانی اور سرسبز پہاڑیاں غیر معمولی دولت ہیں",
+        "alternatives": [
+          "سبز و صاف ماحول اعلیٰ اثاثہ ہے",
+          "ماحولیاتی دولت"
+        ],
+        "notes": "比喻性政策话语，需保留形象性；避免直译‘سونے کے پہاڑ’（金山）引发拜金联想，‘غیر معمولی دولت’更契合政策文本庄重性。"
+      },
+      "hi-IN": {
+        "rendering": "स्वच्छ जल और हरियाली अमूल्य संपत्ति हैं",
+        "alternatives": [
+          "हरियाली और स्वच्छ जल अमूल्य संपत्ति हैं",
+          "प्राकृतिक संसाधन अमूल्य संपत्ति हैं"
+        ],
+        "notes": "‘स्वच्छ जल और हरियाली’ शब्द अनुवाद के लिए अधिकारिक रूप से स्वीकृत हैं; ‘प्रकृति की संपत्ति’ या ‘पर्यावरणीय संपत्ति’ जैसे प्रयोग दार्शनिक अर्थ को कमजोर कर सकते हैं।"
+      }
+    },
+    "摸着石头过河": {
+      "ja-JP": {
+        "rendering": "石を手探りで確かめながら川を渡る",
+        "alternatives": [
+          "実験的改革手法",
+          "段階的試行方式"
+        ],
+        "notes": "鄧小平の改革思想を象徴する比喩。直訳は冗長だが、意訳（例：「試行錯誤」）は「無計画性」を連想させ、中国側が否定する政治的ニュアンスを含むため避ける。"
+      },
+      "es-ES": {
+        "rendering": "avanzar con cautela, probando paso a paso",
+        "alternatives": [
+          "aprender haciendo",
+          "experimentar gradualmente"
+        ],
+        "notes": "该比喻强调渐进式改革方法论，直译‘cruzar el río tocando las piedras’在西语中缺乏文化共鸣且易被理解为能力不足；‘avanzar con cautela, probando paso a paso’既保留探索意味，又符合西班牙语政策文本惯用表达。"
+      },
+      "fr-FR": {
+        "rendering": "traverser la rivière en tâtonnant pierre par pierre",
+        "alternatives": [
+          "progresser par tâtonnements empiriques",
+          "expérimenter concrètement sans théorie préalable"
+        ],
+        "notes": "保留« pierre par pierre »体现渐进探索本质；禁用« tester avant d'agir »等弱化实践哲学深度的泛化表达。"
+      },
+      "ru-RU": {
+        "rendering": "Переправляться через реку, ощупывая камни",
+        "alternatives": [
+          "Идти по пути экспериментов и постепенных реформ",
+          "Пошаговое продвижение через пробные шаги"
+        ],
+        "notes": "作为改革开放方法论的经典隐喻，俄译须保留原典意象以体现历史语境，不可抽象化为‘эмпирический подход’；‘камни’象征可依托的实践基础，不可译作‘опора’‘точки опоры’等技术化表达。"
+      },
+      "ar": {
+        "rendering": "عبور النهر بالتماسّ بالحجارة",
+        "alternatives": [
+          "نهج تجريبي تدريجي",
+          "التجريب العملي في ظل الغموض"
+        ],
+        "notes": "保留原喻‘التماسّ بالحجارة’体现‘摸’的动作感与实践哲学，是新华社阿拉伯语版标准译法；‘نهج تجريبي’虽准确但抽象化，消解了改革开放初期方法论的具象智慧；需警惕‘الغموض’（模糊）可能暗示政策不确定性。"
+      },
+      "ko-KR": {
+        "rendering": "돌을 더듬으며 강을 건너다",
+        "alternatives": [
+          "돌을 만지며 강 건너기",
+          "실험을 통한 점진적 개혁"
+        ],
+        "notes": "개혁 개방 초기의 실용주의 정책 접근법을 상징. 직역은 한국어에서 어색할 수 있으나, 중국 정책 담론에서의 상징성과 역사적 맥락을 고려해 은유적 번역을 우선시함."
+      },
+      "pt-BR": {
+        "rendering": "atravessar o rio tateando as pedras",
+        "alternatives": [
+          "avançar empiricamente",
+          "aprender na prática, passo a passo"
+        ],
+        "notes": "邓小平改革方法论，强调渐进式探索；‘tateando’准确传达‘摸’的动作与试错本质；避免‘cruzar o rio sem ponte’（暗示无序）或‘experimentação cega’（含贬义）。"
+      },
+      "sw-KE": {
+        "rendering": "Kuvuka Mto Kwa Kugundua Michoro",
+        "alternatives": [
+          "Kuvuka Mto Kwa Kupima Michoro",
+          "Kuvuka Mto Kwa Kujaribu"
+        ],
+        "notes": "‘Kugundua Michoro’ inaonyesha njia ya kujaribu na kujifunza kwa njia ya moja kwa moja bila kujumuisha mifano ya ‘kutegemea’ au ‘kudhibiti’; inapaswa kuepuka matumizi ya maneno ya ‘kudhibiti’ au ‘kudhihirisha udhalimu’."
+      },
+      "it-IT": {
+        "rendering": "attraversare il fiume tastando i sassi",
+        "alternatives": [
+          "procedere con prudenza empirica",
+          "sperimentare passo dopo passo"
+        ],
+        "notes": "La versione letterale è ormai consolidata nella letteratura politica italiana (Treccani, ISPI); le parafrasi sono utili in contesti divulgativi, ma la forma figurata deve essere mantenuta per preservare il riferimento culturale specifico."
+      },
+      "kk-KZ": {
+        "rendering": "Тастарды сипап, өзен арқылы өту",
+        "alternatives": [
+          "Тәжірибе арқылы жол іздеу",
+          "Біртіндеп ілгерілеу"
+        ],
+        "notes": "隐喻渐进式改革方法，首选译法保留形象性，但需注明语境：正式文件中宜用‘тәжірибе арқылы’等抽象表述替代。"
+      },
+      "th-TH": {
+        "rendering": "ทดลองปฏิบัติไปทีละขั้นตอนด้วยความระมัดระวัง",
+        "alternatives": [
+          "เรียนรู้ผ่านการลงมือทำอย่างค่อยเป็นค่อยไป",
+          "เดินหน้าด้วยการทดลองและปรับปรุงอย่างต่อเนื่อง"
+        ],
+        "notes": "ห้ามแปลแบบตัวต่อตัวว่า 'จับก้อนหินข้ามแม่น้ำ' ซึ่งทำให้สูญเสียความหมายเชิงนโยบายและอาจดูตลกขบขัน; ต้องสื่อสารแนวคิด 'การปฏิรูปแบบเป็นขั้นตอน' และ 'การเรียนรู้จากประสบการณ์จริง'"
+      },
+      "ms-MY": {
+        "rendering": "menyeberangi sungai sambil meraba batu",
+        "alternatives": [
+          "pendekatan empirikal dalam reformasi",
+          "strategi uji-cuba bertahap"
+        ],
+        "notes": "保留原喻体'batu'（石头）体现实践探索本质；'pendekatan empirikal'仅作政策解读时辅助说明，正式文本须用直译以维护话语原创性。"
+      },
+      "el-GR": {
+        "rendering": "Διασχίζοντας τον ποταμό με την αφή",
+        "alternatives": [
+          "Πειραματική Διαδικασία Διασχίσεως Ποταμού",
+          "Προσεκτική Προσέγγιση στη Μεταρρύθμιση"
+        ],
+        "notes": "该成语喻指渐进式改革方法论。希腊语需保留‘触觉’（αφή）这一核心意象以维系原典修辞力，避免过度解释性翻译（如‘σταδιακή μεταρρύθμιση’丧失文化独特性）。‘Διασχίζοντας...με την αφή’为中国—希腊智库对话文件采用译法。"
+      },
+      "vi-VN": {
+        "rendering": "vừa làm vừa học hỏi qua thực tiễn",
+        "alternatives": [
+          "thử nghiệm từng bước trên cơ sở thực tiễn",
+          "đi từng bước, kiểm nghiệm từng bước"
+        ],
+        "notes": "Không dịch theo nghĩa đen 'sờ đá qua sông' vì gây phản cảm hoặc thiếu nghiêm túc; cần truyền tải đúng tinh thần thực tiễn chủ nghĩa, đổi mới từ cơ sở, không giáo điều."
+      },
+      "ur-PK": {
+        "rendering": "پتھروں کو چھوتے ہوئے دریا پار کرنا",
+        "alternatives": [
+          "تجرباتی طریقہ کار",
+          "مرحلہ وار اقدام"
+        ],
+        "notes": "改革方法论隐喻，须保留动作意象；不可仅译为‘تجربہ’（实验）而丢失‘渐进探索’的核心语义及历史语境。"
+      },
+      "hi-IN": {
+        "rendering": "पत्थरों को छूकर नदी पार करना",
+        "alternatives": [
+          "कदम-दर-कदम प्रयोगात्मक दृष्टिकोण",
+          "प्रयोगात्मक अनुकूलन"
+        ],
+        "notes": "अक्षरशः अनुवाद ‘पत्थरों को छूकर नदी पार करना’ भारतीय संदर्भ में भी स्वीकार्य है; रूढ़िवादी या अत्यधिक सामान्यीकृत अनुवाद इसके ऐतिहासिक और राजनीतिक संदर्भ को नष्ट कर सकते हैं।"
+      }
+    },
+    "撸起袖子加油干": {
+      "ja-JP": {
+        "rendering": "袖をまくり、全力で取り組む",
+        "alternatives": [
+          "実践志向の奮起",
+          "現場主義的な実行"
+        ],
+        "notes": "スローガン的表現で、直訳（例：『袖を捲って油を注いで働く』）は日本語として不自然かつ誤解を招く。あくまで「実践・実行・主体性」の精神を伝える機能的訳が求められる。"
+      },
+      "es-ES": {
+        "rendering": "ponerse manos a la obra con determinación",
+        "alternatives": [
+          "trabajar con ahínco",
+          "actuar con energía y compromiso"
+        ],
+        "notes": "该口号具强烈行动号召力，但‘rolar mangas’直译会引发肢体动作歧义；‘ponerse manos a la obra’是西语最自然的实干习语，添加‘con determinación’补足原文‘加油’的情感强度，避免过度口语化（如‘¡vamos!’）削弱政策严肃性。"
+      },
+      "fr-FR": {
+        "rendering": "remonter ses manches et s'y mettre avec détermination",
+        "alternatives": [
+          "se mettre résolument au travail",
+          "agir avec énergie et engagement"
+        ],
+        "notes": "« remonter ses manches »为关键动作意象，不可省略；避免直译«加油»为« faire du pétrole »（严重误译）或过度西化为« donner le meilleur de soi »。"
+      },
+      "ru-RU": {
+        "rendering": "Закатать рукава и приложить максимум усилий",
+        "alternatives": [
+          "Закатать рукава и усердно трудиться",
+          "С полным энтузиазмом приступить к делу"
+        ],
+        "notes": "口语化政治口号，俄译需传达动员性与行动感，‘закатать рукава’为固定对应；避免使用‘работать усердно’等平淡表述，亦不可加入‘вместе’‘коллективно’等原文未明示的集体主义修饰。"
+      },
+      "ar": {
+        "rendering": "الانخراط الجاد في العمل بعزيمةٍ وتصميمٍ",
+        "alternatives": [
+          "العمل بجدٍّ ونشاطٍ",
+          "الانطلاق الفعلي نحو الإنجاز"
+        ],
+        "notes": "‘الانخراط الجاد... بعزيمةٍ وتصميمٍ’传递动员性、决心感与行动力，规避直译‘رفع الأكمام’造成的文化隔阂（阿拉伯文化中卷袖不具同等象征）；‘العمل بجدٍّ’过于平淡，丧失口号感染力。"
+      },
+      "ko-KR": {
+        "rendering": "소매를 걷고 열심히 일하다",
+        "alternatives": [
+          "소매를 걷고 힘내라",
+          "실천 중심의 투쟁 정신"
+        ],
+        "notes": "대중 동원 구호로, 구어체·비격식 표현. 한국어에서는 직역이 자연스럽고, '열심히 일하다'는 표현이 공식 문서와 언론에서 가장 널리 사용됨. '투쟁'은 한국어에서 부정적 뉘앙스가 강해 피해야 함."
+      },
+      "pt-BR": {
+        "rendering": "arregaçar as mangas e trabalhar com empenho",
+        "alternatives": [
+          "meter a mão na massa e se dedicar",
+          "mão à obra com determinação"
+        ],
+        "notes": "口语化政治口号，‘arregaçar as mangas’是葡语对应习语，保留形象感；‘trabalhar com empenho’比‘trabalhar duro’更契合‘加油干’的动员性与集体行动指向。"
+      },
+      "sw-KE": {
+        "rendering": "Kupanda Mikono na Kufanya Kazi Kwa Bidii",
+        "alternatives": [
+          "Kupanda Mikono na Kufanya Kazi Kwa Uaminifu",
+          "Kupanda Mikono na Kufanya Kazi Kwa Ushirikiano"
+        ],
+        "notes": "‘Kupanda Mikono’ inaonyesha uamuzi wa kufanya kazi kwa bidii bila kujumuisha mifano ya ‘kufanya kazi kwa nguvu’ au ‘kudhibiti’; inapaswa kuepuka matumizi ya maneno ya ‘kudhibiti’ au ‘kudhihirisha udhalimu’."
+      },
+      "it-IT": {
+        "rendering": "rotolare le maniche e dare il massimo",
+        "alternatives": [
+          "mettersi al lavoro con impegno",
+          "darsi da fare con determinazione"
+        ],
+        "notes": "‘Rotolare le maniche’ è l’equivalente idiomatico più naturale in italiano; evitare traduzioni troppo letterali (es. ‘spingere il gomito’) o termini gergali (es. ‘darsi una mossa’) che appaiono informali o irridenti in contesto istituzionale."
+      },
+      "kk-KZ": {
+        "rendering": "Қолыңды иығына көтеріп, тырыс",
+        "alternatives": [
+          "Қолыңды иығына көтеріп, қатты еңбек ет",
+          "Қолыңды иығына көтеріп, қатты тырыс"
+        ],
+        "notes": "口语化动员口号，‘撸起袖子’须用哈萨克语惯用动作‘қолыңды иығына көтеріп’，不可直译‘көтеріп’为‘көтеру’而失生动性。"
+      },
+      "th-TH": {
+        "rendering": "ลงมือทำอย่างเต็มที่ด้วยความมุ่งมั่น",
+        "alternatives": [
+          "ลงมือปฏิบัติอย่างจริงจัง",
+          "ลงแรงทำงานอย่างไม่ย่อท้อ"
+        ],
+        "notes": "ต้องหลีกเลี่ยงการแปลแบบตัวต่อตัวหรือใช้สำนวนไทยที่ไม่เหมาะสม เช่น 'ม้วนแขนเสื้อแล้วลงมือ' ซึ่งอาจดูหยาบคายหรือไม่เป็นทางการ; ควรเน้นน้ำหนักของ 'ความมุ่งมั่น' และ 'การลงมือทำอย่างมีเป้าหมาย'"
+      },
+      "ms-MY": {
+        "rendering": "gulung lengan dan bekerja keras",
+        "alternatives": [
+          "berusaha sepenuh tenaga",
+          "bekerja dengan tekad tinggi"
+        ],
+        "notes": "直译'gulung lengan'准确传递行动姿态，'bekerja keras'为中性务实表达；禁用'berjuang'（斗争）或'berperang'（战争）等激进词汇。"
+      },
+      "el-GR": {
+        "rendering": "Κυλώντας τα μανίκια και δουλεύοντας με ενθουσιασμό",
+        "alternatives": [
+          "Με κυλωμένα μανίκια και αποφασιστικότητα",
+          "Δουλεύοντας με σθένος και πρακτικότητα"
+        ],
+        "notes": "‘撸起袖子’象征行动决心，‘加油干’强调实干精神。希腊语须避免直译‘προσθέτοντας λάδι’（加油）造成语义断裂。‘με ενθουσιασμό’兼顾情感动员与实践导向，符合希腊语政治话语中‘δράση’（行动）的核心范式。"
+      },
+      "vi-VN": {
+        "rendering": "cuộn tay áo lên và nỗ lực hết mình",
+        "alternatives": [
+          "ra sức hành động",
+          "cùng chung tay quyết liệt thực hiện"
+        ],
+        "notes": "Tránh dịch thành 'làm việc chăm chỉ' chung chung; phải thể hiện tinh thần chủ động, đoàn kết, quyết tâm cao và tính kêu gọi hành động rõ ràng trong bối cảnh chính trị."
+      },
+      "ur-PK": {
+        "rendering": "آستینیں اوپر کریں اور محنت سے کام کریں",
+        "alternatives": [
+          "ہمت بندھائیں اور کام کریں",
+          "پوری لگن سے کام کریں"
+        ],
+        "notes": "口语化动员口号，需体现行动感与集体意志；避免过度文雅化（如‘کوشش کریں’）或宗教化（如‘اللہ پر بھروسہ کریں’）转译。"
+      },
+      "hi-IN": {
+        "rendering": "आस्तीनें ऊपर करके मेहनत से काम करना",
+        "alternatives": [
+          "हाथों को लगाकर काम करना",
+          "पूरी शक्ति से काम करना"
+        ],
+        "notes": "‘आस्तीनें ऊपर करके’ शाब्दिक अनुवाद भारतीय संदर्भ में भी स्पष्ट और प्रभावी है; ‘कड़ी मेहनत’ या ‘पूरी लगन’ जैसे प्रयोग अर्थ की गतिशीलता को कमजोर कर सकते हैं।"
+      }
+    },
+    "小康": {
+      "ja-JP": {
+        "rendering": "小康社会",
+        "alternatives": [
+          "中程度の繁栄",
+          "安定した生活水準"
+        ],
+        "notes": "「小康」は『礼記』由来の古典概念で、単なる「中産階級」や「豊かさ」ではない。中国共産党が定義する「貧困脱却後の基本的生活保障」を指すため、必ず「社会」を付けて「小康社会」と訳すのが原則。"
+      },
+      "es-ES": {
+        "rendering": "prosperidad moderada",
+        "alternatives": [
+          "bienestar básico",
+          "nivel de vida decente"
+        ],
+        "notes": "‘prosperidad moderada’是联合国开发计划署（UNDP）西语文档及中国驻外使馆标准译法；‘bienestar básico’低估其作为全面建设社会主义现代化国家阶段性目标的战略高度，‘decente’则弱化了‘小康’在中国语境中的历史承诺维度。"
+      },
+      "fr-FR": {
+        "rendering": "prospérité modérée",
+        "alternatives": [
+          "bien-être modéré",
+          "niveau de vie décent"
+        ],
+        "notes": "« prospérité modérée »是联合国《2030议程》法文版标准术语；禁用« société harmonieuse »（概念错位）或« petite aisance »（贬义色彩）。"
+      },
+      "ru-RU": {
+        "rendering": "Умеренное процветание",
+        "alternatives": [
+          "Благополучное общество среднего уровня",
+          "Состояние достатка"
+        ],
+        "notes": "‘小康’是儒家传统概念与当代发展目标的结合体，俄译‘умеренное процветание’为联合国及中方文件标准译法；禁用‘благосостояние’（易联想到福利国家）或‘комфорт’（弱化政治目标属性）。"
+      },
+      "ar": {
+        "rendering": "رخاء معتدل",
+        "alternatives": [
+          "رفاهية اجتماعية أساسية",
+          "مرحلة الازدهار المحدود"
+        ],
+        "notes": "‘رخاء معتدل’为联合国及阿盟文件标准译法，对应邓小平‘三步走’战略中的特定历史阶段；‘رفاهية اجتماعية’泛化概念，模糊‘小康’作为中国式现代化阶段性目标的政治内涵；‘محدود’含贬义，违背‘小康’的积极价值导向。"
+      },
+      "ko-KR": {
+        "rendering": "소강",
+        "alternatives": [
+          "중산층 수준의 번영",
+          "온화한 번영"
+        ],
+        "notes": "중국 전통 사상에서 유래한 개념으로, '소강사회'는 2020년까지 달성된 국가 목표. '소강'은 한국어에서 '소강 상태'와 혼동될 수 있으나, 중국 맥락에서는 '모든 국민이 기본적 생활 수준을 누리는 사회'를 의미함."
+      },
+      "pt-BR": {
+        "rendering": "prosperidade moderada",
+        "alternatives": [
+          "bem-estar básico",
+          "nível de vida confortável"
+        ],
+        "notes": "源自《礼记》，指介于温饱和富裕之间的社会发展阶段；‘moderada’体现历史性目标尺度，不可译为‘rico’或‘próspero’（过度）；2021年后已实现，现多用于历史表述。"
+      },
+      "sw-KE": {
+        "rendering": "Ustawi wa Wastani",
+        "alternatives": [
+          "Ustawi wa Kijamii",
+          "Ustawi wa Watu Wote"
+        ],
+        "notes": "‘Ustawi wa Wastani’ inaonyesha hali ya kutosha ya maisha bila kujumuisha mifano ya ‘ustawi wa kisiasa’; inapaswa kuepuka mlinganyo na ‘moderate prosperity’ ya Kiingereza ili kuepuka mchanganyiko wa mfano wa kisiasa."
+      },
+      "it-IT": {
+        "rendering": "prosperità moderata",
+        "alternatives": [
+          "benessere diffuso",
+          "livello di vita soddisfacente"
+        ],
+        "notes": "‘Prosperità moderata’ è il termine tecnico consolidato nelle traduzioni ufficiali (ONU, Banca Mondiale, ISTAT); ‘benessere diffuso’ è una parafrasi utile per pubblici generali, ma non sostituisce il termine preciso nei documenti di policy."
+      },
+      "kk-KZ": {
+        "rendering": "Орташа байлық",
+        "alternatives": [
+          "Қарапайым байлық",
+          "Әлеуметтік ыңғайлылық"
+        ],
+        "notes": "特指中国特定发展阶段目标，不可译为‘қарапайым өмір’或‘қарапайым ыңғайлылық’，须与‘common prosperity’区分层级。"
+      },
+      "th-TH": {
+        "rendering": "ความมั่งคั่งระดับปานกลาง",
+        "alternatives": [
+          "สังคมที่มีความมั่งคั่งระดับปานกลาง",
+          "สังคมที่มีความเป็นอยู่ที่ดีระดับปานกลาง"
+        ],
+        "notes": "ไม่ควรแปลว่า 'สังคมที่มีความสุข' หรือ 'สังคมที่สงบสุข' เพราะสูญเสียมิติทางเศรษฐกิจและมาตรฐานเชิงปริมาณที่กำหนดไว้โดยรัฐบาลจีน; ต้องสื่อสารว่าเป็นเป้าหมายเชิงวัตถุที่วัดได้ (เช่น รายได้ต่อหัว โครงสร้างพื้นฐาน)"
+      },
+      "ms-MY": {
+        "rendering": "kesejahteraan sederhana",
+        "alternatives": [
+          "kemakmuran sederhana",
+          "standard hidup yang layak"
+        ],
+        "notes": "马来西亚统计局及中文媒体统一采用'kesejahteraan sederhana'，特指2020年全面建成小康社会的历史目标；'layak'（合格）易弱化政策庄严性，慎用。"
+      },
+      "el-GR": {
+        "rendering": "Μεσαία Ευημερία",
+        "alternatives": [
+          "Επαρκής Ευημερία",
+          "Οικονομική Ευημερία Μεσαίου Επιπέδου"
+        ],
+        "notes": "‘小康’是儒家经典概念，指介于温饱与大同之间的社会理想状态。‘Μεσαία Ευημερία’为希腊语《论语》译本及中国—希腊减贫合作文件标准译法，‘μεσαία’精准对应‘中等’而非‘μικρή’（小），防止贬义误读。"
+      },
+      "vi-VN": {
+        "rendering": "tiểu khang",
+        "alternatives": [
+          "mức sống khá giả",
+          "xã hội khá giả"
+        ],
+        "notes": "Đây là khái niệm lịch sử – văn hóa đặc thù Trung Quốc, đã được định danh chính trị là 'mục tiêu xây dựng xã hội tiểu khang'; không dịch đơn thuần là 'no ấm' hay 'thịnh vượng vừa phải' vì làm mất tính chuẩn mực và giá trị biểu tượng."
+      },
+      "ur-PK": {
+        "rendering": "معتدل خوشحالی",
+        "alternatives": [
+          "معتدل ترقی یافتہ زندگی",
+          "بنیادی خوشحالی"
+        ],
+        "notes": "特定历史阶段发展目标，含‘不愁吃穿、义务教育、基本医疗、住房安全’四重内涵；不可泛译为‘آرام دہ زندگی’（安逸生活）而弱化政策刚性。"
+      },
+      "hi-IN": {
+        "rendering": "मध्यम समृद्धि",
+        "alternatives": [
+          "आर्थिक रूप से सुस्तिरित जीवन",
+          "सामाजिक रूप से संतुलित समृद्धि"
+        ],
+        "notes": "‘मध्यम समृद्धि’ अधिकारिक अनुवाद है; ‘सुखी जीवन’ या ‘सुख-समृद्धि’ जैसे प्रयोग अत्यधिक व्यापक या अस्पष्ट हैं।"
+      }
+    }
+  }
+}

@@ -66,7 +66,9 @@ async def _generate_for_language(client, lang_code: str) -> dict:
             )
             data = json.loads(_strip_fence(result.get("content") or ""))
             break
-        except (json.JSONDecodeError, KeyError, TypeError) as e:
+        except Exception as e:
+            # 捕获 JSON 解析错误 + 网络错误（ReadTimeout/RemoteProtocolError 等），
+            # 单语言失败不应中断整批——重试 1 次，二次仍失败则跳过该语言。
             logger.warning("generate for %s attempt %d failed: %s", lang_code, attempt, e)
             if attempt == 2:
                 return {}
