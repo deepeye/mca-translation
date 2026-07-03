@@ -55,3 +55,14 @@ def test_generate_for_language_returns_valid_structure():
     out = asyncio.run(_generate_for_language(_MockClient(payload), "ru-RU"))
     assert out["五位一体"]["rendering"] == "Пять сфер"
     assert "unknown_term" not in out  # 非真实术语被过滤
+
+
+def test_load_generated_translations_returns_empty_dict_for_null_translations(tmp_path, monkeypatch):
+    """当 JSON 文件包含 {"translations": null} 时，_load_generated_translations 应返回 {} 而不是 None 或崩溃。"""
+    from app.services import hardcoded_glossary
+    fake_file = tmp_path / "glossary_translations_generated.json"
+    fake_file.write_text(json.dumps({"translations": None}), encoding="utf-8")
+    monkeypatch.setattr(hardcoded_glossary, "_GENERATED_FILE", fake_file)
+    result = hardcoded_glossary._load_generated_translations()
+    assert result == {}
+    assert isinstance(result, dict)

@@ -71,6 +71,8 @@ async def _generate_for_language(client, lang_code: str) -> dict:
             if attempt == 2:
                 return {}
     valid = {t.source_term for t in _HARDCODED_TERMS}
+    if not isinstance(data, dict):
+        return {}
     out: dict = {}
     for source_term, entry in data.items():
         if source_term not in valid or not isinstance(entry, dict):

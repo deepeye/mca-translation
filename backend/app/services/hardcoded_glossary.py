@@ -336,7 +336,8 @@ def _load_generated_translations() -> dict:
     except (json.JSONDecodeError, OSError):
         return {}
     if isinstance(raw, dict) and "translations" in raw:
-        return raw["translations"]
+        trans = raw["translations"]
+        return trans if isinstance(trans, dict) else {}
     return raw if isinstance(raw, dict) else {}
 
 
