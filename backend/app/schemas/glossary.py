@@ -4,7 +4,7 @@ from typing import Literal, Optional
 
 from pydantic import BaseModel, Field, field_validator
 
-from app.constants.languages import is_supported_language
+from app.constants.languages import SUPPORTED_LANGUAGE_CODES, is_supported_language
 from app.constants.glossary_categories import SYSTEM_GLOSSARY_TERM_TYPES, USER_GLOSSARY_TERM_TYPES
 
 SystemGlossaryTermType = Literal[*SYSTEM_GLOSSARY_TERM_TYPES]
@@ -17,12 +17,25 @@ class TranslationEntry(BaseModel):
     notes: str = ""
 
 
+def _check_translation_keys(v: dict[str, TranslationEntry]) -> dict[str, TranslationEntry]:
+    """校验 translations 的 key 必须在 18 个受支持 BCP-47 code 之内。"""
+    unknown = set(v.keys()) - SUPPORTED_LANGUAGE_CODES
+    if unknown:
+        raise ValueError(f"unsupported language codes in translations: {sorted(unknown)}")
+    return v
+
+
 class GlossaryEntryCreate(BaseModel):
     source_term: str
     term_type: SystemGlossaryTermType = "political_discourse"
     translations: dict[str, TranslationEntry] = Field(default_factory=dict)
     risk_notes: str = ""
     applicable_genres: list[str] = Field(default_factory=list)
+
+    @field_validator("translations")
+    @classmethod
+    def _check_translation_keys(cls, v):
+        return _check_translation_keys(v)
 
 
 class GlossaryEntryUpdate(BaseModel):
@@ -32,6 +45,11 @@ class GlossaryEntryUpdate(BaseModel):
     risk_notes: Optional[str] = None
     applicable_genres: Optional[list[str]] = None
     freshness_date: Optional[datetime] = None
+
+    @field_validator("translations")
+    @classmethod
+    def _check_translation_keys(cls, v):
+        return _check_translation_keys(v) if v is not None else None
 
 
 class GlossaryEntryResponse(BaseModel):
@@ -55,6 +73,11 @@ class UserGlossaryEntryCreate(BaseModel):
     risk_notes: str = ""
     applicable_genres: list[str] = Field(default_factory=list)
 
+    @field_validator("translations")
+    @classmethod
+    def _check_translation_keys(cls, v):
+        return _check_translation_keys(v)
+
 
 class UserGlossaryEntryUpdate(BaseModel):
     source_term: Optional[str] = None
@@ -62,6 +85,11 @@ class UserGlossaryEntryUpdate(BaseModel):
     translations: Optional[dict[str, TranslationEntry]] = None
     risk_notes: Optional[str] = None
     applicable_genres: Optional[list[str]] = None
+
+    @field_validator("translations")
+    @classmethod
+    def _check_translation_keys(cls, v):
+        return _check_translation_keys(v) if v is not None else None
 
 
 class UserGlossaryEntryResponse(BaseModel):
