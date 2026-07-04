@@ -8,6 +8,7 @@ import { StrategySelector } from "./strategy-selector";
 import { FileUploadZone } from "./file-upload-zone";
 import { useWorkspaceStore } from "@/stores/workspace-store";
 import { useTranslationStore } from "@/stores/translation-store";
+import { useCreditsStore } from "@/stores/credits-store";
 import { apiClient } from "@/lib/api-client";
 import { wsClient } from "@/lib/ws-client";
 import { Button } from "@/components/ui/button";
@@ -18,9 +19,12 @@ export function InputPanel() {
   const store = useWorkspaceStore();
   const setResult = useTranslationStore((s) => s.setResult);
   const resetAll = useTranslationStore((s) => s.resetAll);
+  const balance = useCreditsStore((s) => s.balance);
+  const insufficient = balance <= 0;
 
   async function handleTranslate() {
     if (!store.input.text.trim()) return;
+    if (insufficient) return;
     store.setIsTranslating(true);
     resetAll();
 
@@ -55,6 +59,9 @@ export function InputPanel() {
       pollJobStatus(data.id);
     } catch (err) {
       console.error("Translation failed:", err);
+      if (err instanceof Error && err.message.includes("INSUFFICIENT_CREDITS")) {
+        useCreditsStore.getState().fetchBalance();
+      }
       store.setIsTranslating(false);
     }
   }
@@ -117,7 +124,17 @@ export function InputPanel() {
           </button>
         ))}
       </div>
-      <Button onClick={handleTranslate} disabled={!store.input.text.trim() || store.isTranslating || store.upload.isUploading} className="bg-teal hover:bg-teal-light text-white">
+      {insufficient && (
+        <div className="rounded border border-danger bg-danger/5 p-3 text-sm text-danger">
+          信用分已用完，翻译功能不可用，请联系管理员充值。
+        </div>
+      )}
+      <Button
+        onClick={handleTranslate}
+        disabled={!store.input.text.trim() || store.isTranslating || store.upload.isUploading || insufficient}
+        title={insufficient ? "信用分已用完，请联系管理员充值" : undefined}
+        className="bg-teal hover:bg-teal-light text-white"
+      >
         {store.isTranslating ? "转译中..." : "开始转译"}
       </Button>
     </div>

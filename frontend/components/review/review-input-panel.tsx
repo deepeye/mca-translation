@@ -1,6 +1,7 @@
 "use client";
 
 import { useReviewStore } from "@/stores/review-store";
+import { useCreditsStore } from "@/stores/credits-store";
 import { apiClient } from "@/lib/api-client";
 import { Button } from "@/components/ui/button";
 import { LANGUAGES } from "@/lib/languages";
@@ -34,10 +35,13 @@ const AUDIENCES = [
 
 export function ReviewInputPanel() {
   const store = useReviewStore();
+  const balance = useCreditsStore((s) => s.balance);
+  const insufficient = balance <= 0;
 
   async function handleSubmit() {
     if (!store.translatedText.trim()) return;
     if (store.mode === "dual" && !store.sourceText.trim()) return;
+    if (insufficient) return;
 
     store.setIsLoading(true);
     store.setError(null);
@@ -55,6 +59,9 @@ export function ReviewInputPanel() {
       store.setResult(data);
     } catch (err) {
       const message = err instanceof Error ? err.message : "审校请求失败";
+      if (message.includes("INSUFFICIENT_CREDITS")) {
+        useCreditsStore.getState().fetchBalance();
+      }
       store.setError(message);
     } finally {
       store.setIsLoading(false);
@@ -170,10 +177,18 @@ export function ReviewInputPanel() {
         </div>
       )}
 
+      {/* Insufficient credits */}
+      {insufficient && (
+        <div className="rounded border border-danger bg-danger/5 p-3 text-sm text-danger">
+          信用分已用完，审校功能不可用，请联系管理员充值。
+        </div>
+      )}
+
       {/* Submit */}
       <Button
         onClick={handleSubmit}
-        disabled={store.isLoading || !store.translatedText.trim()}
+        disabled={store.isLoading || !store.translatedText.trim() || insufficient}
+        title={insufficient ? "信用分已用完，请联系管理员充值" : undefined}
         className="mt-auto h-9 text-sm"
       >
         {store.isLoading ? "审校中..." : "开始审校"}
