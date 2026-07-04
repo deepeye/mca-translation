@@ -1,3 +1,6 @@
+import hashlib
+import uuid
+
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -25,12 +28,28 @@ async def create_review(
             content={"detail": "INSUFFICIENT_CREDITS", "balance": 0},
         )
 
-    # 预先生成 review_id，作为幂等键；扣款发生在 LLM 成功之后
-    import uuid as _uuid
-    review_id = _uuid.uuid4()
+    # 预先生成 review_id；扣款发生在 LLM 成功之后
+    review_id = uuid.uuid4()
     # 计算扣款长度：dual 用 source_text，single 用 translated_text
     input_text = body.source_text if body.mode == "dual" else body.translated_text
     cost = len(input_text or "")
+
+    # 余额预检：在调用 LLM 前确认信用分足够
+    if user.credit_balance < cost:
+        from fastapi.responses import JSONResponse
+        return JSONResponse(
+            status_code=402,
+            content={"detail": "INSUFFICIENT_CREDITS", "balance": user.credit_balance},
+        )
+
+    if body.idempotency_key:
+        stable_key = hashlib.sha256(
+            f"{user.id}:client:{body.idempotency_key}".encode()
+        ).hexdigest()[:64]
+    else:
+        stable_key = hashlib.sha256(
+            f"{user.id}:{body.mode}:{body.source_text}:{body.translated_text}:{body.target_language}".encode()
+        ).hexdigest()[:64]
 
     if body.mode == "dual":
         if not body.source_text:
@@ -57,10 +76,15 @@ async def create_review(
         except Exception:
             raise HTTPException(status_code=500, detail="审校服务暂时不可用")
 
-    # 成功后扣款；用预生成的 review_id 保证幂等
+    # 成功后扣款；使用稳定幂等键避免客户端重试重复扣费
     result.review_id = review_id
     deduct_res, _ = await credits_service.deduct_for_review(
-        db, user.id, cost, review_id, body.mode
+        db,
+        user.id,
+        cost,
+        review_id,
+        body.mode,
+        idempotency_key_override=f"consume_review:{stable_key}",
     )
     if deduct_res is DeductResult.INSUFFICIENT:
         # 极少情况：提交时余额>0 但扣款时已不足 → 退还语义上等价于未扣款

@@ -32,6 +32,7 @@ class ReviewRequest(BaseModel):
     genre: Optional[str] = None
     cultural_sphere: Optional[str] = None
     audience_type: Optional[str] = None
+    idempotency_key: Optional[str] = Field(None, max_length=128)
 
     @field_validator("target_language")
     @classmethod

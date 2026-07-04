@@ -133,3 +133,29 @@ async def test_insufficient_balance_marks_partial(db: AsyncSession):
 
     await db.refresh(job)
     assert job.status == "partial"
+
+
+@pytest.mark.asyncio
+async def test_insufficient_balance_skips_llm_preflight(db: AsyncSession):
+    user, job = await _seed_job(db, "余额不足", ["en-GB"], balance=3)
+    call_count = {"n": 0}
+
+    async def _should_not_call(*a, **kw):
+        call_count["n"] += 1
+        return await _fake_translate_success(*a, **kw)
+
+    with patch("app.tasks.cultural_preprocess", return_value=None), \
+         patch("app.tasks.pipeline.translate", new=_should_not_call):
+        await _run_translation(str(job.id))
+
+    assert call_count["n"] == 0
+    await db.refresh(user)
+    assert user.credit_balance == 3
+
+    result = (await db.execute(
+        select(TranslationResult).where(TranslationResult.job_id == job.id)
+    )).scalar_one()
+    assert result.status == "failed"
+
+    await db.refresh(job)
+    assert job.status == "partial"

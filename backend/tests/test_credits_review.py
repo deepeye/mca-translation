@@ -92,3 +92,85 @@ async def test_failed_review_refunds(db: AsyncSession):
     assert resp.status_code == 500
     await db.refresh(user)
     assert user.credit_balance == 100  # unchanged
+
+
+@pytest.mark.asyncio
+async def test_low_balance_review_blocked_before_llm(db: AsyncSession):
+    user, headers = await _auth_user(db, balance=3)
+
+    async def _should_not_call(*a, **kw):
+        raise AssertionError("review service should not be called")
+
+    with patch("app.services.review.review_service.dual_review", new=_should_not_call):
+        transport = ASGITransport(app=app)
+        async with AsyncClient(transport=transport, base_url="http://test") as client:
+            resp = await client.post("/api/reviews", headers=headers, json={
+                "mode": "dual",
+                "source_text": "0123456789",
+                "translated_text": "hello",
+                "target_language": "en-GB",
+            })
+
+    assert resp.status_code == 402
+    assert resp.json()["detail"] == "INSUFFICIENT_CREDITS"
+    await db.refresh(user)
+    assert user.credit_balance == 3
+
+
+@pytest.mark.asyncio
+async def test_review_idempotency_is_scoped_per_user(db: AsyncSession):
+    user1, headers1 = await _auth_user(db, balance=100)
+    user2, headers2 = await _auth_user(db, balance=100)
+    source = "你好世界"
+    payload = {
+        "mode": "dual",
+        "source_text": source,
+        "translated_text": "hello",
+        "target_language": "en-GB",
+        "idempotency_key": "same-client-key",
+    }
+
+    with patch("app.services.review.review_service.dual_review", new=_fake_review_success):
+        transport = ASGITransport(app=app)
+        async with AsyncClient(transport=transport, base_url="http://test") as client:
+            resp1 = await client.post("/api/reviews", headers=headers1, json=payload)
+            resp2 = await client.post("/api/reviews", headers=headers2, json=payload)
+
+    assert resp1.status_code == 200
+    assert resp2.status_code == 200
+    await db.refresh(user1)
+    await db.refresh(user2)
+    assert user1.credit_balance == 100 - len(source)
+    assert user2.credit_balance == 100 - len(source)
+
+    consumes = (await db.execute(
+        select(CreditTransaction).where(
+            CreditTransaction.tx_type == TxType.consume,
+            CreditTransaction.user_id.in_([user1.id, user2.id]),
+        )
+    )).scalars().all()
+    assert len(consumes) == 2
+
+
+@pytest.mark.asyncio
+async def test_review_retry_with_same_key_deducts_once(db: AsyncSession):
+    user, headers = await _auth_user(db, balance=100)
+    source = "你好世界"
+    payload = {
+        "mode": "dual",
+        "source_text": source,
+        "translated_text": "hello",
+        "target_language": "en-GB",
+        "idempotency_key": "retry-key",
+    }
+
+    with patch("app.services.review.review_service.dual_review", new=_fake_review_success):
+        transport = ASGITransport(app=app)
+        async with AsyncClient(transport=transport, base_url="http://test") as client:
+            resp1 = await client.post("/api/reviews", headers=headers, json=payload)
+            resp2 = await client.post("/api/reviews", headers=headers, json=payload)
+
+    assert resp1.status_code == 200
+    assert resp2.status_code == 200
+    await db.refresh(user)
+    assert user.credit_balance == 100 - len(source)

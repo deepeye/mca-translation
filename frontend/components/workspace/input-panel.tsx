@@ -20,7 +20,7 @@ export function InputPanel() {
   const setResult = useTranslationStore((s) => s.setResult);
   const resetAll = useTranslationStore((s) => s.resetAll);
   const balance = useCreditsStore((s) => s.balance);
-  const insufficient = balance <= 0;
+  const insufficient = balance !== null && balance <= 0;
 
   async function handleTranslate() {
     if (!store.input.text.trim()) return;

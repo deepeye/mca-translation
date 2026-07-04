@@ -2,7 +2,7 @@ import { create } from "zustand";
 import { apiClient } from "@/lib/api-client";
 
 interface CreditsState {
-  balance: number;
+  balance: number | null;
   isInsufficient: boolean;
   isAdmin: boolean;
   fetchBalance: () => Promise<void>;
@@ -10,7 +10,7 @@ interface CreditsState {
 }
 
 export const useCreditsStore = create<CreditsState>((set) => ({
-  balance: 0,
+  balance: null,
   isInsufficient: false,
   isAdmin: false,
   setBalance: (n) => set({ balance: n, isInsufficient: n <= 0 }),

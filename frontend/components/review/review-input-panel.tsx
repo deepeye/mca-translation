@@ -36,7 +36,7 @@ const AUDIENCES = [
 export function ReviewInputPanel() {
   const store = useReviewStore();
   const balance = useCreditsStore((s) => s.balance);
-  const insufficient = balance <= 0;
+  const insufficient = balance !== null && balance <= 0;
 
   async function handleSubmit() {
     if (!store.translatedText.trim()) return;

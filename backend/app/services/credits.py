@@ -118,19 +118,35 @@ class CreditsService:
         )
 
     async def deduct_for_review(
-        self, db, user_id, text_length: int, review_id: uuid.UUID, mode: str
+        self,
+        db,
+        user_id,
+        text_length: int,
+        review_id: uuid.UUID,
+        mode: str,
+        idempotency_key_override: str | None = None,
     ) -> tuple[DeductResult, int]:
-        key = f"consume_review:{review_id}"
+        key = idempotency_key_override or f"consume_review:{review_id}"
         return await self._apply(
             db, user_id, -text_length, TxType.consume,
             reason=f"审校消耗: {mode}", review_id=review_id, idempotency_key=key,
         )
 
     async def refund_for_review(
-        self, db, user_id, text_length: int, review_id: uuid.UUID, mode: str
+        self,
+        db,
+        user_id,
+        text_length: int,
+        review_id: uuid.UUID,
+        mode: str,
+        idempotency_key_override: str | None = None,
     ) -> tuple[DeductResult, int]:
-        key = f"refund_review:{review_id}"
-        consume_key = f"consume_review:{review_id}"
+        key = (
+            idempotency_key_override.replace("consume_review:", "refund_review:", 1)
+            if idempotency_key_override
+            else f"refund_review:{review_id}"
+        )
+        consume_key = idempotency_key_override or f"consume_review:{review_id}"
         prior = await db.execute(
             select(CreditTransaction).where(
                 CreditTransaction.idempotency_key == consume_key

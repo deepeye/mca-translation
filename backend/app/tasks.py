@@ -6,6 +6,7 @@ from app.celery_app import celery_app
 from app.core.config import settings
 from app.llm.bailian import bailian_client
 from app.models.job import TranslationJob, TranslationResult
+from app.models.user import User
 from app.services.cultural import cultural_preprocess
 from app.services.decision_log import save_decision_logs
 from app.services.translation import pipeline
@@ -81,6 +82,17 @@ async def _run_translation(job_id: str):
                     else:
                         tr.status = "streaming"
                         await db.commit()
+
+                    # 余额预检：在调用 LLM 前检查是否足够
+                    cost = len(job.source_text)
+                    user_row = (
+                        await db.execute(select(User).where(User.id == job.user_id))
+                    ).scalar_one()
+                    if user_row.credit_balance < cost:
+                        tr.status = "failed"
+                        all_completed = False
+                        await db.commit()
+                        continue
 
                     output = await pipeline.translate(
                         source_text=job.source_text,

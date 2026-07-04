@@ -14,7 +14,7 @@ export function BalanceBadge() {
     fetchBalance();
   }, [fetchBalance]);
 
-  const insufficient = balance <= 0;
+  const insufficient = balance !== null && balance <= 0;
 
   return (
     <button
@@ -24,7 +24,7 @@ export function BalanceBadge() {
         insufficient ? "text-danger font-bold" : "text-teal-lightest hover:text-white"
       }`}
     >
-      🪙 {balance.toLocaleString()}
+      {balance === null ? "..." : `🪙 ${balance.toLocaleString()}`}
     </button>
   );
 }
