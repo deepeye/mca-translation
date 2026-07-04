@@ -20,6 +20,7 @@ from app.schemas.glossary import (
     UserGlossaryEntryUpdate,
 )
 from app.services.cultural import cultural_preprocess
+from app.services.glossary_autofill import generate_translation
 from app.services.hardcoded_glossary import find_terms_in_text, get_term_translation
 
 router = APIRouter(prefix="/api/glossary", tags=["glossary"])
@@ -215,6 +216,48 @@ async def update_user_entry(
     await db.commit()
     await db.refresh(entry)
     return entry
+
+
+class _AutoFillResponse(BaseModel):
+    entry: UserGlossaryEntryResponse
+    filled_languages: list[str]
+    skipped: list[dict]
+
+
+@router.post("/user-entries/{entry_id}/auto-fill", response_model=_AutoFillResponse)
+async def autofill_user_entry(
+    entry_id: uuid.UUID,
+    user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+):
+    """为单个用户词条自动填充缺失语言的 LLM 译文。
+
+    遍历未翻译的目标语言，逐一调用 LLM 生成译文。
+    已有翻译的语言保持不变，不覆盖。
+    """
+    entry = await db.get(UserGlossaryEntry, entry_id)
+    if not entry or entry.user_id != user.id:
+        raise HTTPException(status_code=404, detail="Entry not found")
+
+    existing = set(entry.translations.keys())
+    missing = SUPPORTED_LANGUAGE_CODES - existing
+    filled: list[str] = []
+    skipped: list[dict] = []
+
+    en_ref = entry.translations.get("en-GB", {}).get("preferred")
+    for lang in sorted(missing):
+        generated = await generate_translation(entry.source_term, lang, en_ref)
+        if generated:
+            entry.translations[lang] = generated
+            filled.append(lang)
+        else:
+            skipped.append({"code": lang, "reason": "llm_failed"})
+
+    if filled:
+        await db.commit()
+        await db.refresh(entry)
+
+    return _AutoFillResponse(entry=entry, filled_languages=filled, skipped=skipped)
 
 
 # --- Legacy detect endpoint (hybrid: DB first, hardcoded fallback) ---
