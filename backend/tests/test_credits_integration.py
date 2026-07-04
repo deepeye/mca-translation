@@ -110,3 +110,26 @@ async def test_mixed_success_failure(db: AsyncSession):
 
     await db.refresh(user)
     assert user.credit_balance == 100 - 2  # 仅 en-GB 扣 2
+
+
+@pytest.mark.asyncio
+async def test_insufficient_balance_marks_partial(db: AsyncSession):
+    """余额只够第一门语言：第二门 INSUFFICIENT → failed，job 最终为 partial。"""
+    user, job = await _seed_job(db, "你好", ["en-GB", "ja-JP"], balance=3)
+
+    with patch("app.tasks.cultural_preprocess", return_value=None), \
+         patch("app.tasks.pipeline.translate", new=_fake_translate_success):
+        await _run_translation(str(job.id))
+
+    await db.refresh(user)
+    assert user.credit_balance == 1  # 仅第一门语言扣 2 字符
+
+    results = (await db.execute(
+        select(TranslationResult).where(TranslationResult.job_id == job.id)
+    )).scalars().all()
+    by_lang = {r.language: r for r in results}
+    assert by_lang["en-GB"].status == "completed"
+    assert by_lang["ja-JP"].status == "failed"
+
+    await db.refresh(job)
+    assert job.status == "partial"

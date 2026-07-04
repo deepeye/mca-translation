@@ -6,10 +6,10 @@ from app.celery_app import celery_app
 from app.core.config import settings
 from app.llm.bailian import bailian_client
 from app.models.job import TranslationJob, TranslationResult
-from app.services.credits import credits_service, DeductResult
 from app.services.cultural import cultural_preprocess
 from app.services.decision_log import save_decision_logs
 from app.services.translation import pipeline
+from app.services.credits import credits_service, DeductResult
 
 logger = logging.getLogger(__name__)
 
@@ -115,9 +115,10 @@ async def _run_translation(job_id: str):
                         db, job.user_id, job.source_text, lang, job.id
                     )
                     if deduct_res is DeductResult.INSUFFICIENT:
-                        # 余额不足：标记失败，不扣款
+                        # 余额不足：标记失败，不扣款，并确保最终 job 状态为 partial
                         tr.status = "failed"
                         tr.translated_text = None
+                        all_completed = False
                         await db.commit()
                         continue
 
