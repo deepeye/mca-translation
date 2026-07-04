@@ -311,6 +311,11 @@ class ApiClient {
     return this.post(`/api/jobs/${jobId}/acceptance-score/delta`, body);
   }
 
+  async patch(path: string, body: unknown) {
+    const res = await this.request(path, { method: "PATCH", body: JSON.stringify(body) });
+    return res.json();
+  }
+
   async get(path: string) {
     const res = await this.request(path, { method: "GET" });
     return res.json();
