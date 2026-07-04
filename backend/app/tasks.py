@@ -6,6 +6,7 @@ from app.celery_app import celery_app
 from app.core.config import settings
 from app.llm.bailian import bailian_client
 from app.models.job import TranslationJob, TranslationResult
+from app.services.credits import credits_service, DeductResult
 from app.services.cultural import cultural_preprocess
 from app.services.decision_log import save_decision_logs
 from app.services.translation import pipeline
@@ -109,6 +110,17 @@ async def _run_translation(job_id: str):
                         except Exception as e:
                             logger.warning(f"Decision log save failed for job {job.id} lang {lang}: {e}")
 
+                    # 翻译成功：扣除信用分（1 字符 = 1 信用分）
+                    deduct_res, _ = await credits_service.deduct_for_translation(
+                        db, job.user_id, job.source_text, lang, job.id
+                    )
+                    if deduct_res is DeductResult.INSUFFICIENT:
+                        # 余额不足：标记失败，不扣款
+                        tr.status = "failed"
+                        tr.translated_text = None
+                        await db.commit()
+                        continue
+
                     await db.commit()
 
                 except Exception as e:
@@ -124,6 +136,13 @@ async def _run_translation(job_id: str):
                     if tr:
                         tr.status = "failed"
                         await db.commit()
+                        # 翻译失败：退还该语言已扣的信用分（幂等，无扣款时为 no-op）
+                        try:
+                            await credits_service.refund_for_translation(
+                                db, job.user_id, job.source_text, lang, job.id
+                            )
+                        except Exception as refund_err:
+                            logger.warning(f"Refund failed for job {job.id} lang {lang}: {refund_err}")
 
             job.status = "completed" if all_completed else "partial"
             await db.commit()
