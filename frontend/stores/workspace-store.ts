@@ -40,6 +40,7 @@ interface WorkspaceInput {
 interface WorkspaceState {
   input: WorkspaceInput;
   languages: string[];
+  activeLanguage: string;
   sphereTouched: boolean;
   isTranslating: boolean;
   currentJobId: string | null;
@@ -50,6 +51,7 @@ interface WorkspaceState {
   setCulturalSphere: (sphere: CulturalSphere) => void;
   setAudienceType: (audience: AudienceType) => void;
   setLanguages: (languages: string[]) => void;
+  setActiveLanguage: (lang: string) => void;
   setIsTranslating: (v: boolean) => void;
   setCurrentJobId: (id: string | null) => void;
   loadFromHistory: (job: {
@@ -84,6 +86,7 @@ const initialState = {
     audienceType: "general_public" as AudienceType,
   },
   languages: ["en-GB"],
+  activeLanguage: "en-GB",
   sphereTouched: false,
   isTranslating: false,
   currentJobId: null as string | null,
@@ -98,9 +101,10 @@ export const useWorkspaceStore = create<WorkspaceState>((set) => ({
   setCulturalSphere: (culturalSphere) =>
     set((s) => ({ input: { ...s.input, culturalSphere }, sphereTouched: true })),
   setAudienceType: (audience) => set((s) => ({ input: { ...s.input, audienceType: audience } })),
+  setActiveLanguage: (activeLanguage) => set({ activeLanguage }),
   setLanguages: (languages) =>
     set((s) => {
-      const next: { languages: string[]; input?: typeof s.input } = { languages };
+      const next: { languages: string[]; input?: typeof s.input; activeLanguage?: string } = { languages };
       if (!s.sphereTouched && languages.length > 0) {
         const affinity = languages
           .map((code) => affinitySphereFor(code))
@@ -109,6 +113,8 @@ export const useWorkspaceStore = create<WorkspaceState>((set) => ({
           next.input = { ...s.input, culturalSphere: affinity as CulturalSphere };
         }
       }
+      const newActive = languages.find((l) => l === s.activeLanguage) || languages[0] || "en-GB";
+      next.activeLanguage = newActive;
       return next;
     }),
   setIsTranslating: (isTranslating) => set({ isTranslating }),
@@ -123,6 +129,7 @@ export const useWorkspaceStore = create<WorkspaceState>((set) => ({
         audienceType: (job.audience_type || "general_public") as AudienceType,
       },
       languages: job.target_languages,
+      activeLanguage: job.target_languages[0] || "en-GB",
       sphereTouched: true,
       currentJobId: job.id,
       isTranslating: false,

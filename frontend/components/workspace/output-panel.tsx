@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import { useWorkspaceStore } from "@/stores/workspace-store";
 import { useTranslationStore } from "@/stores/translation-store";
 import { LanguageTabs } from "./language-tabs";
@@ -13,13 +12,9 @@ import { AcceptanceScorePanel } from "./acceptance-score-panel";
 export function OutputPanel() {
   const languages = useWorkspaceStore((s) => s.languages);
   const jobId = useWorkspaceStore((s) => s.currentJobId);
-  const [activeLang, setActiveLang] = useState(languages[0] || "en-GB");
+  const activeLang = useWorkspaceStore((s) => s.activeLanguage);
+  const setActiveLang = useWorkspaceStore((s) => s.setActiveLanguage);
   const result = useTranslationStore((s) => s.results[activeLang]);
-
-  // Sync active tab when languages change
-  if (!languages.includes(activeLang) && languages.length > 0) {
-    setActiveLang(languages[0]);
-  }
 
   return (
     <div className="flex h-full flex-col gap-4">

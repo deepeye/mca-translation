@@ -14,8 +14,7 @@ const STAGE_ORDER = ["preprocess", "glossary", "translate", "risk", "suggestion"
 // matching risk entry (by target_phrase). Deferred — infrastructure (entryRefs,
 // registerEntryRef) is in place. Full linkage is out of scope for this fix pass.
 export function DecisionLogPanel() {
-  const languages = useWorkspaceStore((s) => s.languages);
-  const [activeLang, setActiveLang] = useState(languages[0] || "en-GB");
+  const activeLang = useWorkspaceStore((s) => s.activeLanguage);
   const results = useTranslationStore((s) => s.results);
   const decisionLogs = useTranslationStore((s) => s.decisionLogs);
   const isLoading = useTranslationStore((s) => s.isLoadingDecisions);
@@ -24,11 +23,6 @@ export function DecisionLogPanel() {
   const [collapsed, setCollapsed] = useState(true);
   // TODO(spec §6.8.3): entryRefs 用于将来的 <mark> 点击 → 滚动到对应风险条目
   const entryRefs = useRef<Map<string, HTMLElement | null>>(new Map());
-
-  // Sync active lang with workspace languages
-  if (!languages.includes(activeLang) && languages.length > 0) {
-    setActiveLang(languages[0]);
-  }
 
   const currentResult = results[activeLang];
   // 假设 result 对象上有 resultId（由 WS / loadFromHistory 填充）
