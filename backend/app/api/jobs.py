@@ -36,6 +36,13 @@ async def create_job(
     user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
 ):
+    # 余额守卫：余额<=0 时拒绝提交翻译
+    if user.credit_balance <= 0:
+        from fastapi.responses import JSONResponse
+        return JSONResponse(
+            status_code=402,
+            content={"detail": "INSUFFICIENT_CREDITS", "balance": 0},
+        )
     job = TranslationJob(
         user_id=user.id,
         source_text=body.source_text,

@@ -13,6 +13,12 @@ async def create_review(
     body: ReviewRequest,
     user: User = Depends(get_current_user),
 ):
+    if user.credit_balance <= 0:
+        from fastapi.responses import JSONResponse
+        return JSONResponse(
+            status_code=402,
+            content={"detail": "INSUFFICIENT_CREDITS", "balance": 0},
+        )
     if body.mode == "dual":
         if not body.source_text:
             raise HTTPException(status_code=400, detail="对照审校模式需要提供原文")
