@@ -1,3 +1,4 @@
+from app.models.credit import CreditTransaction, TxType
 from app.models.decision_log import DecisionLog
 from app.models.glossary import GlossaryEntry, UserGlossaryEntry
 from app.models.job import TranslationJob, TranslationResult
@@ -10,4 +11,6 @@ __all__ = [
     "GlossaryEntry",
     "UserGlossaryEntry",
     "DecisionLog",
+    "CreditTransaction",
+    "TxType",
 ]
