@@ -79,12 +79,18 @@ export function TermHighlighter({ text, containerClassName = "" }: TermHighlight
                 {term.risk_notes && (
                   <div className="mt-1 text-xs text-orange-600">⚠ {term.risk_notes}</div>
                 )}
-                {(term.translations[activeLang] ?? term.translations["en-GB"]) && (
-                  <div className="mt-1 text-xs text-teal-700">
-                    {LANGUAGE_LABELS[activeLang] ?? "英语"}：
-                    {(term.translations[activeLang] ?? term.translations["en-GB"]).preferred}
-                  </div>
-                )}
+                {(() => {
+                  const translation = term.translations[activeLang] ?? term.translations["en-GB"];
+                  const labelCode = term.translations[activeLang] ? activeLang : "en-GB";
+                  if (translation) {
+                    return (
+                      <div className="mt-1 text-xs text-teal-700">
+                        {LANGUAGE_LABELS[labelCode] ?? "英语"}：{translation.preferred}
+                      </div>
+                    );
+                  }
+                  return null;
+                })()}
               </div>
             )}
           </div>

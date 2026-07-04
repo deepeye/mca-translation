@@ -65,6 +65,9 @@ export default function GlossaryPage() {
   // Validation
   const [formError, setFormError] = useState("");
 
+  // Auto-fill feedback
+  const [autoFillMsg, setAutoFillMsg] = useState<string | null>(null);
+
   // User entries pagination
   const [userOffset, setUserOffset] = useState(0);
   const [hasMoreUser, setHasMoreUser] = useState(false);
@@ -268,12 +271,17 @@ export default function GlossaryPage() {
   async function handleAutoFill() {
     if (!editingEntryId) return;
     setAutoFilling(true);
+    setAutoFillMsg(null);
     try {
-      await apiClient.autoFillUserGlossaryEntry(editingEntryId);
+      const result = await apiClient.autoFillUserGlossaryEntry(editingEntryId);
+      const filled = result.filled_languages?.length || 0;
+      const skipped = result.skipped?.length || 0;
+      setAutoFillMsg(`已补齐 ${filled} 种译法${skipped > 0 ? ` · 跳过 ${skipped} 种` : ""}`);
       cancelEdit();
       loadEntries();
     } catch (err) {
       console.error("Auto-fill failed:", err);
+      setAutoFillMsg("自动补齐失败，请稍后重试");
     } finally {
       setAutoFilling(false);
     }
@@ -414,6 +422,10 @@ export default function GlossaryPage() {
         />
         {loading && <span className="text-sm text-muted-foreground">加载中...</span>}
       </div>
+
+      {autoFillMsg && (
+        <div className="mb-4 rounded-md bg-teal-50 p-3 text-sm text-teal-800">{autoFillMsg}</div>
+      )}
 
       {/* ---- Create form ---- */}
       <div className="mb-8 rounded-lg border border-border bg-white p-4">
