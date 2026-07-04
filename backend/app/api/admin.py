@@ -186,7 +186,7 @@ async def adjust_user_credits(
     db: AsyncSession = Depends(get_db),
 ):
     target = await db.get(User, user_id)
-    if target is None:
+    if target is None or target.deleted_at is not None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
     new_balance = await credits_service.admin_adjust(
         db, target.id, body.delta, admin.id, body.reason
