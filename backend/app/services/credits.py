@@ -9,6 +9,7 @@ import uuid
 from datetime import datetime, timedelta, timezone
 
 from sqlalchemy import func, select
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models.credit import CreditTransaction, TxType
@@ -74,7 +75,13 @@ class CreditsService:
             idempotency_key=idempotency_key,
         )
         db.add(tx)
-        await db.commit()
+        try:
+            await db.commit()
+        except IntegrityError:
+            # 并发重试时唯一约束冲突：同 idempotency_key 已提交，回滚后返回当前余额
+            await db.rollback()
+            user_row = await db.get(User, user_id)
+            return DeductResult.ALREADY_APPLIED, user_row.credit_balance
         await db.refresh(user)
         return DeductResult.OK, user.credit_balance
 
@@ -91,7 +98,6 @@ class CreditsService:
     async def refund_for_translation(
         self, db, user_id, source_text: str, language: str, job_id: uuid.UUID
     ) -> tuple[DeductResult, int]:
-        cost = len(source_text)
         key = f"refund:{job_id}:{language}"
         # 退款必须先有对应扣款，否则视为已应用（无需退还）
         consume_key = f"consume:{job_id}:{language}"
@@ -100,11 +106,13 @@ class CreditsService:
                 CreditTransaction.idempotency_key == consume_key
             )
         )
-        if prior.scalar_one_or_none() is None:
+        prior_tx = prior.scalar_one_or_none()
+        if prior_tx is None:
             user_row = await db.get(User, user_id)
             return DeductResult.ALREADY_APPLIED, user_row.credit_balance
+        refund_amount = abs(prior_tx.delta)
         return await self._apply(
-            db, user_id, cost, TxType.refund,
+            db, user_id, refund_amount, TxType.refund,
             reason=f"翻译失败退还: {language}", job_id=job_id, idempotency_key=key,
             allow_negative=False,
         )
@@ -128,11 +136,13 @@ class CreditsService:
                 CreditTransaction.idempotency_key == consume_key
             )
         )
-        if prior.scalar_one_or_none() is None:
+        prior_tx = prior.scalar_one_or_none()
+        if prior_tx is None:
             user_row = await db.get(User, user_id)
             return DeductResult.ALREADY_APPLIED, user_row.credit_balance
+        refund_amount = abs(prior_tx.delta)
         return await self._apply(
-            db, user_id, text_length, TxType.refund,
+            db, user_id, refund_amount, TxType.refund,
             reason=f"审校失败退还: {mode}", review_id=review_id, idempotency_key=key,
             allow_negative=False,
         )
@@ -154,7 +164,8 @@ class CreditsService:
 
     async def get_trend(self, db, user_id: uuid.UUID, days: int) -> list[dict]:
         """返回最近 days 天每日消耗（只统计 consume 类型的负 delta 绝对值）。"""
-        start = datetime.now(timezone.utc) - timedelta(days=days)
+        now = datetime.now(timezone.utc)
+        start = now - timedelta(days=days)
         rows = await db.execute(
             select(
                 func.date(CreditTransaction.created_at).label("d"),
@@ -172,7 +183,7 @@ class CreditsService:
         # 补齐空白天，便于前端画图
         out = []
         for i in range(days):
-            day = (datetime.now(timezone.utc) - timedelta(days=days - 1 - i)).date().isoformat()
+            day = (now - timedelta(days=days - 1 - i)).date().isoformat()
             out.append({"date": day, "consumed": by_date.get(day, 0)})
         return out
 

@@ -32,7 +32,7 @@ async def test_deduct_for_translation_decrements_balance(db: AsyncSession):
     result, balance = await credits.deduct_for_translation(db, user.id, "你好世界", "en-GB", job_id)
     assert result is DeductResult.OK
     assert balance == 96  # 4 chars
-    rows = (await db.execute(select(CreditTransaction))).scalars().all()
+    rows = (await db.execute(select(CreditTransaction).where(CreditTransaction.user_id == user.id))).scalars().all()
     assert len(rows) == 1
     assert rows[0].delta == -4
     assert rows[0].tx_type == TxType.consume
@@ -44,7 +44,7 @@ async def test_deduct_insufficient_returns_no_row(db: AsyncSession):
     result, balance = await credits.deduct_for_translation(db, user.id, "一二三四五", "en-GB", uuid.uuid4())
     assert result is DeductResult.INSUFFICIENT
     assert balance == 2  # unchanged
-    rows = (await db.execute(select(CreditTransaction))).scalars().all()
+    rows = (await db.execute(select(CreditTransaction).where(CreditTransaction.user_id == user.id))).scalars().all()
     assert len(rows) == 0
 
 
@@ -57,7 +57,7 @@ async def test_refund_is_idempotent(db: AsyncSession):
     r2, b2 = await credits.refund_for_translation(db, user.id, "你好", "en-GB", job_id)  # no-op
     assert r1 is DeductResult.OK and b1 == 100
     assert r2 is DeductResult.ALREADY_APPLIED and b2 == 100
-    rows = (await db.execute(select(CreditTransaction))).scalars().all()
+    rows = (await db.execute(select(CreditTransaction).where(CreditTransaction.user_id == user.id))).scalars().all()
     assert len(rows) == 2  # one consume, one refund — no duplicate refund
 
 
@@ -67,7 +67,7 @@ async def test_refund_without_prior_consume_is_noop(db: AsyncSession):
     result, balance = await credits.refund_for_translation(db, user.id, "你好", "en-GB", uuid.uuid4())
     assert result is DeductResult.ALREADY_APPLIED  # nothing to refund
     assert balance == 100
-    rows = (await db.execute(select(CreditTransaction))).scalars().all()
+    rows = (await db.execute(select(CreditTransaction).where(CreditTransaction.user_id == user.id))).scalars().all()
     assert len(rows) == 0
 
 
