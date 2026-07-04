@@ -190,6 +190,14 @@ class ApiClient {
     return this.delete(`/api/glossary/user-entries/${id}`);
   }
 
+  async autoFillUserGlossaryEntry(id: string): Promise<{
+    entry: Record<string, unknown>;
+    filled_languages: string[];
+    skipped: { code: string; reason: string }[];
+  }> {
+    return this.post(`/api/glossary/user-entries/${id}/auto-fill`, {});
+  }
+
   async updateUserGlossaryEntry(id: string, body: {
     source_term?: string;
     term_type?: string;
