@@ -17,9 +17,14 @@ vi.mock("@/stores/glossary-store", () => ({
   ),
 }));
 
-const workspaceState: { input: { text: string }; setText: ReturnType<typeof vi.fn> } = {
+const workspaceState: {
+  input: { text: string };
+  setText: ReturnType<typeof vi.fn>;
+  activeLanguage: string;
+} = {
   input: { text: "构建人类命运共同体" },
   setText: vi.fn(),
+  activeLanguage: "en-GB",
 };
 
 vi.mock("@/stores/workspace-store", () => ({
@@ -147,5 +152,53 @@ describe("InlineHighlighter", () => {
     setCultural([]);
     const { container } = render(<InlineHighlighter />);
     expect(container.querySelectorAll("mark").length).toBe(0);
+  });
+
+  it("glossary popover shows active language translation when available", () => {
+    workspaceState.activeLanguage = "ar";
+    setText("一带一路");
+    setGlossary([
+      {
+        source_term: "一带一路",
+        term_type: "political_discourse",
+        risk_notes: "高风险",
+        translations: {
+          "en-GB": { preferred: "BRI", notes: "", alternatives: [] },
+          ar: { preferred: "مبادرة الحزام والطريق", notes: "", alternatives: [] },
+        },
+      },
+    ]);
+    const { container } = render(<InlineHighlighter />);
+    // Verify the mark text is correct (source term)
+    const marks = container.querySelectorAll("mark");
+    expect(marks.length).toBe(1);
+    expect(marks[0].textContent).toBe("一带一路");
+    // Verify popover shows active language suggestion on hover
+    fireEvent.mouseEnter(marks[0]);
+    expect(screen.getByText(/مبادرة الحزام والطريق/)).toBeInTheDocument();
+    workspaceState.activeLanguage = "en-GB";
+  });
+
+  it("glossary popover falls back to en-GB when active language missing", () => {
+    workspaceState.activeLanguage = "ar";
+    setText("一带一路");
+    setGlossary([
+      {
+        source_term: "一带一路",
+        term_type: "political_discourse",
+        risk_notes: "高风险",
+        translations: {
+          "en-GB": { preferred: "BRI", notes: "", alternatives: [] },
+        },
+      },
+    ]);
+    const { container } = render(<InlineHighlighter />);
+    const marks = container.querySelectorAll("mark");
+    expect(marks.length).toBe(1);
+    // Hover mark to trigger popover
+    fireEvent.mouseEnter(marks[0]);
+    // Should show en-GB fallback (BRI) in suggestion
+    expect(screen.getByText(/BRI/)).toBeInTheDocument();
+    workspaceState.activeLanguage = "en-GB";
   });
 });

@@ -2,7 +2,9 @@
 
 import { useEffect, useRef, useCallback } from "react";
 import { useGlossaryStore } from "@/stores/glossary-store";
+import { useWorkspaceStore } from "@/stores/workspace-store";
 import { apiClient } from "@/lib/api-client";
+import { LANGUAGE_LABELS } from "@/lib/languages";
 import {
   DEFAULT_TERM_TYPE_BADGE_CLASS,
   DEFAULT_TERM_TYPE_LABEL,
@@ -21,6 +23,7 @@ export function TermHighlighter({ text, containerClassName = "" }: TermHighlight
   const setIsLoading = useGlossaryStore((s) => s.setIsLoading);
   const hoveredTerm = useGlossaryStore((s) => s.hoveredTerm);
   const setHoveredTerm = useGlossaryStore((s) => s.setHoveredTerm);
+  const activeLang = useWorkspaceStore((s) => s.activeLanguage);
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const detect = useCallback(
@@ -76,9 +79,10 @@ export function TermHighlighter({ text, containerClassName = "" }: TermHighlight
                 {term.risk_notes && (
                   <div className="mt-1 text-xs text-orange-600">⚠ {term.risk_notes}</div>
                 )}
-                {term.translations["en-GB"] && (
+                {(term.translations[activeLang] ?? term.translations["en-GB"]) && (
                   <div className="mt-1 text-xs text-teal-700">
-                    英语：{term.translations["en-GB"].preferred}
+                    {LANGUAGE_LABELS[activeLang] ?? "英语"}：
+                    {(term.translations[activeLang] ?? term.translations["en-GB"]).preferred}
                   </div>
                 )}
               </div>

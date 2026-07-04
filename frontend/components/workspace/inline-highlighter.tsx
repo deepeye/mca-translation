@@ -1,8 +1,13 @@
 "use client";
 
-import { useMemo, useRef, useState, useCallback } from "react";
+import { useMemo, useRef, useCallback } from "react";
 import { useGlossaryStore } from "@/stores/glossary-store";
 import { useWorkspaceStore } from "@/stores/workspace-store";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import {
   CULTURAL_HIGHLIGHT_CLASS,
   CULTURAL_TERM_LABEL,
@@ -62,11 +67,16 @@ function buildSpans(
     reason: string;
     term_type: string;
   }[],
+  activeLang: string,
 ): HighlightSpan[] {
   const glossarySpans: HighlightSpan[] = [];
   for (const t of glossary) {
     const label =
       SYSTEM_GLOSSARY_TERM_TYPE_LABELS[t.term_type] || DEFAULT_TERM_TYPE_LABEL;
+    const preferred =
+      t.translations[activeLang]?.preferred ??
+      t.translations["en-GB"]?.preferred ??
+      undefined;
     for (const offset of findAllOccurrences(text, t.source_term)) {
       glossarySpans.push({
         start: offset,
@@ -76,7 +86,7 @@ function buildSpans(
         term_type: t.term_type,
         label,
         risk_notes: t.risk_notes || undefined,
-        suggestion: t.translations["en-GB"]?.preferred || undefined,
+        suggestion: preferred,
       });
     }
   }
@@ -110,15 +120,15 @@ function buildSpans(
 export function InlineHighlighter() {
   const text = useWorkspaceStore((s) => s.input.text);
   const setText = useWorkspaceStore((s) => s.setText);
+  const activeLang = useWorkspaceStore((s) => s.activeLanguage);
   const detectedTerms = useGlossaryStore((s) => s.detectedTerms);
   const culturalTerms = useGlossaryStore((s) => s.culturalTerms);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const mirrorRef = useRef<HTMLDivElement>(null);
-  const [hoveredKey, setHoveredKey] = useState<string | null>(null);
 
   const spans = useMemo(
-    () => buildSpans(text, detectedTerms, culturalTerms),
-    [text, detectedTerms, culturalTerms],
+    () => buildSpans(text, detectedTerms, culturalTerms, activeLang),
+    [text, detectedTerms, culturalTerms, activeLang],
   );
 
   // 滚动同步：textarea 滚动时镜像层跟随，保证高亮位置对齐
@@ -169,53 +179,56 @@ export function InlineHighlighter() {
       >
         {segments.map((seg, i) =>
           seg.span ? (
-            <mark
-              key={i}
-              data-span-key={`${seg.span.start}-${seg.span.end}`}
-              className={`pointer-events-auto relative cursor-help whitespace-pre-wrap rounded px-0.5 ${
-                seg.span.source === "cultural"
-                  ? CULTURAL_HIGHLIGHT_CLASS
-                  : TERM_TYPE_BADGE_CLASS[seg.span.term_type] ||
-                    DEFAULT_TERM_TYPE_BADGE_CLASS
-              }`}
-              onMouseEnter={() =>
-                setHoveredKey(`${seg.span!.start}-${seg.span!.end}`)
-              }
-              onMouseLeave={() =>
-                setHoveredKey((k) =>
-                  k === `${seg.span!.start}-${seg.span!.end}` ? null : k,
-                )
-              }
-            >
-              {seg.text}
-              {hoveredKey === `${seg.span.start}-${seg.span.end}` && (
-                // Popover：mark 为 position:relative，absolute bottom-full 弹出上方
-                <div className="absolute bottom-full left-0 z-50 mb-1 w-64 rounded-md border border-border bg-white p-2 shadow-lg">
-                  <div className="text-xs font-semibold text-foreground">
-                    {seg.span.text}
-                  </div>
-                  <div className="mt-1 text-xs text-muted-foreground">
-                    {seg.span.label}
-                    {seg.span.culture_gap && ` · ${seg.span.culture_gap}`}
-                  </div>
-                  {seg.span.suggestion && (
-                    <div className="mt-1 text-xs text-teal-700">
-                      建议译法：{seg.span.suggestion}
-                    </div>
-                  )}
-                  {seg.span.reason && (
-                    <div className="mt-1 text-xs text-orange-700">
-                      理由：{seg.span.reason}
-                    </div>
-                  )}
-                  {seg.span.risk_notes && (
-                    <div className="mt-1 text-xs text-orange-600">
-                      ⚠ {seg.span.risk_notes}
-                    </div>
-                  )}
+            <Popover key={i}>
+              <PopoverTrigger
+                nativeButton={false}
+                render={
+                  <mark
+                    data-span-key={`${seg.span.start}-${seg.span.end}`}
+                    className={`pointer-events-auto relative cursor-help whitespace-pre-wrap rounded px-0.5 ${
+                      seg.span.source === "cultural"
+                        ? CULTURAL_HIGHLIGHT_CLASS
+                        : TERM_TYPE_BADGE_CLASS[seg.span.term_type] ||
+                          DEFAULT_TERM_TYPE_BADGE_CLASS
+                    }`}
+                  >
+                    {seg.text}
+                  </mark>
+                }
+                openOnHover
+                delay={0}
+                closeDelay={0}
+              />
+              <PopoverContent
+                side="top"
+                align="start"
+                sideOffset={4}
+                className="w-64 p-2"
+              >
+                <div className="text-xs font-semibold text-foreground">
+                  {seg.span.text}
                 </div>
-              )}
-            </mark>
+                <div className="mt-1 text-xs text-muted-foreground">
+                  {seg.span.label}
+                  {seg.span.culture_gap && ` · ${seg.span.culture_gap}`}
+                </div>
+                {seg.span.suggestion && (
+                  <div className="mt-1 text-xs text-teal-700">
+                    建议译法：{seg.span.suggestion}
+                  </div>
+                )}
+                {seg.span.reason && (
+                  <div className="mt-1 text-xs text-orange-700">
+                    理由：{seg.span.reason}
+                  </div>
+                )}
+                {seg.span.risk_notes && (
+                  <div className="mt-1 text-xs text-orange-600">
+                    ⚠ {seg.span.risk_notes}
+                  </div>
+                )}
+              </PopoverContent>
+            </Popover>
           ) : (
             <span key={i}>{seg.text}</span>
           ),
