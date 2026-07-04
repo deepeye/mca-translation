@@ -282,7 +282,6 @@ async def test_admin_toggle_self_fails(db: AsyncSession):
 
 @pytest.mark.asyncio
 async def test_login_disabled_user_returns_403(db: AsyncSession):
-    from app.core.security import get_password_hash
     user = User(
         username="disabled_user",
         hashed_password=get_password_hash("pass123"),
@@ -299,7 +298,6 @@ async def test_login_disabled_user_returns_403(db: AsyncSession):
 
 @pytest.mark.asyncio
 async def test_login_deleted_user_returns_401(db: AsyncSession):
-    from app.core.security import get_password_hash
     user = User(
         username="deleted_user",
         hashed_password=get_password_hash("pass123"),
