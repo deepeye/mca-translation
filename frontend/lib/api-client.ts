@@ -97,6 +97,11 @@ class ApiClient {
       headers["Authorization"] = `Bearer ${token}`;
     }
     const res = await fetch(`${API_BASE}${path}`, { ...options, headers });
+    if (res.status === 402) {
+      const body = await res.json().catch(() => ({}));
+      // 触发余额不足处理：刷新徽章 + 让调用方拿到错误
+      throw new Error(body.detail || "INSUFFICIENT_CREDITS");
+    }
     if (res.status === 401) {
       this.clearToken();
       if (typeof window !== "undefined") {

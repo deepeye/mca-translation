@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { BalanceBadge } from "@/components/balance-badge";
 
 export default function MainLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -15,7 +16,8 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
           <Link href="/glossary" className="hover:text-white border-b-2 border-transparent hover:border-teal-light pb-0.5 transition-all duration-200">术语库</Link>
           <Link href="/history" className="hover:text-white border-b-2 border-transparent hover:border-teal-light pb-0.5 transition-all duration-200">历史</Link>
         </nav>
-        <div className="ml-auto">
+        <div className="ml-auto flex items-center gap-4">
+          <BalanceBadge />
           <button
             onClick={() => { localStorage.removeItem("token"); window.location.href = "/login"; }}
             className="text-teal-light hover:text-white cursor-pointer"
