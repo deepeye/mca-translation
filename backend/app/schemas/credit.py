@@ -7,14 +7,6 @@ class AdminAdjustRequest(BaseModel):
     reason: str = Field(..., min_length=1, max_length=200)
 
 
-class AdminUserItem(BaseModel):
-    id: str
-    username: str
-    is_admin: bool
-    credit_balance: int
-    last_active: str | None = None
-
-
 class CreditTransactionOut(BaseModel):
     id: str
     delta: int

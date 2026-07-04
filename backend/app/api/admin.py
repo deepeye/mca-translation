@@ -9,13 +9,14 @@ from app.api.deps import require_admin
 from app.core.database import get_db
 from app.models.credit import CreditTransaction
 from app.models.user import User
-from app.schemas.credit import AdminAdjustRequest, AdminUserItem, CreditTransactionOut
+from app.schemas.admin import AdminUserDetail, CreateUserRequest, UpdateUserRequest, ToggleStatusRequest
+from app.schemas.credit import AdminAdjustRequest, CreditTransactionOut
 from app.services.credits import credits_service
 
 router = APIRouter(prefix="/api/admin", tags=["admin"])
 
 
-@router.get("/users", response_model=list[AdminUserItem])
+@router.get("/users", response_model=list[AdminUserDetail])
 async def list_users(
     admin: User = Depends(require_admin),
     db: AsyncSession = Depends(get_db),
@@ -32,12 +33,14 @@ async def list_users(
                 .limit(1)
             )
         ).scalar_one_or_none()
-        out.append(AdminUserItem(
+        out.append(AdminUserDetail(
             id=str(u.id),
             username=u.username,
             is_admin=u.is_admin,
+            is_active=u.is_active,
             credit_balance=u.credit_balance,
             last_active=last_tx.isoformat() if last_tx else None,
+            created_at=u.created_at.isoformat() if u.created_at else "",
         ))
     return out
 
