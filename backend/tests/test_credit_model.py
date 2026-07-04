@@ -11,7 +11,7 @@ from app.models.user import User
 
 @pytest.mark.asyncio
 async def test_user_defaults_credit_balance_and_admin(db: AsyncSession):
-    """新建用户默认 credit_balance=1000，is_admin=False。"""
+    """新建用户默认 credit_balance=1000，is_admin=False，is_active=True，deleted_at=NULL。"""
     user = User(
         id=uuid.uuid4(),
         username=f"credit_user_{uuid.uuid4().hex[:8]}",
@@ -22,6 +22,8 @@ async def test_user_defaults_credit_balance_and_admin(db: AsyncSession):
     await db.refresh(user)
     assert user.credit_balance == 1000
     assert user.is_admin is False
+    assert user.is_active is True
+    assert user.deleted_at is None
 
 
 @pytest.mark.asyncio
