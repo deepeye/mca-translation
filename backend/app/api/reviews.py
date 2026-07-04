@@ -13,6 +13,7 @@ async def create_review(
     body: ReviewRequest,
     user: User = Depends(get_current_user),
 ):
+    # 余额守卫：余额<=0 时拒绝提交审校
     if user.credit_balance <= 0:
         from fastapi.responses import JSONResponse
         return JSONResponse(
