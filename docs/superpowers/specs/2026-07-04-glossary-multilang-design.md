@@ -46,7 +46,7 @@ Both store translations in a single `translations` JSONB column with shape `{lan
 
 Add a `field_validator("translations")` to `GlossaryEntryCreate` that rejects any key not in `SUPPORTED_LANGUAGE_CODES`. The validator runs on the request Pydantic layer before the route handler, so unknown codes produce a 422 with a clear message listing the bad keys.
 
-Apply the same validation to the PUT path by reusing `GlossaryEntryCreate` for the update body (or a dedicated `GlossaryEntryUpdate` that inherits the validator).
+Apply the same validation to the PUT path via a dedicated `GlossaryEntryUpdate` model that includes the same `field_validator("translations")`. Both create and update reject unknown codes with 422.
 
 `TranslationEntry` (the inner `{preferred, alternatives, notes}` shape) is unchanged.
 
@@ -203,11 +203,10 @@ User-defined list and system glossary display both show:
 
 ## Files Changed
 
-**Backend (4 files):**
+**Backend (5 files):**
 - `backend/app/schemas/glossary.py` — add `field_validator` on `translations` keys
 - `backend/app/api/glossary.py` — add `/user-entries/{id}/auto-fill` route
 - `backend/app/services/glossary_autofill.py` — new helper module (prompt builder + LLM call)
-- `backend/app/services/glossary_autofill.py` tests via `backend/tests/test_glossary_autofill.py` — new
 - `backend/tests/test_glossary_schema_validation.py` — new
 - `backend/tests/test_glossary_rag.py` — extend
 
