@@ -30,8 +30,8 @@ export function extractHeadings(content: string): Heading[] {
     const level = match[1].length;
     const text = match[2].trim();
     // 使用 Slugger 实例生成唯一 id（重复标题自动追加 -1, -2 后缀）
-    // 折叠连续短横线，使 "接受 / 忽略" 生成 "接受-忽略" 而非 "接受--忽略"
-    const id = slugger.slug(text).replace(/-+/g, "-");
+    // 不做后处理：与 rehype-slug 生成的 id 保持一致（含连续短横线）
+    const id = slugger.slug(text);
 
     headings.push({ level, text, id });
   }

@@ -34,6 +34,6 @@ describe("extractHeadings", () => {
   it("handles punctuation and spaces", () => {
     const input = `## 接受 / 忽略 / 回退操作`;
     const headings = extractHeadings(input);
-    expect(headings[0].id).toBe("接受-忽略-回退操作");
+    expect(headings[0].id).toBe("接受--忽略--回退操作");
   });
 });
