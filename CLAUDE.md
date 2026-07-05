@@ -14,7 +14,7 @@ CulturalBridge（MCA Translation）是一个面向国际传播内容编辑的文
 | **后端** | FastAPI, SQLAlchemy 2.0 (async), Alembic, Pydantic v2, Celery |
 | **LLM** | 百炼 DashScope (qwen-plus / qwen-max) |
 | **数据库** | PostgreSQL 16 + pgvector, Redis 7 |
-| **部署** | Docker Compose |
+| **部署** | Docker Compose + nginx 反向代理 |
 
 ## 项目结构
 
@@ -32,17 +32,23 @@ mca-translation/
 │   │   ├── main.py       # FastAPI app entry
 │   │   └── celery_app.py # Celery app
 │   ├── migrations/       # Alembic
-│   └── tests/
+│   ├── tests/
+│   ├── Dockerfile
+│   └── docker-entrypoint.sh
 ├── frontend/
 │   ├── app/              # Next.js App Router pages (login, workspace, review, glossary)
 │   ├── components/       # React components (workspace, review, glossary)
 │   ├── stores/           # Zustand stores (workspace, translation, review)
-│   └── lib/              # API client, utilities
+│   ├── lib/              # API client, utilities
+│   └── Dockerfile
+├── nginx/
+│   └── nginx.conf        # Production reverse proxy
 ├── docs/superpowers/
 │   ├── specs/            # Design documents
 │   └── plans/            # Implementation plans (checklist-based)
-└── docker-compose.yml    # Full stack
-    docker-compose.dev.yml # Dev dependencies only (pg + redis)
+├── docker-compose.yml    # Full stack
+├── docker-compose.dev.yml # Dev dependencies only (pg + redis)
+└── .env.example          # Deployment environment variables
 ```
 
 ## 关键命令

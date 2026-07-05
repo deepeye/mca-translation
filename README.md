@@ -185,8 +185,11 @@ pnpm test
 | `BAILIAN_BASE_URL` | 百炼兼容端点 | `https://dashscope.aliyuncs.com/compatible-mode/v1` |
 | `MCA_FILE_STORE_DIR` | 上传文件存储目录 | `./uploads` |
 | `FRONTEND_URL` | 前端地址（CORS） | `http://localhost:3000` |
+| `RUN_MIGRATIONS` | 启动时是否自动执行 Alembic 迁移 | `true` |
+| `NEXT_PUBLIC_API_URL` | 前端构建时 API 基础地址 | `http://localhost` |
+| `NEXT_PUBLIC_WS_URL` | 前端构建时 WebSocket 基础地址 | `ws://localhost` |
 
-生产环境部署时还需要配置 `NEXT_PUBLIC_API_URL`、`NEXT_PUBLIC_WS_URL` 等前端构建参数，详见 `docker-compose.yml`。
+生产环境部署时通过 `.env` 提供上述变量，`docker-compose.yml` 会将其注入对应服务。
 
 ## 部署说明
 
@@ -198,7 +201,7 @@ docker compose up -d
 
 包含以下服务：
 
-- **nginx**：80 端口入口，反向代理到前端与后端，自带 `/health` 健康检查。
+- **nginx**：80 端口入口，反向代理到前端与后端，`/api/ws/*` 支持 WebSocket 长连接，上传大小限制 10MB，自带 `/health` 健康检查。
 - **frontend**：Next.js standalone 生产构建。
 - **backend**：FastAPI 服务，带自动迁移入口（`RUN_MIGRATIONS=true`）。
 - **celery-worker**：异步任务工作进程。

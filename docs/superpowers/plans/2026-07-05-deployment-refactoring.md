@@ -1,6 +1,6 @@
 # Docker Compose 部署重构实施计划
 
-> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
+> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [x]`) syntax for tracking.
 
 **Goal：** 将当前生产 Docker Compose 部署重构为具备 nginx 统一入口、健康检查、重启策略、网络隔离、前端 standalone 修复及自动数据库迁移的内网测试环境方案。
 
@@ -44,18 +44,19 @@
 - Consumes: 无
 - Produces: `nginx/nginx.conf`，定义 `backend:8000` 与 `frontend:3000` 两个 upstream 路由
 
-- [ ] **Step 1：创建 nginx 配置目录与文件**
+- [x] **Step 1：创建 nginx 配置目录与文件**
 
 ```bash
 mkdir -p /Users/felixwang/devspace/cc-project/mca-translation/nginx
 ```
 
-- [ ] **Step 2：写入 nginx.conf**
+- [x] **Step 2：写入 nginx.conf**
 
 ```nginx
 server {
     listen 80;
     server_name localhost;
+    client_max_body_size 10m;
 
     location /health {
         proxy_pass http://backend:8000/health;
@@ -88,7 +89,7 @@ server {
 }
 ```
 
-- [ ] **Step 3：验证 nginx 配置语法**
+- [x] **Step 3：验证 nginx 配置语法**
 
 Run:
 
@@ -103,7 +104,7 @@ nginx: the configuration file /etc/nginx/nginx.conf syntax is ok
 nginx: configuration file /etc/nginx/nginx.conf test is successful
 ```
 
-- [ ] **Step 4：提交**
+- [x] **Step 4：提交**
 
 ```bash
 git -C /Users/felixwang/devspace/cc-project/mca-translation add nginx/nginx.conf
@@ -123,7 +124,7 @@ git -C /Users/felixwang/devspace/cc-project/mca-translation commit -m "feat(depl
 - Consumes: 无
 - Produces: 生产可用的 frontend 镜像，内部 API 调用使用相对路径 `/api/*`，WebSocket 使用相对路径 `/api/ws/*`
 
-- [ ] **Step 1：启用 Next.js standalone 输出**
+- [x] **Step 1：启用 Next.js standalone 输出**
 
 修改 `frontend/next.config.ts`：
 
@@ -137,15 +138,15 @@ const nextConfig: NextConfig = {
 export default nextConfig;
 ```
 
-- [ ] **Step 2：修改 frontend Dockerfile 接收构建参数**
+- [x] **Step 2：修改 frontend Dockerfile 接收构建参数**
 
 修改 `frontend/Dockerfile`：
 
 ```dockerfile
-FROM node:20-alpine AS builder
+FROM node:22-alpine AS builder
 WORKDIR /app
 COPY package.json pnpm-lock.yaml ./
-RUN corepack enable && pnpm install --frozen-lockfile
+RUN corepack enable && corepack prepare pnpm@10.24.0 --activate && pnpm install --frozen-lockfile
 COPY . .
 ARG NEXT_PUBLIC_API_URL
 ARG NEXT_PUBLIC_WS_URL
@@ -153,7 +154,7 @@ ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
 ENV NEXT_PUBLIC_WS_URL=$NEXT_PUBLIC_WS_URL
 RUN pnpm build
 
-FROM node:20-alpine AS runner
+FROM node:22-alpine AS runner
 WORKDIR /app
 ENV NODE_ENV=production
 COPY --from=builder /app/.next/standalone ./
@@ -163,7 +164,7 @@ EXPOSE 3000
 CMD ["node", "server.js"]
 ```
 
-- [ ] **Step 3：本地构建验证**
+- [x] **Step 3：本地构建验证**
 
 Run:
 
@@ -174,7 +175,7 @@ docker build --build-arg NEXT_PUBLIC_API_URL="" --build-arg NEXT_PUBLIC_WS_URL="
 
 Expected: 构建成功，无 `standalone` 相关文件缺失错误。
 
-- [ ] **Step 4：提交**
+- [x] **Step 4：提交**
 
 ```bash
 git -C /Users/felixwang/devspace/cc-project/mca-translation add frontend/next.config.ts frontend/Dockerfile
@@ -194,7 +195,7 @@ git -C /Users/felixwang/devspace/cc-project/mca-translation commit -m "fix(deplo
 - Consumes: `DATABASE_URL`、`REDIS_URL` 等环境变量由 docker-compose 注入
 - Produces: backend 容器启动时执行 `alembic upgrade head`（默认启用），然后启动 uvicorn
 
-- [ ] **Step 1：创建入口脚本**
+- [x] **Step 1：创建入口脚本**
 
 写入 `backend/docker-entrypoint.sh`：
 
@@ -215,13 +216,13 @@ else
 fi
 ```
 
-- [ ] **Step 2：添加执行权限**
+- [x] **Step 2：添加执行权限**
 
 ```bash
 chmod +x /Users/felixwang/devspace/cc-project/mca-translation/backend/docker-entrypoint.sh
 ```
 
-- [ ] **Step 3：修改 backend Dockerfile**
+- [x] **Step 3：修改 backend Dockerfile**
 
 修改 `backend/Dockerfile`：
 
@@ -235,17 +236,19 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
+COPY docker-entrypoint.sh /app/docker-entrypoint.sh
+RUN chmod +x /app/docker-entrypoint.sh
+
+RUN mkdir -p /app/uploads
 RUN useradd -m appuser && chown -R appuser:appuser /app
 USER appuser
 
 EXPOSE 8000
 
-COPY docker-entrypoint.sh /app/docker-entrypoint.sh
-RUN chmod +x /app/docker-entrypoint.sh
 ENTRYPOINT ["/app/docker-entrypoint.sh"]
 ```
 
-- [ ] **Step 4：本地构建验证**
+- [x] **Step 4：本地构建验证**
 
 Run:
 
@@ -256,7 +259,7 @@ docker build -t mca-backend-test .
 
 Expected: 构建成功。
 
-- [ ] **Step 5：提交**
+- [x] **Step 5：提交**
 
 ```bash
 git -C /Users/felixwang/devspace/cc-project/mca-translation add backend/docker-entrypoint.sh backend/Dockerfile
@@ -275,7 +278,7 @@ git -C /Users/felixwang/devspace/cc-project/mca-translation commit -m "feat(depl
 - Consumes: `nginx/nginx.conf`、`frontend/Dockerfile`、`backend/Dockerfile`
 - Produces: 完整的生产编排，对外仅暴露 nginx :80
 
-- [ ] **Step 1：重写 docker-compose.yml**
+- [x] **Step 1：重写 docker-compose.yml**
 
 ```yaml
 x-backend-env: &backend-env
@@ -316,12 +319,13 @@ services:
     build:
       context: ./frontend
       args:
-        NEXT_PUBLIC_API_URL: ""
-        NEXT_PUBLIC_WS_URL: ""
+        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost}
+        NEXT_PUBLIC_WS_URL: ${NEXT_PUBLIC_WS_URL:-ws://localhost}
     networks:
       - app
     environment:
       - NODE_ENV=production
+      - HOSTNAME=0.0.0.0
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "wget", "-qO-", "http://localhost:3000/"]
@@ -416,7 +420,7 @@ volumes:
   uploads:
 ```
 
-- [ ] **Step 2：compose 语法检查**
+- [x] **Step 2：compose 语法检查**
 
 Run:
 
@@ -427,7 +431,7 @@ docker compose config > /dev/null
 
 Expected: 无错误输出，退出码 0。
 
-- [ ] **Step 3：完整启动并 smoke test**
+- [x] **Step 3：完整启动并 smoke test**
 
 Run:
 
@@ -446,11 +450,11 @@ Expected:
 - `curl http://localhost/health` 返回 `{"status":"ok"}`。
 - `curl http://localhost/` 返回前端 HTML（HTTP 200）。
 
-- [ ] **Step 4：WebSocket 与登录流程验证（可选但推荐）**
+- [x] **Step 4：WebSocket 与登录流程验证（可选但推荐）**
 
 在浏览器访问 `http://localhost`，使用已有账号登录，提交一次翻译任务，确认 WebSocket 状态更新正常。
 
-- [ ] **Step 5：崩溃恢复验证**
+- [x] **Step 5：崩溃恢复验证**
 
 Run:
 
@@ -462,7 +466,7 @@ docker compose ps backend
 
 Expected: backend 容器状态重新变为 `Up (healthy)`，证明 `restart: unless-stopped` 生效。
 
-- [ ] **Step 6：提交**
+- [x] **Step 6：提交**
 
 ```bash
 git -C /Users/felixwang/devspace/cc-project/mca-translation add docker-compose.yml
@@ -481,7 +485,7 @@ git -C /Users/felixwang/devspace/cc-project/mca-translation commit -m "feat(depl
 - Consumes: 新 docker-compose 中使用的变量
 - Produces: 与部署方案一致的 `.env.example`
 
-- [ ] **Step 1：更新 `.env.example`**
+- [x] **Step 1：更新 `.env.example`**
 
 ```bash
 # Required
@@ -490,11 +494,17 @@ SECRET_KEY=change-me-to-a-random-string
 
 # Optional
 DB_PASSWORD=culturalbridge
+
+# Frontend public origin (used at Docker build time)
+NEXT_PUBLIC_API_URL=http://localhost
+NEXT_PUBLIC_WS_URL=ws://localhost
+
+# Backend CORS origin and migration behavior
 FRONTEND_URL=http://localhost
 RUN_MIGRATIONS=true
 ```
 
-- [ ] **Step 2：提交**
+- [x] **Step 2：提交**
 
 ```bash
 git -C /Users/felixwang/devspace/cc-project/mca-translation add .env.example
@@ -532,7 +542,7 @@ git -C /Users/felixwang/devspace/cc-project/mca-translation commit -m "docs(env)
 
 ### 一致性检查
 
-- `NEXT_PUBLIC_API_URL` / `NEXT_PUBLIC_WS_URL` 在 Task 2 Dockerfile、Task 4 build.args、设计文档中保持一致（空字符串）。
+- `NEXT_PUBLIC_API_URL` / `NEXT_PUBLIC_WS_URL` 在 Task 2 Dockerfile、Task 4 build.args、设计文档中保持一致（通过 `.env` 提供，默认分别为 `http://localhost` 与 `ws://localhost`）。
 - `backend-env` 锚点包含的变量与现有 backend/celery 所需变量一致。
 - `FRONTEND_URL` 默认 `http://localhost`，可通过 `.env` 覆盖。
 - `RUN_MIGRATIONS` 默认 `true`，与 Task 3 入口脚本逻辑一致。
