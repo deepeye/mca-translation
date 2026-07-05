@@ -20,7 +20,7 @@ CulturalBridge（MCA Translation）功能模块日趋完整，涵盖文化感知
 
 1. **仓库文档**：`docs/USER_MANUAL.md`，标准 Markdown 格式，纳入版本控制。
 2. **应用内帮助页面**：前端新增 `/help` 路由，渲染同一份 Markdown 内容。
-3. **配图资源**：`public/help/` 目录下的截图与示意图。
+3. **配图资源**：`docs/help/` 目录下的截图与示意图（构建时同步到 `frontend/public/help/`）。
 
 ## 4. 内容结构
 
@@ -84,9 +84,8 @@ CulturalBridge（MCA Translation）功能模块日趋完整，涵盖文化感知
 ```
 mca-translation/
 ├── docs/
-│   └── USER_MANUAL.md          # 手册唯一源文件（中文）
-├── public/
-│   └── help/                   # 手册截图与示意图
+│   ├── USER_MANUAL.md          # 手册唯一源文件（中文）
+│   └── help/                   # 手册截图与示意图源文件
 │       ├── workspace-overview.png
 │       ├── risk-annotation.png
 │       ├── decision-log.png
@@ -100,7 +99,8 @@ mca-translation/
 │   │   └── layout.tsx          # 帮助页布局
 │   ├── components/help/
 │   │   └── help-content.tsx    # Markdown 渲染组件
-│   └── lib/help.ts             # 加载/解析 Markdown 工具
+│   ├── lib/help.ts             # 加载/解析 Markdown 工具
+│   └── public/help/            # 构建产物：docs/help/ 的同步副本
 ```
 
 ### 5.2 Markdown 渲染
@@ -111,9 +111,10 @@ mca-translation/
 
 ### 5.3 图片路径处理
 
-- 图片存放在 `public/help/`。
-- Markdown 源文件中写作 `![说明](../public/help/xxx.png)`，保证在 GitHub 仓库中可预览。
-- 应用内渲染时，将路径前缀 `../public/help/` 替换为 `/help/`，使 Next.js 正确加载静态资源。
+- 源图片存放在 `docs/help/`。
+- Markdown 源文件中写作 `![说明](./help/xxx.png)`，保证在 GitHub 仓库中可预览。
+- 构建时通过脚本将 `docs/help/` 同步到 `frontend/public/help/`。
+- 应用内渲染时，将路径前缀 `./help/` 替换为 `/help/`，使 Next.js 正确加载静态资源。
 
 ### 5.4 页面布局
 
@@ -144,7 +145,8 @@ mca-translation/
 
 ### 6.3 实施方式
 
-- 截图统一存放在 `public/help/`，命名规范 `{module}-{description}.png`。
+- 源截图统一存放在 `docs/help/`，命名规范 `{module}-{description}.png`。
+- 构建时通过脚本将 `docs/help/` 同步到 `frontend/public/help/`。
 - 示意图优先使用 Mermaid 或 ASCII 流程图直接嵌入 Markdown，减少图片文件。
 - 首次实现可先用占位图或 `<!-- TODO: 截图 -->` 标记，功能稳定后统一补拍。
 
@@ -157,7 +159,7 @@ mca-translation/
 
 - `docs/USER_MANUAL.md` 是唯一事实来源。
 - 新增或修改功能时，同步更新对应章节。
-- UI 改版时，批量重新截取 `public/help/` 中的截图。
+- UI 改版时，批量重新截取 `docs/help/` 中的截图，并同步到 `frontend/public/help/`。
 - 建议把“是否更新使用手册”作为功能 PR 的自检项。
 
 ### 更新流程
@@ -165,7 +167,7 @@ mca-translation/
 ```
 功能变更 / UI 调整
   → 修改 docs/USER_MANUAL.md
-  → 如有必要，替换 public/help/ 截图
+  → 如有必要，替换 docs/help/ 截图并同步到 frontend/public/help/
   → 本地启动前端，访问 /help 验证渲染正常
   → 提交 PR
 ```
