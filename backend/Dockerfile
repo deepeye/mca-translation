@@ -10,6 +10,7 @@ COPY . .
 COPY docker-entrypoint.sh /app/docker-entrypoint.sh
 RUN chmod +x /app/docker-entrypoint.sh
 
+RUN mkdir -p /app/uploads
 RUN useradd -m appuser && chown -R appuser:appuser /app
 USER appuser
 

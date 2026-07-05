@@ -1,5 +1,5 @@
 x-backend-env: &backend-env
-  DATABASE_URL: postgresql+asyncpg://culturalbridge:culturalbridge@postgres:5432/culturalbridge
+  DATABASE_URL: postgresql+asyncpg://culturalbridge:${DB_PASSWORD:-culturalbridge}@postgres:5432/culturalbridge
   REDIS_URL: redis://redis:6379/0
   SECRET_KEY: ${SECRET_KEY:-change-me-in-production}
   BAILIAN_API_KEY: ${BAILIAN_API_KEY}
