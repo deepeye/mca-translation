@@ -225,12 +225,17 @@ CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
 #!/bin/sh
 set -e
 
-if [ "${RUN_MIGRATIONS:-true}" = "true" ]; then
+# 仅当以默认 backend 方式启动（无额外命令参数）时才执行迁移
+if [ "$#" -eq 0 ] && [ "${RUN_MIGRATIONS:-true}" = "true" ]; then
     echo "Running database migrations..."
     alembic upgrade head
 fi
 
-exec uvicorn app.main:app --host 0.0.0.0 --port 8000
+if [ "$#" -gt 0 ]; then
+    exec "$@"
+else
+    exec uvicorn app.main:app --host 0.0.0.0 --port 8000
+fi
 ```
 
 backend Dockerfile 的 `CMD` 改为入口脚本：
