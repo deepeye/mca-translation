@@ -23,6 +23,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
           <Link href="/review" className="hover:text-white border-b-2 border-transparent hover:border-teal-light pb-0.5 transition-all duration-200">审校</Link>
           <Link href="/glossary" className="hover:text-white border-b-2 border-transparent hover:border-teal-light pb-0.5 transition-all duration-200">术语库</Link>
           <Link href="/history" className="hover:text-white border-b-2 border-transparent hover:border-teal-light pb-0.5 transition-all duration-200">历史</Link>
+          <Link href="/help" className="hover:text-white border-b-2 border-transparent hover:border-teal-light pb-0.5 transition-all duration-200">使用手册</Link>
           {isAdmin && (
             <Link href="/admin/users" className="hover:text-white border-b-2 border-transparent hover:border-teal-light pb-0.5 transition-all duration-200">管理</Link>
           )}
