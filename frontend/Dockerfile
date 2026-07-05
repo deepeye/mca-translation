@@ -1,8 +1,10 @@
 FROM node:22-alpine AS builder
 WORKDIR /app
-COPY package.json pnpm-lock.yaml ./
+COPY frontend/package.json frontend/pnpm-lock.yaml ./
 RUN corepack enable && corepack prepare pnpm@10.24.0 --activate && pnpm install --frozen-lockfile
-COPY . .
+COPY frontend/. .
+COPY docs/USER_MANUAL.md ./public/USER_MANUAL.md
+COPY docs/help/. ./public/help/
 ARG NEXT_PUBLIC_API_URL
 ARG NEXT_PUBLIC_WS_URL
 ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL

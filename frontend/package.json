@@ -3,6 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "predev": "mkdir -p public/help && cp -r ../docs/help/* public/help/ 2>/dev/null || true && cp ../docs/USER_MANUAL.md public/USER_MANUAL.md || true",
+    "prebuild": "mkdir -p public/help && cp -r ../docs/help/* public/help/ 2>/dev/null || true && cp ../docs/USER_MANUAL.md public/USER_MANUAL.md || true",
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
