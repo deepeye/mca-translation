@@ -18,6 +18,7 @@ vi.mock("@/lib/api-client", () => ({
 describe("GlossaryPage", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    localStorage.clear();
     mockApiClient.listGlossaryEntries.mockResolvedValue([]);
     mockApiClient.listUserGlossaryEntries.mockResolvedValue([]);
   });
@@ -130,5 +131,96 @@ describe("GlossaryPage", () => {
     await waitFor(() => {
       expect(mockApiClient.autoFillUserGlossaryEntry).toHaveBeenCalledWith("entry-1");
     });
+  });
+
+  it("renders system glossary as a flat list by default (no category labels)", async () => {
+    mockApiClient.listGlossaryEntries.mockResolvedValue([
+      {
+        id: "sys-1",
+        source_term: "一带一路",
+        term_type: "political_discourse",
+        translations: { "en-GB": { preferred: "BRI", alternatives: [], notes: "" } },
+        risk_notes: "",
+        applicable_genres: [],
+      },
+      {
+        id: "sys-2",
+        source_term: "故宫",
+        term_type: "cultural_site",
+        translations: { "en-GB": { preferred: "the Forbidden City", alternatives: [], notes: "" } },
+        risk_notes: "",
+        applicable_genres: [],
+      },
+    ]);
+
+    render(<GlossaryPage />);
+
+    await waitFor(() => {
+      expect(screen.getByText("一带一路")).toBeInTheDocument();
+    });
+    expect(screen.getByText("故宫")).toBeInTheDocument();
+
+    // 默认隐藏:分类标签(分组标题 + 行内徽章)均不出现
+    expect(screen.queryAllByText("政治话语")).toHaveLength(0);
+    expect(screen.queryAllByText("文化地标")).toHaveLength(0);
+
+    // 开关按钮存在,文案为「显示分类」(动作语义)
+    expect(screen.getByText("显示分类")).toBeInTheDocument();
+  });
+
+  it("shows category headings and badges when 「显示分类」 is clicked", async () => {
+    mockApiClient.listGlossaryEntries.mockResolvedValue([
+      {
+        id: "sys-1",
+        source_term: "一带一路",
+        term_type: "political_discourse",
+        translations: { "en-GB": { preferred: "BRI", alternatives: [], notes: "" } },
+        risk_notes: "",
+        applicable_genres: [],
+      },
+    ]);
+
+    render(<GlossaryPage />);
+
+    await waitFor(() => {
+      expect(screen.getByText("一带一路")).toBeInTheDocument();
+    });
+
+    // 点击前:无分类标签
+    expect(screen.queryAllByText("政治话语")).toHaveLength(0);
+
+    fireEvent.click(screen.getByText("显示分类"));
+
+    // 点击后:分组标题(政治话语)出现;按钮文案切换为「隐藏分类」
+    expect(screen.getByRole("heading", { name: "政治话语" })).toBeInTheDocument();
+    expect(screen.getByText("隐藏分类")).toBeInTheDocument();
+  });
+
+  it("returns to flat list when 「隐藏分类」 is clicked", async () => {
+    mockApiClient.listGlossaryEntries.mockResolvedValue([
+      {
+        id: "sys-1",
+        source_term: "一带一路",
+        term_type: "political_discourse",
+        translations: { "en-GB": { preferred: "BRI", alternatives: [], notes: "" } },
+        risk_notes: "",
+        applicable_genres: [],
+      },
+    ]);
+
+    render(<GlossaryPage />);
+
+    await waitFor(() => {
+      expect(screen.getByText("一带一路")).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByText("显示分类"));
+    expect(screen.getByRole("heading", { name: "政治话语" })).toBeInTheDocument();
+
+    fireEvent.click(screen.getByText("隐藏分类"));
+
+    // 切回扁平:分类标签消失,按钮回到「显示分类」
+    expect(screen.queryAllByText("政治话语")).toHaveLength(0);
+    expect(screen.getByText("显示分类")).toBeInTheDocument();
   });
 });

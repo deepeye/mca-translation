@@ -72,6 +72,9 @@ export default function GlossaryPage() {
   const [userOffset, setUserOffset] = useState(0);
   const [hasMoreUser, setHasMoreUser] = useState(false);
 
+  // 系统知识库分类标签显示开关(默认隐藏 → 扁平列表)
+  const [showCategories, setShowCategories] = useState(false);
+
   async function loadEntries() {
     setLoading(true);
     try {
@@ -309,6 +312,48 @@ export default function GlossaryPage() {
     const bIndex = SYSTEM_GLOSSARY_TERM_TYPE_ORDER.indexOf(b as (typeof SYSTEM_GLOSSARY_TERM_TYPE_ORDER)[number]);
     return (aIndex === -1 ? Number.MAX_SAFE_INTEGER : aIndex) - (bIndex === -1 ? Number.MAX_SAFE_INTEGER : bIndex);
   });
+
+  // 切换系统知识库分类标签的显示
+  function toggleCategories() {
+    setShowCategories((v) => !v);
+  }
+
+  function renderSystemEntryCard(entry: GlossaryEntry, showBadge: boolean) {
+    return (
+      <div key={entry.id} className="rounded border border-border p-3">
+        <span className="font-medium">{entry.source_term}</span>
+        {showBadge && (
+          <span className="ml-2 rounded bg-muted px-1.5 py-0.5 text-xs text-muted-foreground">
+            {SYSTEM_GLOSSARY_TERM_TYPE_LABELS[entry.term_type] || DEFAULT_TERM_TYPE_LABEL}
+          </span>
+        )}
+        {(() => {
+          const pref = getPreferredTranslation(entry);
+          if (pref) {
+            return <span className="ml-2 text-sm text-teal-700">→ {pref}</span>;
+          }
+          return null;
+        })()}
+        {(() => {
+          const count = getFilledCount(entry);
+          if (count > 0) {
+            return (
+              <span
+                className="ml-2 inline-flex items-center rounded-full bg-teal-100 px-2 py-0.5 text-xs font-medium text-teal-700"
+                title={getFilledLanguageLabels(entry)}
+              >
+                +{count}
+              </span>
+            );
+          }
+          return null;
+        })()}
+        {entry.risk_notes && (
+          <div className="mt-1 text-xs text-orange-600">⚠ {entry.risk_notes}</div>
+        )}
+      </div>
+    );
+  }
 
   // ---- Render helpers ----
 
@@ -593,10 +638,17 @@ export default function GlossaryPage() {
 
       {/* ---- System glossary ---- */}
       <div>
-        <h2 className="mb-4 text-lg font-semibold">系统知识库</h2>
+        <div className="mb-4 flex items-center justify-between">
+          <h2 className="text-lg font-semibold">系统知识库</h2>
+          {systemEntries.length > 0 && (
+            <Button variant="outline" size="sm" onClick={toggleCategories}>
+              {showCategories ? "隐藏分类" : "显示分类"}
+            </Button>
+          )}
+        </div>
         {systemEntries.length === 0 ? (
           <p className="text-sm text-muted-foreground">系统知识库为空</p>
-        ) : (
+        ) : showCategories ? (
           <div className="space-y-6">
             {groupedSystemEntries.map(([termType, entries]) => (
               <section key={termType}>
@@ -604,41 +656,16 @@ export default function GlossaryPage() {
                   {SYSTEM_GLOSSARY_TERM_TYPE_LABELS[termType] || DEFAULT_TERM_TYPE_LABEL}
                 </h3>
                 <div className="space-y-2">
-                  {entries.map((entry) => (
-                    <div key={entry.id} className="rounded border border-border p-3">
-                      <span className="font-medium">{entry.source_term}</span>
-                      <span className="ml-2 rounded bg-muted px-1.5 py-0.5 text-xs text-muted-foreground">
-                        {SYSTEM_GLOSSARY_TERM_TYPE_LABELS[entry.term_type] || DEFAULT_TERM_TYPE_LABEL}
-                      </span>
-                      {(() => {
-                        const pref = getPreferredTranslation(entry);
-                        if (pref) {
-                          return <span className="ml-2 text-sm text-teal-700">→ {pref}</span>;
-                        }
-                        return null;
-                      })()}
-                      {(() => {
-                        const count = getFilledCount(entry);
-                        if (count > 0) {
-                          return (
-                            <span
-                              className="ml-2 inline-flex items-center rounded-full bg-teal-100 px-2 py-0.5 text-xs font-medium text-teal-700"
-                              title={getFilledLanguageLabels(entry)}
-                            >
-                              +{count}
-                            </span>
-                          );
-                        }
-                        return null;
-                      })()}
-                      {entry.risk_notes && (
-                        <div className="mt-1 text-xs text-orange-600">⚠ {entry.risk_notes}</div>
-                      )}
-                    </div>
-                  ))}
+                  {entries.map((entry) => renderSystemEntryCard(entry, true))}
                 </div>
               </section>
             ))}
+          </div>
+        ) : (
+          <div className="space-y-2">
+            {groupedSystemEntries.flatMap(([, entries]) =>
+              entries.map((entry) => renderSystemEntryCard(entry, false)),
+            )}
           </div>
         )}
       </div>
