@@ -63,18 +63,17 @@ class BailianClient:
             "Authorization": f"Bearer {self.api_key}",
             "Content-Type": "application/json",
         }
+        # compatible-mode/v1/embeddings 使用 OpenAI 格式（input 为字符串或字符串数组）
         payload = {
             "model": model,
-            "input": {
-                "texts": texts,
-            },
+            "input": texts,
         }
         async with httpx.AsyncClient(timeout=30.0) as client:
             resp = await client.post(f"{self.base_url}/embeddings", json=payload, headers=headers)
             resp.raise_for_status()
             data = resp.json()
             embeddings = []
-            for item in data.get("output", {}).get("embeddings", []):
+            for item in data.get("data", []):
                 embeddings.append(item["embedding"])
             return embeddings
 
