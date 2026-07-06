@@ -48,7 +48,7 @@ services:
       - HOSTNAME=0.0.0.0
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:3000/"]
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:3000${NEXT_PUBLIC_BASE_PATH:-}/"]
       interval: 10s
       timeout: 5s
       retries: 3
