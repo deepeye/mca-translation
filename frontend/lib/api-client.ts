@@ -1,4 +1,5 @@
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+// 空串 = 相对路径，走 nginx 同源代理（生产）；dev 由 .env.local 注入 NEXT_PUBLIC_API_URL
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || "";
 
 export interface JobListItem {
   id: string;
