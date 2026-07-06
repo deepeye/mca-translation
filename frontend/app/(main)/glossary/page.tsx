@@ -35,6 +35,7 @@ interface EntryForm {
 }
 
 const USER_PAGE_SIZE = 10;
+const SHOW_SYSTEM_CATEGORIES_KEY = "glossary:showSystemCategories";
 
 export default function GlossaryPage() {
   const [systemEntries, setSystemEntries] = useState<GlossaryEntry[]>([]);
@@ -74,6 +75,17 @@ export default function GlossaryPage() {
 
   // 系统知识库分类标签显示开关(默认隐藏 → 扁平列表)
   const [showCategories, setShowCategories] = useState(false);
+
+  // 挂载时读取持久化的开关偏好(localStorage 不可用时静默回落到默认隐藏)
+  useEffect(() => {
+    try {
+      if (localStorage.getItem(SHOW_SYSTEM_CATEGORIES_KEY) === "true") {
+        setShowCategories(true);
+      }
+    } catch {
+      // localStorage 不可用时保持默认隐藏
+    }
+  }, []);
 
   async function loadEntries() {
     setLoading(true);
@@ -313,9 +325,17 @@ export default function GlossaryPage() {
     return (aIndex === -1 ? Number.MAX_SAFE_INTEGER : aIndex) - (bIndex === -1 ? Number.MAX_SAFE_INTEGER : bIndex);
   });
 
-  // 切换系统知识库分类标签的显示
+  // 切换系统知识库分类标签的显示,并持久化到 localStorage
   function toggleCategories() {
-    setShowCategories((v) => !v);
+    setShowCategories((v) => {
+      const next = !v;
+      try {
+        localStorage.setItem(SHOW_SYSTEM_CATEGORIES_KEY, String(next));
+      } catch {
+        // 写入失败时仅影响当前会话
+      }
+      return next;
+    });
   }
 
   function renderSystemEntryCard(entry: GlossaryEntry, showBadge: boolean) {

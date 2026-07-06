@@ -223,4 +223,50 @@ describe("GlossaryPage", () => {
     expect(screen.queryAllByText("政治话语")).toHaveLength(0);
     expect(screen.getByText("显示分类")).toBeInTheDocument();
   });
+
+  it("shows grouped view on mount when localStorage has \"true\"", async () => {
+    localStorage.setItem("glossary:showSystemCategories", "true");
+    mockApiClient.listGlossaryEntries.mockResolvedValue([
+      {
+        id: "sys-1",
+        source_term: "一带一路",
+        term_type: "political_discourse",
+        translations: { "en-GB": { preferred: "BRI", alternatives: [], notes: "" } },
+        risk_notes: "",
+        applicable_genres: [],
+      },
+    ]);
+
+    render(<GlossaryPage />);
+
+    await waitFor(() => {
+      expect(screen.getByRole("heading", { name: "政治话语" })).toBeInTheDocument();
+    });
+    expect(screen.getByText("隐藏分类")).toBeInTheDocument();
+  });
+
+  it("persists toggle state to localStorage", async () => {
+    mockApiClient.listGlossaryEntries.mockResolvedValue([
+      {
+        id: "sys-1",
+        source_term: "一带一路",
+        term_type: "political_discourse",
+        translations: { "en-GB": { preferred: "BRI", alternatives: [], notes: "" } },
+        risk_notes: "",
+        applicable_genres: [],
+      },
+    ]);
+
+    render(<GlossaryPage />);
+
+    await waitFor(() => {
+      expect(screen.getByText("一带一路")).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByText("显示分类"));
+    expect(localStorage.getItem("glossary:showSystemCategories")).toBe("true");
+
+    fireEvent.click(screen.getByText("隐藏分类"));
+    expect(localStorage.getItem("glossary:showSystemCategories")).toBe("false");
+  });
 });
