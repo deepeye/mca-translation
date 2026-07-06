@@ -55,8 +55,12 @@ async def _run_translation(job_id: str):
             # Cultural preprocessing is language-agnostic (the preprocess prompt
             # takes sphere+audience+genre, no target language), so run it once per
             # job and reuse the result across all target languages.
+            # 余额预检:不足以覆盖总成本(len(source) × 语言数)时跳过 cultural_preprocess(LLM),
+            # 避免余额不足仍消耗 LLM 调用。逐语言预检(下方 line 91)仍会标记各语言 failed。
+            user_row = (await db.execute(select(User).where(User.id == job.user_id))).scalar_one()
+            total_cost = len(job.source_text) * len(job.target_languages)
             cultural_constraints = None
-            if job.cultural_sphere:
+            if job.cultural_sphere and user_row.credit_balance >= total_cost:
                 cultural_constraints = await cultural_preprocess(
                     text=job.source_text,
                     cultural_sphere=job.cultural_sphere,

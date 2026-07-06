@@ -6,7 +6,7 @@
 - 余额不足的语言 → 标记 failed 且不扣款
 """
 import uuid
-from unittest.mock import patch
+from unittest.mock import patch, AsyncMock
 
 import pytest
 from sqlalchemy import select
@@ -18,7 +18,7 @@ from app.models.user import User
 from app.tasks import _run_translation
 
 
-async def _seed_job(db, source_text, langs, balance=10000):
+async def _seed_job(db, source_text, langs, balance=10000, cultural_sphere=None):
     user = User(
         id=uuid.uuid4(),
         username=f"pipe_{uuid.uuid4().hex[:8]}",
@@ -34,6 +34,7 @@ async def _seed_job(db, source_text, langs, balance=10000):
         genre="political",
         strategy="semantic_equivalence",
         target_languages=langs,
+        cultural_sphere=cultural_sphere,
         status="pending",
     )
     db.add(job)
@@ -159,3 +160,21 @@ async def test_insufficient_balance_skips_llm_preflight(db: AsyncSession):
 
     await db.refresh(job)
     assert job.status == "partial"
+
+
+@pytest.mark.asyncio
+async def test_insufficient_balance_skips_cultural_preprocess(db: AsyncSession):
+    """余额不足时,即使设了 cultural_sphere 也不调用 cultural_preprocess(LLM),避免无谓消耗。"""
+    # cost = len("余额不足测试") × 1 = 6,balance = 3 → 不足
+    user, job = await _seed_job(
+        db, "余额不足测试", ["en-GB"], balance=3, cultural_sphere="western_english"
+    )
+    with patch("app.tasks.cultural_preprocess", new=AsyncMock()) as cp_mock, \
+         patch("app.tasks.pipeline.translate", new=_fake_translate_success):
+        await _run_translation(str(job.id))
+
+    cp_mock.assert_not_called()  # 余额不足 → 不调 cultural_preprocess
+    result = (await db.execute(
+        select(TranslationResult).where(TranslationResult.job_id == job.id)
+    )).scalar_one()
+    assert result.status == "failed"  # 逐语言预检仍标记 failed

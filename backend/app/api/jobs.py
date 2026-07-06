@@ -36,12 +36,14 @@ async def create_job(
     user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
 ):
-    # 余额守卫：余额<=0 时拒绝提交翻译
-    if user.credit_balance <= 0:
+    # 余额守卫:余额不足以覆盖总成本(len(source_text) × 语言数)时拒绝,
+    # 避免创建 job 后又在 task 里浪费 cultural_preprocess 等 LLM 调用。
+    total_cost = len(body.source_text) * len(body.target_languages)
+    if user.credit_balance < total_cost:
         from fastapi.responses import JSONResponse
         return JSONResponse(
             status_code=402,
-            content={"detail": "INSUFFICIENT_CREDITS", "balance": 0},
+            content={"detail": "INSUFFICIENT_CREDITS", "balance": user.credit_balance},
         )
     job = TranslationJob(
         user_id=user.id,

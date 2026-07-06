@@ -87,3 +87,56 @@ async def test_create_job_allowed_with_positive_balance(db: AsyncSession):
                 "target_languages": ["en-GB"],
             })
     assert resp.status_code == 201
+
+
+@pytest.mark.asyncio
+async def test_create_job_blocked_when_balance_less_than_cost(db: AsyncSession):
+    """余额 >0 但不足以覆盖源文本长度时,仍应 402(避免浪费 cultural_preprocess)。"""
+    user = User(
+        id=uuid.uuid4(),
+        username=f"low_{uuid.uuid4().hex[:8]}",
+        hashed_password=get_password_hash("pw"),
+        credit_balance=3,  # 余额 3,源文本 4 字符 → 不够
+    )
+    db.add(user)
+    await db.commit()
+    headers = {"Authorization": f"Bearer {create_access_token(data={'sub': str(user.id)})}"}
+    transport = ASGITransport(app=app)
+    from unittest.mock import patch
+    with patch("app.api.jobs.run_translation.delay"):
+        async with AsyncClient(transport=transport, base_url="http://test") as client:
+            resp = await client.post("/api/jobs", headers=headers, json={
+                "source_text": "测试文本",  # 4 chars × 1 lang = 4 > 3
+                "genre": "political",
+                "strategy": "semantic_equivalence",
+                "target_languages": ["en-GB"],
+                "cultural_sphere": "western_english",
+                "audience_type": "general_public",
+            })
+    assert resp.status_code == 402
+    assert resp.json()["detail"] == "INSUFFICIENT_CREDITS"
+
+
+@pytest.mark.asyncio
+async def test_create_job_blocked_multi_language_total_cost(db: AsyncSession):
+    """多语言总成本 = len(source) × len(langs),余额不够总数时 402。"""
+    user = User(
+        id=uuid.uuid4(),
+        username=f"multi_{uuid.uuid4().hex[:8]}",
+        hashed_password=get_password_hash("pw"),
+        credit_balance=5,  # 2 chars × 3 langs = 6 > 5
+    )
+    db.add(user)
+    await db.commit()
+    headers = {"Authorization": f"Bearer {create_access_token(data={'sub': str(user.id)})}"}
+    transport = ASGITransport(app=app)
+    from unittest.mock import patch
+    with patch("app.api.jobs.run_translation.delay"):
+        async with AsyncClient(transport=transport, base_url="http://test") as client:
+            resp = await client.post("/api/jobs", headers=headers, json={
+                "source_text": "测试",  # 2 chars × 3 langs = 6 > 5
+                "genre": "political",
+                "strategy": "semantic_equivalence",
+                "target_languages": ["en-GB", "ja-JP", "ar"],
+            })
+    assert resp.status_code == 402
