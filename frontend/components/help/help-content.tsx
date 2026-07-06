@@ -15,13 +15,14 @@ export function HelpContent({ content }: HelpContentProps) {
       rehypePlugins={[rehypeSlug]}
       components={{
         h1: ({ children }) => <h1 className="mb-6 text-3xl font-bold text-foreground">{children}</h1>,
-        h2: ({ children }) => (
-          <h2 className="mb-4 mt-8 border-b border-border pb-2 text-2xl font-semibold text-foreground">
+        // 转发 rehype-slug 生成的 id，使左侧目录锚点 <a href="#id"> 能定位到标题
+        h2: ({ children, id }) => (
+          <h2 id={id} className="mb-4 mt-8 border-b border-border pb-2 text-2xl font-semibold text-foreground">
             {children}
           </h2>
         ),
-        h3: ({ children }) => (
-          <h3 className="mb-3 mt-6 text-xl font-medium text-foreground">{children}</h3>
+        h3: ({ children, id }) => (
+          <h3 id={id} className="mb-3 mt-6 text-xl font-medium text-foreground">{children}</h3>
         ),
         p: ({ children }) => <p className="mb-4 leading-relaxed text-foreground">{children}</p>,
         ul: ({ children }) => <ul className="mb-4 list-disc pl-6 text-foreground">{children}</ul>,
