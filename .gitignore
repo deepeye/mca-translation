@@ -17,6 +17,7 @@ design-system/
 
 # Tooling / session artifacts
 .playwright-mcp/
+.gstack/
 .DS_Store
 
 # Local data & screenshots (not source)
