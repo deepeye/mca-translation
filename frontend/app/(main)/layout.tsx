@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import Link from "next/link";
 import { BalanceBadge } from "@/components/balance-badge";
 import { useCreditsStore } from "@/stores/credits-store";
+import { loginPath } from "@/lib/base-path";
 
 export default function MainLayout({ children }: { children: React.ReactNode }) {
   const isAdmin = useCreditsStore((s) => s.isAdmin);
@@ -31,7 +32,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
         <div className="ml-auto flex items-center gap-4">
           <BalanceBadge />
           <button
-            onClick={() => { localStorage.removeItem("token"); window.location.href = "/login"; }}
+            onClick={() => { localStorage.removeItem("token"); window.location.href = loginPath(); }}
             className="text-teal-light hover:text-white cursor-pointer"
           >
             Sign out

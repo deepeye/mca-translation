@@ -1,5 +1,7 @@
-// 空串 = 相对路径，走 nginx 同源代理（生产）；dev 由 .env.local 注入 NEXT_PUBLIC_API_URL
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || "";
+import { BASE_PATH, loginPath } from "@/lib/base-path";
+
+// API 基址:dev 优先 NEXT_PUBLIC_API_URL 直连后端;否则走 BASE_PATH 同源相对(生产 /mca)。
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || BASE_PATH;
 
 export interface JobListItem {
   id: string;
@@ -106,7 +108,7 @@ class ApiClient {
     if (res.status === 401) {
       this.clearToken();
       if (typeof window !== "undefined") {
-        window.location.href = "/login";
+        window.location.href = loginPath();
       }
       throw new Error("Unauthorized");
     }
@@ -238,7 +240,7 @@ class ApiClient {
     if (res.status === 401) {
       this.clearToken();
       if (typeof window !== "undefined") {
-        window.location.href = "/login";
+        window.location.href = loginPath();
       }
       throw new Error("Unauthorized");
     }
@@ -271,7 +273,7 @@ class ApiClient {
     if (res.status === 401) {
       this.clearToken();
       if (typeof window !== "undefined") {
-        window.location.href = "/login";
+        window.location.href = loginPath();
       }
       throw new Error("Unauthorized");
     }
