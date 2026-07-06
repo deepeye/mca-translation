@@ -55,23 +55,8 @@ export function ReviewResultPanel() {
     }
   }, []);
 
-  if (isLoading) {
-    return (
-      <div className="flex h-full items-center justify-center rounded-md border border-border bg-white">
-        <div className="text-sm text-muted-foreground">正在进行审校分析...</div>
-      </div>
-    );
-  }
-
-  if (!result) {
-    return (
-      <div className="flex h-full items-center justify-center rounded-md border border-border bg-white">
-        <div className="text-sm text-muted-foreground">在左侧输入内容并点击「开始审校」</div>
-      </div>
-    );
-  }
-
   const content = useMemo(() => {
+    if (!result) return null;
     const text = result.translated_text || "";
     if (spans.length === 0) {
       return <span className="whitespace-pre-wrap">{text}</span>;
@@ -115,6 +100,22 @@ export function ReviewResultPanel() {
 
     return parts;
   }, [result?.translated_text, spans, highlightedIndex, handleHover, handleLeave]);
+
+  if (isLoading) {
+    return (
+      <div className="flex h-full items-center justify-center rounded-md border border-border bg-white">
+        <div className="text-sm text-muted-foreground">正在进行审校分析...</div>
+      </div>
+    );
+  }
+
+  if (!result) {
+    return (
+      <div className="flex h-full items-center justify-center rounded-md border border-border bg-white">
+        <div className="text-sm text-muted-foreground">在左侧输入内容并点击「开始审校」</div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex h-full flex-col gap-3 overflow-hidden">

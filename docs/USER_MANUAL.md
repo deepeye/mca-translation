@@ -17,7 +17,7 @@
 - **管理**（仅管理员可见）：用户与积分管理。
 - **使用手册**：打开本页面。
 
-![工作台概览](./help/workspace-overview.svg)
+![工作台概览](./help/workspace-overview.png)
 
 ### 1.3 完成第一次翻译
 
@@ -63,7 +63,7 @@
 
 风险标注以高亮形式出现在译文中，悬停可查看风险类型、说明与建议操作。
 
-![风险标注](./help/risk-annotation.svg)
+![风险标注](./help/risk-annotation.png)
 
 #### 风险类型与含义
 
@@ -92,7 +92,7 @@
 
 悬停高亮片段可查看分类、风险备注、推荐译法与适配理由。
 
-![高语境术语高亮](./help/inline-highlight.svg)
+![高语境术语高亮](./help/inline-highlight.png)
 
 > 注意：LLM 识别需要选择文化圈，未选择或识别失败时会降级返回空结果。
 
@@ -109,7 +109,7 @@ risk            → 风险标注
 suggestion      → 替换建议
 ```
 
-![决策日志](./help/decision-log.svg)
+![决策日志](./help/decision-log.png)
 
 点击输出区下方的决策日志面板，可按阶段展开查看详细推理。
 
@@ -122,7 +122,7 @@ suggestion      → 替换建议
 - 点击 **加载到工作台** 将历史任务还原到工作台继续编辑。
 - 删除不再需要的任务。
 
-![历史记录](./help/history-detail.svg)
+![历史记录](./help/history-detail.png)
 
 ### 2.6 审校服务
 
@@ -144,7 +144,7 @@ suggestion      → 替换建议
 | 术语 | 术语使用是否一致、准确 |
 | 风格 | 文体、语气是否与原文匹配 |
 
-![审校评分](./help/review-scoring.svg)
+![审校评分](./help/review-scoring.png)
 
 #### 内联标注与问题卡片
 
@@ -170,7 +170,7 @@ suggestion      → 替换建议
 
 进入 **术语库** 页面，系统知识库按术语分类展示，包含政治话语、文化隐喻等高优先级词汇。
 
-![术语库](./help/glossary-page.svg)
+![术语库](./help/glossary-page.png)
 
 #### 添加 / 编辑 / 删除自定义术语
 
@@ -200,7 +200,7 @@ docker compose exec backend python scripts/seed_admin.py
 - 启用或禁用用户账号。
 - 删除用户（需谨慎，删除后不可恢复）。
 
-![管理员用户管理](./help/admin-users.svg)
+![管理员用户管理](./help/admin-users.png)
 
 ### 3.3 积分调整
 
