@@ -40,6 +40,7 @@ services:
         # 空默认 = 前端用相对路径走 nginx 同源代理；dev 在 frontend/.env.local 注入绝对地址
         NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-}
         NEXT_PUBLIC_WS_URL: ${NEXT_PUBLIC_WS_URL:-}
+        NEXT_PUBLIC_BASE_PATH: ${NEXT_PUBLIC_BASE_PATH:-}
     networks:
       - app
     environment:
