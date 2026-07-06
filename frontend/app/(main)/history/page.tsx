@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
 import { apiClient } from "@/lib/api-client";
 import { useWorkspaceStore } from "@/stores/workspace-store";
 import { useTranslationStore } from "@/stores/translation-store";
@@ -24,6 +25,7 @@ export default function HistoryPage() {
   const [detailError, setDetailError] = useState<string | null>(null);
   const selectedJobRef = useRef<string | null>(null);
 
+  const router = useRouter();
   const workspaceLoadFromHistory = useWorkspaceStore((s) => s.loadFromHistory);
   const translationLoadFromHistory = useTranslationStore((s) => s.loadFromHistory);
 
@@ -90,9 +92,9 @@ export default function HistoryPage() {
     (job: JobDetailData) => {
       workspaceLoadFromHistory(job);
       translationLoadFromHistory(job.results);
-      window.location.href = "/workspace";
+      router.push("/workspace");
     },
-    [workspaceLoadFromHistory, translationLoadFromHistory],
+    [workspaceLoadFromHistory, translationLoadFromHistory, router],
   );
 
   // Handle delete

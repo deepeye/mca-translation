@@ -56,12 +56,6 @@ export function TranslationSummary({ results }: TranslationSummaryProps) {
         const isExpanded = allExpanded || expandedLang === r.language;
         const icon = STATUS_ICONS[r.status] || "?";
         const riskCount = r.risk_annotations?.length || 0;
-        const excerpt = r.translated_text
-          ? r.translated_text.length > 120
-            ? r.translated_text.slice(0, 120) + "..."
-            : r.translated_text
-          : "";
-
         return (
           <div key={r.language} className="rounded-lg border border-border">
             <button
@@ -88,9 +82,11 @@ export function TranslationSummary({ results }: TranslationSummaryProps) {
               </div>
               <span className="text-muted-foreground">{isExpanded ? "▲" : "▼"}</span>
             </button>
-            {isExpanded && excerpt && (
-              <div className="border-t border-border px-3 py-2 text-xs text-muted-foreground">
-                {excerpt}
+            {isExpanded && r.translated_text && (
+              <div className="border-t border-border px-3 py-2">
+                <div className="max-h-60 overflow-y-auto whitespace-pre-wrap break-words text-xs leading-relaxed text-foreground/90">
+                  {r.translated_text}
+                </div>
               </div>
             )}
           </div>
