@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { apiClient } from "@/lib/api-client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { LANGUAGE_LABELS } from "@/lib/languages";
 import {
   DEFAULT_TERM_TYPE_LABEL,
@@ -566,12 +567,33 @@ export default function GlossaryPage() {
                           const count = getFilledCount(entry);
                           if (count > 0) {
                             return (
-                              <span
-                                className="ml-2 inline-flex items-center rounded-full bg-teal-100 px-2 py-0.5 text-xs font-medium text-teal-700"
-                                title={getFilledLanguageLabels(entry)}
-                              >
-                                +{count}
-                              </span>
+                              <Popover>
+                                <PopoverTrigger
+                                  render={
+                                    <span className="ml-2 inline-flex items-center rounded-full bg-teal-100 px-2 py-0.5 text-xs font-medium text-teal-700">
+                                      +{count}
+                                    </span> as React.ReactElement
+                                  }
+                                  openOnHover
+                                  delay={150}
+                                  closeDelay={150}
+                                />
+                                <PopoverContent side="bottom" align="start" sideOffset={6} className="w-64 p-3">
+                                  <p className="mb-2 text-xs font-medium text-muted-foreground">全部语种</p>
+                                  <div className="space-y-1.5">
+                                    {Object.entries(entry.translations)
+                                      .filter(([, t]) => t.preferred || t.alternatives.length > 0 || t.notes)
+                                      .map(([code, t]) => (
+                                        <div key={code} className="flex items-baseline gap-2 text-xs">
+                                          <span className="w-16 shrink-0 text-muted-foreground">
+                                            {LANGUAGE_LABELS[code] || code}
+                                          </span>
+                                          <span className="font-medium">{t.preferred || "—"}</span>
+                                        </div>
+                                      ))}
+                                  </div>
+                                </PopoverContent>
+                              </Popover>
                             );
                           }
                           return null;
@@ -632,6 +654,7 @@ export default function GlossaryPage() {
               共 {systemEntries.length} 条
             </span>
           </h2>
+          <p className="text-xs text-muted-foreground">系统最多显示50条，需要更多请联系管理员。</p>
         </div>
         {systemEntries.length === 0 ? (
           <p className="text-sm text-muted-foreground">系统知识库为空</p>
