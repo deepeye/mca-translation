@@ -20,7 +20,7 @@ export default async function HelpPage() {
           <ArrowLeft className="h-4 w-4" />
           返回工作台
         </Link>
-        <h1 className="text-base font-semibold text-foreground">CulturalBridge 用户手册</h1>
+        <h1 className="text-base font-semibold text-foreground">CulturalBridge 使用手册</h1>
       </div>
       <div className="flex">
         <aside className="sticky top-0 h-fit max-h-screen w-64 shrink-0 overflow-y-auto border-r border-border bg-card p-4">
