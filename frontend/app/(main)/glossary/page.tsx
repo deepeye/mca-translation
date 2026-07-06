@@ -35,7 +35,6 @@ interface EntryForm {
 }
 
 const USER_PAGE_SIZE = 10;
-const SHOW_SYSTEM_CATEGORIES_KEY = "glossary:showSystemCategories";
 
 export default function GlossaryPage() {
   const [systemEntries, setSystemEntries] = useState<GlossaryEntry[]>([]);
@@ -72,20 +71,6 @@ export default function GlossaryPage() {
   // User entries pagination
   const [userOffset, setUserOffset] = useState(0);
   const [hasMoreUser, setHasMoreUser] = useState(false);
-
-  // 系统知识库分类标签显示开关(默认隐藏 → 扁平列表)
-  const [showCategories, setShowCategories] = useState(false);
-
-  // 挂载时读取持久化的开关偏好(localStorage 不可用时静默回落到默认隐藏)
-  useEffect(() => {
-    try {
-      if (localStorage.getItem(SHOW_SYSTEM_CATEGORIES_KEY) === "true") {
-        setShowCategories(true);
-      }
-    } catch {
-      // localStorage 不可用时保持默认隐藏
-    }
-  }, []);
 
   async function loadEntries() {
     setLoading(true);
@@ -325,28 +310,10 @@ export default function GlossaryPage() {
     return (aIndex === -1 ? Number.MAX_SAFE_INTEGER : aIndex) - (bIndex === -1 ? Number.MAX_SAFE_INTEGER : bIndex);
   });
 
-  // 切换系统知识库分类标签的显示,并持久化到 localStorage
-  function toggleCategories() {
-    setShowCategories((v) => {
-      const next = !v;
-      try {
-        localStorage.setItem(SHOW_SYSTEM_CATEGORIES_KEY, String(next));
-      } catch {
-        // 写入失败时仅影响当前会话
-      }
-      return next;
-    });
-  }
-
-  function renderSystemEntryCard(entry: GlossaryEntry, showBadge: boolean) {
+  function renderSystemEntryCard(entry: GlossaryEntry) {
     return (
       <div key={entry.id} className="rounded border border-border p-3">
         <span className="font-medium">{entry.source_term}</span>
-        {showBadge && (
-          <span className="ml-2 rounded bg-muted px-1.5 py-0.5 text-xs text-muted-foreground">
-            {SYSTEM_GLOSSARY_TERM_TYPE_LABELS[entry.term_type] || DEFAULT_TERM_TYPE_LABEL}
-          </span>
-        )}
         {(() => {
           const pref = getPreferredTranslation(entry);
           if (pref) {
@@ -658,33 +625,20 @@ export default function GlossaryPage() {
 
       {/* ---- System glossary ---- */}
       <div>
-        <div className="mb-4 flex items-center justify-between">
-          <h2 className="text-lg font-semibold">系统知识库</h2>
-          {systemEntries.length > 0 && (
-            <Button variant="outline" size="sm" onClick={toggleCategories}>
-              {showCategories ? "隐藏分类" : "显示分类"}
-            </Button>
-          )}
+        <div className="mb-4">
+          <h2 className="text-lg font-semibold">
+            系统知识库
+            <span className="ml-2 text-sm font-normal text-muted-foreground">
+              共 {systemEntries.length} 条
+            </span>
+          </h2>
         </div>
         {systemEntries.length === 0 ? (
           <p className="text-sm text-muted-foreground">系统知识库为空</p>
-        ) : showCategories ? (
-          <div className="space-y-6">
-            {groupedSystemEntries.map(([termType, entries]) => (
-              <section key={termType}>
-                <h3 className="mb-3 text-base font-semibold text-teal-800">
-                  {SYSTEM_GLOSSARY_TERM_TYPE_LABELS[termType] || DEFAULT_TERM_TYPE_LABEL}
-                </h3>
-                <div className="space-y-2">
-                  {entries.map((entry) => renderSystemEntryCard(entry, true))}
-                </div>
-              </section>
-            ))}
-          </div>
         ) : (
           <div className="space-y-2">
             {groupedSystemEntries.flatMap(([, entries]) =>
-              entries.map((entry) => renderSystemEntryCard(entry, false)),
+              entries.map((entry) => renderSystemEntryCard(entry)),
             )}
           </div>
         )}
