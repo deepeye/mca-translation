@@ -37,3 +37,10 @@ def test_audience_type_guidelines_cover_all_keys():
     assert set(SUPPORTED_AUDIENCE_TYPES) == expected
     for key, value in AUDIENCE_TYPE_GUIDELINES.items():
         assert isinstance(value, str) and len(value.strip()) >= 20, key
+
+
+def test_western_english_profile_avoids_over_adaptive_language():
+    """欧美英语圈画像不应包含可能诱导模型过度特指翻译的强指令词汇。"""
+    profile = CULTURAL_SPHERE_PROFILES["western_english"]
+    assert "天然警惕" not in profile
+    assert "通常需要更多具体语境才能接受" in profile
