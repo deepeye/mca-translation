@@ -25,6 +25,7 @@ interface GlossaryState {
   culturalAnalysisState: CulturalAnalysisState;
   setCulturalTerms: (terms: CulturalTermResult[]) => void;
   setCulturalAnalysisState: (s: CulturalAnalysisState) => void;
+  clearHighlights: () => void;
 }
 
 export const useGlossaryStore = create<GlossaryState>((set) => ({
@@ -40,4 +41,12 @@ export const useGlossaryStore = create<GlossaryState>((set) => ({
   setCulturalTerms: (culturalTerms) => set({ culturalTerms }),
   setCulturalAnalysisState: (culturalAnalysisState) =>
     set({ culturalAnalysisState }),
+  // 丢弃已识别结果，回到 idle —— 重新高亮需再次手动分析
+  clearHighlights: () =>
+    set({
+      detectedTerms: [],
+      culturalTerms: [],
+      culturalAnalysisState: "idle",
+      hoveredTerm: null,
+    }),
 }));
