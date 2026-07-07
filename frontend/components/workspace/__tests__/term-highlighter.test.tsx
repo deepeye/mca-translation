@@ -51,6 +51,7 @@ describe("TermHighlighter", () => {
   beforeEach(() => {
     glossaryState.detectedTerms = [];
     glossaryState.hoveredTerm = null;
+    glossaryState.listeners.clear();
     workspaceState.activeLanguage = "en-GB";
   });
 
