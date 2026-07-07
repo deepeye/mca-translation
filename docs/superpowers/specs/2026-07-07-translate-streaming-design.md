@@ -141,9 +141,9 @@ output = await pipeline.translate(
 
 ### 4. `frontend/components/workspace/translation-result.tsx`
 
-无功能改动（`streaming` + 有 text 时已渲染 `content`）。增加 streaming 光标润色：当 `result.status === "streaming"` 且 `result.translatedText` 非空时，在渲染文本末尾追加一个 `▍` 闪烁光标（CSS 劥画），提示正在生成。
+无功能改动（`streaming` + 有 text 时已渲染 `content`）。增加 streaming 光标润色：当 `result.status === "streaming"` 且 `result.translatedText` 非空时，在渲染文本末尾追加一个 `▍` 闪烁光标，提示正在生成。
 
-实现：在 `content` useMemo 内，`streaming` 且有文本时，于现有 `<span>{result.translatedText}</span>`（无 risk spans 分支）末尾追加 `<span className="streaming-cursor">▍</span>`；有 risk spans 分支同理在末尾 parts 追加。`streaming-cursor` 用 Tailwind animate-pulse 或自定义 blink 动画。
+实现：流式期间 `riskAnnotations` 为空（risk 尚未跑），`locateRisks` 返回空 spans，故 `content` useMemo 走 `if spans.length === 0` 分支返回 `<span>{result.translatedText}</span>`。在该分支内，当 `result.status === "streaming"` 时改为返回 `<span>{result.translatedText}<span className="animate-pulse">▍</span></span>`。`completed` 状态走 spans 分支（有 risk 标注），不加光标。用 Tailwind `animate-pulse` 实现闪烁。
 
 ### 5. 其它
 
