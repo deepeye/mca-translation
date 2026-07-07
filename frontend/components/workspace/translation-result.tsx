@@ -79,6 +79,14 @@ export function TranslationResult({ language }: { language: string }) {
       return <span>正在生成...</span>;
     }
     if (spans.length === 0) {
+      if (result.status === "streaming") {
+        return (
+          <span>
+            {result.translatedText}
+            <span className="animate-pulse">▍</span>
+          </span>
+        );
+      }
       return <span>{result.translatedText}</span>;
     }
 
