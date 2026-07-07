@@ -1,6 +1,7 @@
 import json
 import logging
 import uuid
+from collections.abc import Awaitable, Callable
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -106,6 +107,7 @@ class TranslationPipeline:
         db: AsyncSession | None = None,
         user_id: uuid.UUID | None = None,
         cultural_constraints: object = _CULTURAL_CONSTRAINTS_NOT_PROVIDED,
+        on_chunk: Callable[[str], Awaitable[None]] | None = None,
     ) -> dict:
         """Run the pipeline. Returns {translated_text, risk_annotations,
         cultural_adaptation, acceptance_score, decision_entries}.
@@ -197,6 +199,7 @@ class TranslationPipeline:
             cultural_sphere=cultural_sphere,
             audience_type=audience_type,
             glossary_block=glossary_block,
+            on_chunk=on_chunk,
         )
 
         # 决策提取：翻译阶段 — 记录注入 prompt 的文化约束（high/medium）
@@ -251,6 +254,7 @@ class TranslationPipeline:
         cultural_sphere: str | None = None,
         audience_type: str | None = None,
         glossary_block: str = "",
+        on_chunk: Callable[[str], Awaitable[None]] | None = None,
     ) -> str:
         system_prompt = build_translation_system_prompt(
             target_language=target_language,
@@ -266,8 +270,13 @@ class TranslationPipeline:
             {"role": "system", "content": system_prompt},
             {"role": "user", "content": source_text},
         ]
-        result = await bailian_client.chat(model="qwen-max", messages=messages)
-        return result["content"]
+        # 流式累积：qwen-max 边生成边回调部分译文
+        accumulated = ""
+        async for chunk in bailian_client.chat_stream(model="qwen-max", messages=messages):
+            accumulated += chunk
+            if on_chunk:
+                await on_chunk(accumulated)
+        return accumulated
 
     def _format_rag_glossary_block(self, terms: list[dict], language: str, strategy: str) -> str:
         if not terms:
@@ -326,23 +335,6 @@ class TranslationPipeline:
         except (json.JSONDecodeError, KeyError) as e:
             logger.warning(f"Risk annotation parsing failed: {e}")
             return []
-
-    async def translate_stream(self, source_text: str, genre: str, strategy: str, target_language: str):
-        """Stream main translation. Yields text chunks.
-
-        Note: Stream path intentionally does not inject glossary terms or cultural
-        constraints to keep latency low. If full adaptation is needed, use translate().
-        """
-        strategy_desc = STRATEGY_DESCRIPTIONS.get(strategy, STRATEGY_DESCRIPTIONS["semantic_equivalence"])
-        system_prompt = TRANSLATION_SYSTEM_PROMPT.format(
-            target_language=language_descriptor(target_language), genre=genre, strategy_description=strategy_desc
-        )
-        messages = [
-            {"role": "system", "content": system_prompt},
-            {"role": "user", "content": source_text},
-        ]
-        async for chunk in bailian_client.chat_stream(model="qwen-max", messages=messages):
-            yield chunk
 
 
 pipeline = TranslationPipeline()

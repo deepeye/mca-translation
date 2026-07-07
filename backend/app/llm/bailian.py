@@ -43,7 +43,7 @@ class BailianClient:
             "temperature": temperature,
             "stream": True,
         }
-        async with httpx.AsyncClient(timeout=120.0) as client:
+        async with httpx.AsyncClient(timeout=180.0) as client:
             async with client.stream("POST", f"{self.base_url}/chat/completions", json=payload, headers=headers) as resp:
                 resp.raise_for_status()
                 async for line in resp.aiter_lines():
