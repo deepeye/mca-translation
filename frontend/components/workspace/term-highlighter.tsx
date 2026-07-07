@@ -1,9 +1,7 @@
 "use client";
 
-import { useEffect, useRef, useCallback } from "react";
 import { useGlossaryStore } from "@/stores/glossary-store";
 import { useWorkspaceStore } from "@/stores/workspace-store";
-import { apiClient } from "@/lib/api-client";
 import { LANGUAGE_LABELS } from "@/lib/languages";
 import {
   DEFAULT_TERM_TYPE_BADGE_CLASS,
@@ -13,45 +11,14 @@ import {
 } from "@/lib/glossary-categories";
 
 interface TermHighlighterProps {
-  text: string;
   containerClassName?: string;
 }
 
-export function TermHighlighter({ text, containerClassName = "" }: TermHighlighterProps) {
+export function TermHighlighter({ containerClassName = "" }: TermHighlighterProps) {
   const detectedTerms = useGlossaryStore((s) => s.detectedTerms);
-  const setDetectedTerms = useGlossaryStore((s) => s.setDetectedTerms);
-  const setIsLoading = useGlossaryStore((s) => s.setIsLoading);
   const hoveredTerm = useGlossaryStore((s) => s.hoveredTerm);
   const setHoveredTerm = useGlossaryStore((s) => s.setHoveredTerm);
   const activeLang = useWorkspaceStore((s) => s.activeLanguage);
-  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  const detect = useCallback(
-    async (value: string) => {
-      if (!value.trim()) {
-        setDetectedTerms([]);
-        return;
-      }
-      setIsLoading(true);
-      try {
-        const data = await apiClient.detectTerms(value);
-        setDetectedTerms(data.terms || []);
-      } catch {
-        setDetectedTerms([]);
-      } finally {
-        setIsLoading(false);
-      }
-    },
-    [setDetectedTerms, setIsLoading]
-  );
-
-  useEffect(() => {
-    if (timeoutRef.current) clearTimeout(timeoutRef.current);
-    timeoutRef.current = setTimeout(() => detect(text), 800);
-    return () => {
-      if (timeoutRef.current) clearTimeout(timeoutRef.current);
-    };
-  }, [text, detect]);
 
   if (detectedTerms.length === 0) return null;
 
