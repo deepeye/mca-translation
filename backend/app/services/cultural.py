@@ -25,6 +25,10 @@ from app.schemas.job import CulturalPreprocessResult
 
 logger = logging.getLogger(__name__)
 
+# 中性通用政治/社会词汇：不应被 cultural_preprocess 识别为文化负载词，
+# 否则模型会把普通词过译为特定国家/政府的特指表达。
+_PROTECTED_NEUTRAL_TERMS: frozenset[str] = frozenset({"国家", "政府", "人民"})
+
 
 class _LLMClient(Protocol):
     async def chat(self, *, model: str, messages: list, temperature: float = ...) -> dict[str, Any]: ...
@@ -90,7 +94,25 @@ async def cultural_preprocess(
         return None
 
     try:
-        return CulturalPreprocessResult(**data)
+        result = CulturalPreprocessResult(**data)
     except ValidationError as e:
         logger.warning("cultural_preprocess schema validation failed: %s", e)
         return None
+
+    # 过滤中性通用词：这些词不应被识别为文化负载词。
+    filtered_terms = [
+        t for t in result.culture_loaded_terms
+        if t.term not in _PROTECTED_NEUTRAL_TERMS
+    ]
+    if len(filtered_terms) != len(result.culture_loaded_terms):
+        logger.debug(
+            "cultural_preprocess filtered protected neutral terms: %s",
+            [t.term for t in result.culture_loaded_terms if t.term in _PROTECTED_NEUTRAL_TERMS],
+        )
+        result = CulturalPreprocessResult(
+            culture_loaded_terms=filtered_terms,
+            cultural_notes=result.cultural_notes,
+            taboo_warnings=result.taboo_warnings,
+        )
+
+    return result

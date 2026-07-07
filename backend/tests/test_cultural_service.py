@@ -120,6 +120,70 @@ async def test_returns_none_on_llm_exception():
 
 
 @pytest.mark.asyncio
+async def test_filters_protected_neutral_terms():
+    """普通政治通用词（如“国家”）不应被识别为文化负载词。"""
+    payload = """{
+      "culture_loaded_terms": [
+        {
+          "term": "国家",
+          "culture_gap": "high",
+          "adaptation_strategy": "reconstruction",
+          "suggested_rendering": "the U.S. government and its agencies",
+          "reason": "test"
+        }
+      ],
+      "cultural_notes": [],
+      "taboo_warnings": []
+    }"""
+    client = FakeClient(payload)
+    result = await cultural_preprocess(
+        text="国家",
+        cultural_sphere="western_english",
+        audience_type="general_public",
+        genre="political",
+        llm_client=client,
+    )
+    assert isinstance(result, CulturalPreprocessResult)
+    assert result.culture_loaded_terms == []
+
+
+@pytest.mark.asyncio
+async def test_keeps_non_protected_terms_beside_protected_ones():
+    """保护列表只过滤通用词，真正的文化负载词应保留。"""
+    payload = """{
+      "culture_loaded_terms": [
+        {
+          "term": "国家",
+          "culture_gap": "high",
+          "adaptation_strategy": "reconstruction",
+          "suggested_rendering": "the U.S. government",
+          "reason": "test"
+        },
+        {
+          "term": "共同富裕",
+          "culture_gap": "high",
+          "adaptation_strategy": "explanatory",
+          "suggested_rendering": "common prosperity",
+          "reason": "test"
+        }
+      ],
+      "cultural_notes": [],
+      "taboo_warnings": []
+    }"""
+    client = FakeClient(payload)
+    result = await cultural_preprocess(
+        text="国家推动共同富裕。",
+        cultural_sphere="western_english",
+        audience_type="general_public",
+        genre="political",
+        llm_client=client,
+    )
+    assert isinstance(result, CulturalPreprocessResult)
+    assert len(result.culture_loaded_terms) == 1
+    assert result.culture_loaded_terms[0].term == "共同富裕"
+
+
+@pytest.mark.asyncio
 async def test_returns_none_on_unknown_audience_type():
     client = FakeClient('{"culture_loaded_terms": [], "cultural_notes": [], "taboo_warnings": []}')
     result = await cultural_preprocess(
