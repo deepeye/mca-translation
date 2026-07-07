@@ -22,12 +22,15 @@ export function TextEditor() {
     (s) => s.setCulturalAnalysisState,
   );
 
+  // 文本变更后，若已分析则置 stale（提示用户重新分析）。
+  // 用 ref 读取最新状态，避免把 state 放入 deps 导致刚 analyzed 即被置 stale。
   const stateRef = useRef(culturalAnalysisState);
   stateRef.current = culturalAnalysisState;
   useEffect(() => {
     if (stateRef.current === "analyzed") setCulturalAnalysisState("stale");
   }, [text, setCulturalAnalysisState]);
 
+  // 串行调用术语库检测与文化负载词检测，任一接口失败独立降级。
   const analyze = async () => {
     setCulturalAnalysisState("loading");
 
