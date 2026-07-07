@@ -1,5 +1,6 @@
 import asyncio
 import logging
+import time
 import uuid
 
 from app.celery_app import celery_app
@@ -13,6 +14,26 @@ from app.services.translation import pipeline
 from app.services.credits import credits_service, DeductResult
 
 logger = logging.getLogger(__name__)
+
+# 流式部分译文落库节流间隔（秒）；前端 2s 轮询，每周期约 1-2 次更新
+STREAM_WRITE_INTERVAL = 1.0
+
+
+def make_chunk_writer(tr, db, interval: float = STREAM_WRITE_INTERVAL):
+    """构造节流回调：每 interval 秒把部分译文写库，状态保持 streaming。
+
+    首个 chunk 立即写（last 初值 0.0，now-0 恒 >= interval）。
+    """
+    last = {"t": 0.0}
+
+    async def on_chunk(accumulated: str):
+        now = time.monotonic()
+        if now - last["t"] >= interval:
+            tr.translated_text = accumulated
+            await db.commit()
+            last["t"] = now
+
+    return on_chunk
 
 
 def _get_async_session():
@@ -98,6 +119,7 @@ async def _run_translation(job_id: str):
                         await db.commit()
                         continue
 
+                    on_chunk = make_chunk_writer(tr, db)
                     output = await pipeline.translate(
                         source_text=job.source_text,
                         genre=job.genre,
@@ -108,6 +130,7 @@ async def _run_translation(job_id: str):
                         cultural_constraints=cultural_constraints,
                         db=db,
                         user_id=job.user_id,
+                        on_chunk=on_chunk,
                     )
                     tr.translated_text = output["translated_text"]
                     tr.risk_annotations = output["risk_annotations"]
@@ -151,6 +174,7 @@ async def _run_translation(job_id: str):
                     )
                     tr = tr_result.scalar_one_or_none()
                     if tr:
+                        tr.translated_text = None
                         tr.status = "failed"
                         await db.commit()
                         # 翻译失败：退还该语言已扣的信用分（幂等，无扣款时为 no-op）
