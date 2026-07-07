@@ -21,6 +21,7 @@ export function TextEditor() {
   const setCulturalAnalysisState = useGlossaryStore(
     (s) => s.setCulturalAnalysisState,
   );
+  const clearHighlights = useGlossaryStore((s) => s.clearHighlights);
 
   // 文本变更后，若已分析则置 stale（提示用户重新分析）。
   // 用 ref 读取最新状态，避免把 state 放入 deps 导致刚 analyzed 即被置 stale。
@@ -69,6 +70,12 @@ export function TextEditor() {
   const buttonDisabled =
     !text.trim() || tooLong || culturalAnalysisState === "loading";
 
+  // 清除高亮：仅在 analyzed/stale 且有结果时可用；loading 或无结果时禁用
+  const clearDisabled =
+    culturalAnalysisState === "loading" ||
+    culturalAnalysisState === "idle" ||
+    (detectedTerms.length + culturalTerms.length === 0);
+
   const buttonLabel = (() => {
     switch (culturalAnalysisState) {
       case "loading":
@@ -95,6 +102,15 @@ export function TextEditor() {
           className="rounded-md border border-border bg-white px-2.5 py-1 text-xs font-medium text-foreground transition-colors hover:bg-muted disabled:cursor-not-allowed disabled:opacity-50"
         >
           {buttonLabel}
+        </button>
+        <button
+          type="button"
+          onClick={clearHighlights}
+          disabled={clearDisabled}
+          title="清除已识别的术语与文化负载词高亮"
+          className="rounded-md border border-border bg-white px-2.5 py-1 text-xs font-medium text-foreground transition-colors hover:bg-muted disabled:cursor-not-allowed disabled:opacity-50"
+        >
+          清除高亮
         </button>
       </div>
 
