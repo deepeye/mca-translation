@@ -134,7 +134,11 @@ export function TranslationResult({ language }: { language: string }) {
     return <div className="flex h-full items-center justify-center text-sm text-muted-foreground">等待转译...</div>;
   }
   if (result.status === "failed") {
-    return <div className="flex h-full items-center justify-center text-sm text-danger">转译失败，请重试</div>;
+    return (
+      <div className="flex h-full items-center justify-center text-sm text-danger">
+        {result.errorMessage || "转译失败，请重试"}
+      </div>
+    );
   }
 
   return (

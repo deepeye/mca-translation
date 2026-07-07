@@ -55,6 +55,7 @@ interface LangResult {
   firstScoringAttempted?: boolean;  // 首次评分是否已尝试（成功或失败均置 true，防止失败后 effect 死循环）
   highlightedIndex: number | null;
   culturalAdaptation: CulturalAdaptation | null;
+  errorMessage?: string;      // 失败时的错误提示
 }
 
 // 把 AcceptanceScorePayload 合并进现有 LangResult（成功路径复用，避免 3 处重复）

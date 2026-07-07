@@ -59,8 +59,13 @@ export function InputPanel() {
       pollJobStatus(data.id);
     } catch (err) {
       console.error("Translation failed:", err);
-      if (err instanceof Error && err.message.includes("INSUFFICIENT_CREDITS")) {
+      const isCreditError = err instanceof Error && err.message.includes("INSUFFICIENT_CREDITS");
+      if (isCreditError) {
         useCreditsStore.getState().fetchBalance();
+      }
+      const errorMessage = isCreditError ? "余额不足，请联系管理员充值" : undefined;
+      for (const lang of store.languages) {
+        setResult(lang, { status: "failed", errorMessage });
       }
       store.setIsTranslating(false);
     }
