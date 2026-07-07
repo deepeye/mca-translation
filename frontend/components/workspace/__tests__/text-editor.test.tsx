@@ -180,6 +180,11 @@ describe("TextEditor clear highlights", () => {
     rerender(<TextEditor />);
     expect(screen.getByRole("button", { name: "清除高亮" })).toBeEnabled();
 
+    // stale 且有结果 → 仍可用（文本变更后高亮保留，可清除）
+    glossaryState.culturalAnalysisState = "stale";
+    rerender(<TextEditor />);
+    expect(screen.getByRole("button", { name: "清除高亮" })).toBeEnabled();
+
     // loading（即使有结果）→ disabled
     glossaryState.culturalAnalysisState = "loading";
     rerender(<TextEditor />);
