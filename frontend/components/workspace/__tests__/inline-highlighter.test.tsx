@@ -201,4 +201,35 @@ describe("InlineHighlighter", () => {
     expect(screen.getByText(/BRI/)).toBeInTheDocument();
     workspaceState.activeLanguage = "en-GB";
   });
+
+  it("glossary 与 cultural 同时存在时各自渲染 mark", () => {
+    setText("一带一路与构建人类命运共同体");
+    setGlossary([
+      {
+        source_term: "一带一路",
+        term_type: "political_discourse",
+        risk_notes: "高风险",
+        translations: {
+          "en-GB": { preferred: "BRI", notes: "", alternatives: [] },
+        },
+      },
+    ]);
+    setCultural([
+      {
+        term: "人类命运共同体",
+        offset: 7,
+        length: 7,
+        culture_gap: "high",
+        adaptation_strategy: "explanatory",
+        suggested_rendering: "a community with a shared future for mankind",
+        reason: "政治话语",
+        term_type: "cultural_metaphor",
+      },
+    ]);
+    const { container } = render(<InlineHighlighter />);
+    const marks = container.querySelectorAll("mark");
+    expect(marks.length).toBe(2);
+    expect(marks[0].textContent).toBe("一带一路");
+    expect(marks[1].textContent).toBe("人类命运共同体");
+  });
 });
