@@ -299,7 +299,7 @@ git commit -m "feat(frontend): unify manual input-area term and cultural detecti
     setCultural([
       {
         term: "人类命运共同体",
-        offset: 6,
+        offset: 7,
         length: 7,
         culture_gap: "high",
         adaptation_strategy: "explanatory",
