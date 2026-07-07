@@ -78,6 +78,12 @@ def build_translation_system_prompt(
         if taboos:
             parts.append("[禁忌提醒]")
             parts.extend(f"- {t}" for t in taboos)
+        if strategy == "semantic_equivalence":
+            parts.append(
+                "[翻译策略约束]\n"
+                "当前为信息等值模式：普通政治/国家类通用词汇（如“国家”“政府”“人民”）应保持中性译法，"
+                "仅在原文明确指向特定国家、政府或机构时才具体化。"
+            )
         parts.append("</cultural_constraints>")
 
         cultural_block = "\n".join(parts)
