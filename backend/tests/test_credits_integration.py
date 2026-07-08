@@ -125,12 +125,12 @@ async def test_insufficient_balance_marks_partial(db: AsyncSession):
     await db.refresh(user)
     assert user.credit_balance == 1  # 仅第一门语言扣 2 字符
 
+    # 并发下哪门语言 INSUFFICIENT 不确定（FOR UPDATE 先到先得），仅断言计数
     results = (await db.execute(
         select(TranslationResult).where(TranslationResult.job_id == job.id)
     )).scalars().all()
-    by_lang = {r.language: r for r in results}
-    assert by_lang["en-GB"].status == "completed"
-    assert by_lang["ja-JP"].status == "failed"
+    statuses = sorted(r.status for r in results)
+    assert statuses == ["completed", "failed"]  # 恰好一成功一失败
 
     await db.refresh(job)
     assert job.status == "partial"

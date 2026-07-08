@@ -3,6 +3,7 @@ import logging
 import time
 import uuid
 
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.celery_app import celery_app
@@ -47,7 +48,12 @@ def _get_async_session():
     """
     from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine, AsyncSession
 
-    engine = create_async_engine(settings.DATABASE_URL, echo=False)
+    engine = create_async_engine(
+        settings.DATABASE_URL,
+        echo=False,
+        pool_size=settings.MAX_CONCURRENT_LANGS + 2,
+        max_overflow=4,
+    )
     session_factory = async_sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
     return session_factory, engine
 
@@ -60,26 +66,20 @@ def run_translation(self, job_id: str):
 
 async def _run_translation(job_id: str):
     session_factory, engine = _get_async_session()
+    # semaphore 必须在事件循环内创建（避免模块级跨 loop 绑定）
+    sem = asyncio.Semaphore(settings.MAX_CONCURRENT_LANGS)
     try:
+        # ---- preamble：取 job / 置 processing / preprocess（共享）----
         async with session_factory() as db:
-            from sqlalchemy import select
-
-            result = await db.execute(select(TranslationJob).where(TranslationJob.id == uuid.UUID(job_id)))
-            job = result.scalar_one_or_none()
+            job = (await db.execute(
+                select(TranslationJob).where(TranslationJob.id == uuid.UUID(job_id))
+            )).scalar_one_or_none()
             if job is None:
                 logger.error(f"Job {job_id} not found")
                 return
-
             job.status = "processing"
             await db.commit()
 
-            all_completed = True
-
-            # Cultural preprocessing is language-agnostic (the preprocess prompt
-            # takes sphere+audience+genre, no target language), so run it once per
-            # job and reuse the result across all target languages.
-            # 余额预检:不足以覆盖总成本(len(source) × 语言数)时跳过 cultural_preprocess(LLM),
-            # 避免余额不足仍消耗 LLM 调用。逐语言预检(下方 line 91)仍会标记各语言 failed。
             user_row = (await db.execute(select(User).where(User.id == job.user_id))).scalar_one()
             total_cost = len(job.source_text) * len(job.target_languages)
             cultural_constraints = None
@@ -91,103 +91,120 @@ async def _run_translation(job_id: str):
                     genre=job.genre,
                     llm_client=bailian_client,
                 )
+            # 捕获原语（job 对象 session 关闭后 detach）
+            source_text = job.source_text
+            target_languages = list(job.target_languages)
+            user_id = job.user_id
+            genre = job.genre
+            strategy = job.strategy
+            cultural_sphere = job.cultural_sphere
+            audience_type = job.audience_type
 
-            for lang in job.target_languages:
-                try:
-                    tr_result = await db.execute(
-                        select(TranslationResult).where(
-                            TranslationResult.job_id == job.id,
-                            TranslationResult.language == lang,
-                        )
-                    )
-                    tr = tr_result.scalar_one_or_none()
-                    if tr is None:
-                        tr = TranslationResult(job_id=job.id, language=lang, status="streaming")
-                        db.add(tr)
-                        await db.commit()
-                        await db.refresh(tr)
-                    else:
-                        tr.status = "streaming"
-                        await db.commit()
-
-                    # 余额预检：在调用 LLM 前检查是否足够
-                    cost = len(job.source_text)
-                    user_row = (
-                        await db.execute(select(User).where(User.id == job.user_id))
-                    ).scalar_one()
-                    if user_row.credit_balance < cost:
-                        tr.status = "failed"
-                        all_completed = False
-                        await db.commit()
-                        continue
-
-                    on_chunk = make_chunk_writer(tr, db)
-                    output = await pipeline.translate(
-                        source_text=job.source_text,
-                        genre=job.genre,
-                        strategy=job.strategy,
-                        target_language=lang,
-                        cultural_sphere=job.cultural_sphere,
-                        audience_type=job.audience_type,
-                        cultural_constraints=cultural_constraints,
-                        db=db,
-                        user_id=job.user_id,
-                        on_chunk=on_chunk,
-                    )
-                    tr.translated_text = output["translated_text"]
-                    tr.risk_annotations = output["risk_annotations"]
-                    tr.cultural_adaptation = output["cultural_adaptation"]
-                    tr.acceptance_score = output["acceptance_score"]
-                    tr.status = "completed"
-
-                    # 持久化决策日志 — 尽力而为，失败不阻断翻译流程
-                    decision_entries = output.get("decision_entries") or []
-                    if decision_entries:
-                        try:
-                            log_ids = await save_decision_logs(
-                                db, job_id=job.id, result_id=tr.id, entries=decision_entries
+        # ---- 每语言协程 ----
+        async def run_one_lang(lang: str) -> bool:
+            async with sem:
+                async with session_factory() as db:
+                    try:
+                        tr = (await db.execute(
+                            select(TranslationResult).where(
+                                TranslationResult.job_id == uuid.UUID(job_id),
+                                TranslationResult.language == lang,
                             )
-                            tr.decision_log_ids = log_ids
-                        except Exception as e:
-                            logger.warning(f"Decision log save failed for job {job.id} lang {lang}: {e}")
+                        )).scalar_one_or_none()
+                        if tr is None:
+                            tr = TranslationResult(job_id=uuid.UUID(job_id), language=lang, status="streaming")
+                            db.add(tr)
+                            await db.commit()
+                            await db.refresh(tr)
+                        else:
+                            tr.status = "streaming"
+                            await db.commit()
 
-                    # 翻译成功：扣除信用分（1 字符 = 1 信用分）
-                    deduct_res, _ = await credits_service.deduct_for_translation(
-                        db, job.user_id, job.source_text, lang, job.id
-                    )
-                    if deduct_res is DeductResult.INSUFFICIENT:
-                        # 余额不足：标记失败，不扣款，并确保最终 job 状态为 partial
-                        tr.status = "failed"
-                        tr.translated_text = None
-                        all_completed = False
-                        await db.commit()
-                        continue
+                        # 余额预检
+                        user_row = (await db.execute(select(User).where(User.id == user_id))).scalar_one()
+                        cost = len(source_text)
+                        if user_row.credit_balance < cost:
+                            tr.status = "failed"
+                            await db.commit()
+                            return False
 
-                    await db.commit()
-
-                except Exception as e:
-                    logger.error(f"Translation failed for job {job_id} lang {lang}: {e}")
-                    all_completed = False
-                    tr_result = await db.execute(
-                        select(TranslationResult).where(
-                            TranslationResult.job_id == job.id,
-                            TranslationResult.language == lang,
+                        on_chunk = make_chunk_writer(tr, db)
+                        output = await pipeline.translate(
+                            source_text=source_text,
+                            genre=genre,
+                            strategy=strategy,
+                            target_language=lang,
+                            cultural_sphere=cultural_sphere,
+                            audience_type=audience_type,
+                            cultural_constraints=cultural_constraints,
+                            db=db,
+                            user_id=user_id,
+                            on_chunk=on_chunk,
                         )
-                    )
-                    tr = tr_result.scalar_one_or_none()
-                    if tr:
-                        tr.translated_text = None
-                        tr.status = "failed"
-                        await db.commit()
-                        # 翻译失败：退还该语言已扣的信用分（幂等，无扣款时为 no-op）
-                        try:
-                            await credits_service.refund_for_translation(
-                                db, job.user_id, job.source_text, lang, job.id
-                            )
-                        except Exception as refund_err:
-                            logger.warning(f"Refund failed for job {job.id} lang {lang}: {refund_err}")
+                        tr.translated_text = output["translated_text"]
+                        tr.risk_annotations = output["risk_annotations"]
+                        tr.cultural_adaptation = output["cultural_adaptation"]
+                        tr.acceptance_score = output["acceptance_score"]
+                        tr.status = "completed"
 
-            job.status = "completed" if all_completed else "partial"
-            await db.commit()
+                        # 决策日志 — 尽力而为，失败不阻断
+                        decision_entries = output.get("decision_entries") or []
+                        if decision_entries:
+                            try:
+                                log_ids = await save_decision_logs(
+                                    db, job_id=uuid.UUID(job_id), result_id=tr.id, entries=decision_entries,
+                                )
+                                tr.decision_log_ids = log_ids
+                            except Exception as e:
+                                logger.warning(f"Decision log save failed for job {job_id} lang {lang}: {e}")
+
+                        # 扣分（FOR UPDATE 原子）
+                        deduct_res, _ = await credits_service.deduct_for_translation(
+                            db, user_id, source_text, lang, uuid.UUID(job_id),
+                        )
+                        if deduct_res is DeductResult.INSUFFICIENT:
+                            tr.status = "failed"
+                            tr.translated_text = None
+                            await db.commit()
+                            return False
+
+                        await db.commit()
+                        return True
+
+                    except Exception as e:
+                        logger.error(f"Translation failed for job {job_id} lang {lang}: {e}")
+                        tr = (await db.execute(
+                            select(TranslationResult).where(
+                                TranslationResult.job_id == uuid.UUID(job_id),
+                                TranslationResult.language == lang,
+                            )
+                        )).scalar_one_or_none()
+                        if tr:
+                            tr.translated_text = None
+                            tr.status = "failed"
+                            await db.commit()
+                            try:
+                                await credits_service.refund_for_translation(
+                                    db, user_id, source_text, lang, uuid.UUID(job_id),
+                                )
+                            except Exception as refund_err:
+                                logger.warning(f"Refund failed for job {job_id} lang {lang}: {refund_err}")
+                        return False
+
+        # ---- gather 并发 ----
+        results = await asyncio.gather(
+            *(run_one_lang(lang) for lang in target_languages),
+            return_exceptions=True,
+        )
+        all_success = all(r is True for r in results)
+
+        # ---- 收尾：聚合 job.status ----
+        async with session_factory() as db:
+            job = (await db.execute(
+                select(TranslationJob).where(TranslationJob.id == uuid.UUID(job_id))
+            )).scalar_one_or_none()
+            if job:
+                job.status = "completed" if all_success else "partial"
+                await db.commit()
     finally:
         await engine.dispose()

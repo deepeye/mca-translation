@@ -13,6 +13,7 @@ class Settings(BaseSettings):
     BAILIAN_MODEL_MAX: str = "qwen-max"
     MCA_FILE_STORE_DIR: str = "./uploads"
     FRONTEND_URL: str = "http://localhost:3000"
+    MAX_CONCURRENT_LANGS: int = 4
 
     model_config = {"env_file": ".env", "extra": "ignore"}
 
