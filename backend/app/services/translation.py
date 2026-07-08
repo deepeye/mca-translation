@@ -117,6 +117,12 @@ class TranslationPipeline:
         step is skipped — use this to run preprocess once for a multi-language job
         and reuse the result across languages. When omitted, preprocess runs here.
 
+        ``on_chunk``: optional async callback ``(accumulated: str) -> Awaitable[None]``.
+        When provided, the main translation streams via ``chat_stream`` and the callback
+        receives the accumulated translated text after each chunk — used by the Celery
+        task to persist partial translations during streaming. When omitted, streaming
+        still runs but no callback is invoked.
+
         ``decision_entries`` 收集各阶段决策条目，由调用方持久化。
         """
         # 新增：收集决策条目

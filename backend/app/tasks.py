@@ -3,6 +3,8 @@ import logging
 import time
 import uuid
 
+from sqlalchemy.ext.asyncio import AsyncSession
+
 from app.celery_app import celery_app
 from app.core.config import settings
 from app.llm.bailian import bailian_client
@@ -19,7 +21,7 @@ logger = logging.getLogger(__name__)
 STREAM_WRITE_INTERVAL = 1.0
 
 
-def make_chunk_writer(tr, db, interval: float = STREAM_WRITE_INTERVAL):
+def make_chunk_writer(tr: TranslationResult, db: AsyncSession, interval: float = STREAM_WRITE_INTERVAL):
     """构造节流回调：每 interval 秒把部分译文写库，状态保持 streaming。
 
     首个 chunk 立即写（last 初值 0.0，now-0 恒 >= interval）。
