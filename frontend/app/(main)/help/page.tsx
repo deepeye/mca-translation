@@ -2,11 +2,10 @@ import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { HelpContent } from "@/components/help/help-content";
 import { ScrollToTopButton } from "@/components/help/scroll-to-top-button";
-import { loadUserManual, transformImagePaths, extractHeadings } from "@/lib/help";
+import { loadUserManual, extractHeadings } from "@/lib/help";
 
 export default async function HelpPage() {
   const rawContent = await loadUserManual();
-  const content = transformImagePaths(rawContent);
   const headings = extractHeadings(rawContent);
 
   return (
@@ -41,7 +40,7 @@ export default async function HelpPage() {
         </aside>
         <main className="flex-1 p-8">
           <div className="mx-auto max-w-3xl">
-            <HelpContent content={content} />
+            <HelpContent content={rawContent} />
           </div>
           <ScrollToTopButton />
         </main>

@@ -8,10 +8,6 @@ export async function loadUserManual(): Promise<string> {
   return readFile(MANUAL_PATH, "utf-8");
 }
 
-export function transformImagePaths(content: string): string {
-  return content.replace(/\.\/help\//g, "/help/");
-}
-
 export interface Heading {
   level: number;
   text: string;

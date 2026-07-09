@@ -1,17 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { transformImagePaths, extractHeadings } from "./help";
-
-describe("transformImagePaths", () => {
-  it("replaces ./help/ with /help/", () => {
-    const input = "![工作台](./help/workspace-overview.svg)";
-    expect(transformImagePaths(input)).toBe("![工作台](/help/workspace-overview.svg)");
-  });
-
-  it("leaves other paths unchanged", () => {
-    const input = "![其他](/other/image.png)";
-    expect(transformImagePaths(input)).toBe("![其他](/other/image.png)");
-  });
-});
+import { extractHeadings } from "./help";
 
 describe("extractHeadings", () => {
   it("extracts h2 and h3 with github-compatible ids", () => {
