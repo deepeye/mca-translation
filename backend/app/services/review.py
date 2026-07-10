@@ -7,6 +7,7 @@ from app.llm.bailian import bailian_client
 from app.llm.prompts import DUAL_REVIEW_PROMPT, SINGLE_REVIEW_PROMPT
 from app.schemas.review import ReviewCategory, ReviewIssue, ReviewResult
 from app.constants.languages import language_descriptor
+from app.services.review_language_guard import contains_cjk, strip_cjk
 
 logger = logging.getLogger(__name__)
 
@@ -73,20 +74,37 @@ class ReviewService:
                 issues = []
                 for issue_data in cat_data.get("issues", []):
                     span_raw = issue_data.get("span")
+                    start = end = 0
                     span = None
                     if span_raw and isinstance(span_raw, dict):
+                        start = span_raw.get("start", 0)
+                        end = span_raw.get("end", 0)
                         span = {
-                            "start": span_raw.get("start", 0),
-                            "end": span_raw.get("end", 0),
+                            "start": start,
+                            "end": end,
                             "text": span_raw.get("text", ""),
                         }
+
+                    # Clean target-language fields of CJK characters as a safety net
+                    cleaned_suggestion = strip_cjk(issue_data.get("suggestion", ""))
+                    cleaned_original = strip_cjk(issue_data.get("original", ""))
+                    cleaned_span_text = strip_cjk(span_raw.get("text", "")) if span_raw and isinstance(span_raw, dict) else ""
+
+                    if not cleaned_suggestion:
+                        logger.warning("Dropping review issue: suggestion is empty after CJK stripping")
+                        continue
+
+                    if contains_cjk(cleaned_suggestion) or contains_cjk(cleaned_original) or contains_cjk(cleaned_span_text):
+                        logger.warning("Dropping review issue: target-language fields still contain CJK after stripping")
+                        continue
+
                     issues.append(
                         ReviewIssue(
                             category=issue_data.get("category", "clarity"),
                             severity=issue_data.get("severity", "low"),
-                            span=span,
-                            original=issue_data.get("original", ""),
-                            suggestion=issue_data.get("suggestion", ""),
+                            span={"start": start, "end": end, "text": cleaned_span_text} if span_raw and isinstance(span_raw, dict) else None,
+                            original=cleaned_original,
+                            suggestion=cleaned_suggestion,
                             explanation=issue_data.get("explanation", ""),
                             source_reference=issue_data.get("source_reference"),
                         )
