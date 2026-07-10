@@ -7,7 +7,7 @@ from app.llm.bailian import bailian_client
 from app.llm.prompts import DUAL_REVIEW_PROMPT, SINGLE_REVIEW_PROMPT
 from app.schemas.review import ReviewCategory, ReviewIssue, ReviewResult
 from app.constants.languages import language_descriptor
-from app.services.review_language_guard import contains_cjk, strip_cjk
+from app.services.review_han_guard import contains_han, strip_han
 
 logger = logging.getLogger(__name__)
 
@@ -75,28 +75,27 @@ class ReviewService:
                 for issue_data in cat_data.get("issues", []):
                     span_raw = issue_data.get("span")
                     start = end = 0
-                    span = None
                     if span_raw and isinstance(span_raw, dict):
                         start = span_raw.get("start", 0)
                         end = span_raw.get("end", 0)
-                        span = {
-                            "start": start,
-                            "end": end,
-                            "text": span_raw.get("text", ""),
-                        }
 
-                    # Clean target-language fields of CJK characters as a safety net
-                    cleaned_suggestion = strip_cjk(issue_data.get("suggestion", ""))
-                    cleaned_original = strip_cjk(issue_data.get("original", ""))
-                    cleaned_span_text = strip_cjk(span_raw.get("text", "")) if span_raw and isinstance(span_raw, dict) else ""
+                    # Clean target-language fields of Han characters as a safety net
+                    cleaned_suggestion = strip_han(issue_data.get("suggestion", ""))
+                    cleaned_original = strip_han(issue_data.get("original", ""))
+                    cleaned_span_text = strip_han(span_raw.get("text", "")) if span_raw and isinstance(span_raw, dict) else ""
 
                     if not cleaned_suggestion:
-                        logger.warning("Dropping review issue: suggestion is empty after CJK stripping")
+                        logger.warning("Dropping review issue: suggestion is empty after Han stripping")
                         continue
 
-                    if contains_cjk(cleaned_suggestion) or contains_cjk(cleaned_original) or contains_cjk(cleaned_span_text):
-                        logger.warning("Dropping review issue: target-language fields still contain CJK after stripping")
+                    if contains_han(cleaned_suggestion) or contains_han(cleaned_original) or contains_han(cleaned_span_text):
+                        logger.warning("Dropping review issue: target-language fields still contain Han after stripping")
                         continue
+
+                    # Fallback to span text if original is empty after stripping
+                    if not cleaned_original:
+                        cleaned_original = cleaned_span_text
+
 
                     issues.append(
                         ReviewIssue(

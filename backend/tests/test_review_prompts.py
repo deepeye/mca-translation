@@ -16,7 +16,7 @@ def test_dual_review_prompt_requires_target_language_suggestion():
         audience="general_public",
         cultural_sphere="western_english",
     )
-    assert "suggestion 必须是" in prompt or "suggestion：修改建议（必须使用" in prompt
+    assert "suggestion：修改建议（必须使用 English，不得包含任何中文字符、拼音、罗马化中文或中英混用）" in prompt
     assert "不得包含任何中文" in prompt
 
 
@@ -29,5 +29,5 @@ def test_single_review_prompt_requires_target_language_suggestion():
         audience="general_public",
         cultural_sphere="western_english",
     )
-    assert "suggestion 必须是" in prompt or "suggestion：修改建议（必须使用" in prompt
+    assert "suggestion：修改建议（必须使用 English，不得包含任何中文字符、拼音、罗马化中文或中英混用）" in prompt
     assert "不得包含任何中文" in prompt
