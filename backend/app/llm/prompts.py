@@ -6,7 +6,8 @@ Rules:
 3. Strategy: {strategy_description}
 4. Preserve the original paragraph structure.
 5. For political discourse terms, provide the most widely accepted translation in the target language's policy/media context.
-6. Do NOT add explanations unless a term has no direct equivalent — in that case, add a brief bracketed note.
+6. The entire output must be in {target_language}. Do not include any Chinese characters, pinyin, romanized Chinese, or mixed-script text. Every source word must be translated.
+7. Do NOT add explanations unless a term has no direct equivalent — in that case, translate the term conceptually first, then add a brief bracketed note in {target_language}.
 """
 
 STRATEGY_DESCRIPTIONS = {

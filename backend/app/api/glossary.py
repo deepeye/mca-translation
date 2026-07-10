@@ -1,3 +1,5 @@
+import asyncio
+import logging
 import uuid
 
 from fastapi import APIRouter, Depends, HTTPException, status
@@ -7,6 +9,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.api.deps import get_current_user
 from app.constants.languages import SUPPORTED_LANGUAGE_CODES
+from app.core.config import settings
 from app.core.database import get_db
 from app.llm.bailian import bailian_client
 from app.models.glossary import GlossaryEntry, UserGlossaryEntry
@@ -22,6 +25,8 @@ from app.schemas.glossary import (
 from app.services.cultural import cultural_preprocess
 from app.services.glossary_autofill import generate_translation
 from app.services.hardcoded_glossary import find_terms_in_text, get_term_translation
+
+logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/api/glossary", tags=["glossary"])
 
@@ -232,7 +237,7 @@ async def autofill_user_entry(
 ):
     """为单个用户词条自动填充缺失语言的 LLM 译文。
 
-    遍历未翻译的目标语言，逐一调用 LLM 生成译文。
+    遍历未翻译的目标语言，并发调用 LLM 生成译文（带 bounded semaphore）。
     已有翻译的语言保持不变，不覆盖。
     """
     entry = await db.get(UserGlossaryEntry, entry_id)
@@ -245,8 +250,35 @@ async def autofill_user_entry(
     skipped: list[dict] = []
 
     en_ref = entry.translations.get("en-GB", {}).get("preferred")
-    for lang in sorted(missing):
-        generated = await generate_translation(entry.source_term, lang, en_ref)
+
+    sem = asyncio.Semaphore(settings.MAX_CONCURRENT_LANGS)
+
+    async def _fill_one(lang: str) -> tuple[str, dict | None]:
+        async with sem:
+            try:
+                generated = await asyncio.wait_for(
+                    generate_translation(entry.source_term, lang, en_ref),
+                    timeout=30.0,
+                )
+                return (lang, generated)
+            except asyncio.TimeoutError:
+                logger.warning(
+                    "glossary autofill timeout for %s in %s",
+                    entry.source_term,
+                    lang,
+                )
+                return (lang, None)
+
+    results = await asyncio.gather(
+        *(_fill_one(lang) for lang in sorted(missing)),
+        return_exceptions=True,
+    )
+
+    for item in results:
+        if isinstance(item, Exception):
+            logger.warning("glossary autofill unexpected error: %s", item)
+            continue
+        lang, generated = item
         if generated:
             entry.translations[lang] = generated
             filled.append(lang)

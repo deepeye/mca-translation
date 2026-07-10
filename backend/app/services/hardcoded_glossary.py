@@ -216,6 +216,32 @@ _HARDCODED_TERMS: list[GlossaryTerm] = [
         term_type="historical_culture",
         applicable_genres=["political", "policy", "news"],
     ),
+    GlossaryTerm(
+        source_term="侥幸心理",
+        translations={
+            "en-GB": {
+                "rendering": "unwarranted optimism",
+                "alternatives": ["a fluke mentality", "wishful thinking", "the 'it-won't-happen-to-me' mindset"],
+                "notes": "指面对风险时妄想靠运气逃避责任的心态；新闻语境可用 unwarranted optimism，大众语境可用 it-won't-happen-to-me mindset",
+            },
+        },
+        term_type="political_discourse",
+        risk_notes="直译为 'luck psychology' 或保留中文会产生严重误读",
+        applicable_genres=["political", "policy", "news"],
+    ),
+    GlossaryTerm(
+        source_term="麻痹思想",
+        translations={
+            "en-GB": {
+                "rendering": "complacency",
+                "alternatives": ["a complacent attitude", "a lax mindset"],
+                "notes": "指因长期放松警惕而产生的懈怠心态；避免直译为 'numb thinking'",
+            },
+        },
+        term_type="political_discourse",
+        risk_notes="直译为 'numb thinking' 或 'paralysis thought' 会产生严重误读",
+        applicable_genres=["political", "policy", "news"],
+    ),
 ]
 
 
