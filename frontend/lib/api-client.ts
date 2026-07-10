@@ -92,9 +92,13 @@ class ApiClient {
 
   private async request(path: string, options: RequestInit = {}) {
     const headers: Record<string, string> = {
-      "Content-Type": "application/json",
       ...(options.headers as Record<string, string>),
     };
+    // DELETE/GET/HEAD 没有 body，不强制附加 Content-Type（某些中间件会拒绝）
+    const method = options.method || "GET";
+    if (method !== "DELETE" && method !== "GET" && method !== "HEAD") {
+      headers["Content-Type"] = headers["Content-Type"] || "application/json";
+    }
     const token = this.getToken();
     if (token) {
       headers["Authorization"] = `Bearer ${token}`;

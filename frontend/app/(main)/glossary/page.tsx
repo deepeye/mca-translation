@@ -5,6 +5,13 @@ import { apiClient } from "@/lib/api-client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { LANGUAGE_LABELS } from "@/lib/languages";
 import {
   DEFAULT_TERM_TYPE_LABEL,
@@ -44,6 +51,7 @@ export default function GlossaryPage() {
   const [loading, setLoading] = useState(false);
 
   // Create form state
+  const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const [form, setForm] = useState<EntryForm>({
     source_term: "",
     term_type: "user_defined",
@@ -62,6 +70,9 @@ export default function GlossaryPage() {
   const [showEditLangDropdown, setShowEditLangDropdown] = useState(false);
   const [editAddLangCode, setEditAddLangCode] = useState("de-DE");
   const [autoFilling, setAutoFilling] = useState(false);
+
+  // Deleting state
+  const [deletingId, setDeletingId] = useState<string | null>(null);
 
   // Validation
   const [formError, setFormError] = useState("");
@@ -175,6 +186,7 @@ export default function GlossaryPage() {
       });
       setShowLangDropdown(false);
       setAddLangCode("de-DE");
+      setIsCreateDialogOpen(false);
       setUserOffset(0);
       loadEntries();
     } catch (err) {
@@ -279,7 +291,7 @@ export default function GlossaryPage() {
       const skipped = result.skipped?.length || 0;
       setAutoFillMsg(`已补齐 ${filled} 种译法${skipped > 0 ? ` · 跳过 ${skipped} 种` : ""}`);
       cancelEdit();
-      loadEntries();
+      await loadEntries();
     } catch (err) {
       console.error("Auto-fill failed:", err);
       setAutoFillMsg("自动补齐失败，请稍后重试");
@@ -289,11 +301,15 @@ export default function GlossaryPage() {
   }
 
   async function handleDeleteUserEntry(id: string) {
+    setDeletingId(id);
     try {
       await apiClient.deleteUserGlossaryEntry(id);
-      loadEntries();
+      await loadEntries();
     } catch (err) {
       console.error("Failed to delete entry:", err);
+      alert("删除失败，请稍后重试");
+    } finally {
+      setDeletingId(null);
     }
   }
 
@@ -460,45 +476,58 @@ export default function GlossaryPage() {
         <div className="mb-4 rounded-md bg-teal-50 p-3 text-sm text-teal-800">{autoFillMsg}</div>
       )}
 
-      {/* ---- Create form ---- */}
-      <div className="mb-8 rounded-lg border border-border bg-white p-4">
-        <h2 className="mb-4 text-lg font-semibold">添加自定义术语</h2>
-
-        <div className="mb-3">
-          <Input
-            placeholder="中文术语"
-            value={form.source_term}
-            onChange={(e) => setForm((f) => ({ ...f, source_term: e.target.value }))}
+      {/* ---- Create dialog ---- */}
+      <div className="mb-8">
+        <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
+          <DialogTrigger
+            render={
+              <Button className="bg-teal hover:bg-teal-light text-white">+ 添加自定义术语</Button>
+            }
           />
-        </div>
+          <DialogContent className="max-h-[85vh] max-w-lg overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle>添加自定义术语</DialogTitle>
+            </DialogHeader>
 
-        {renderCompactEditor(form.translations, (code, updates) => {
-          setForm((f) => ({
-            ...f,
-            translations: {
-              ...f.translations,
-              [code]: { ...f.translations[code], ...updates },
-            },
-          }));
-        }, handleRemoveLanguage)}
+            <div className="mt-2 space-y-4">
+              <div>
+                <Input
+                  placeholder="中文术语"
+                  value={form.source_term}
+                  onChange={(e) => setForm((f) => ({ ...f, source_term: e.target.value }))}
+                />
+              </div>
 
-        {renderAddLangSection(
-          form.translations,
-          showLangDropdown,
-          addLangCode,
-          () => setShowLangDropdown(true),
-          setAddLangCode,
-          handleAddLanguage,
-          () => setShowLangDropdown(false),
-        )}
+              {renderCompactEditor(form.translations, (code, updates) => {
+                setForm((f) => ({
+                  ...f,
+                  translations: {
+                    ...f.translations,
+                    [code]: { ...f.translations[code], ...updates },
+                  },
+                }));
+              }, handleRemoveLanguage)}
 
-        {formError && <p className="mt-2 text-xs text-red-500">{formError}</p>}
+              {renderAddLangSection(
+                form.translations,
+                showLangDropdown,
+                addLangCode,
+                () => setShowLangDropdown(true),
+                setAddLangCode,
+                handleAddLanguage,
+                () => setShowLangDropdown(false),
+              )}
 
-        <div className="mt-4 flex gap-2">
-          <Button onClick={handleSaveNew} className="bg-teal hover:bg-teal-light text-white">
-            保存术语
-          </Button>
-        </div>
+              {formError && <p className="text-xs text-red-500">{formError}</p>}
+
+              <div className="flex gap-2">
+                <Button onClick={handleSaveNew} className="bg-teal hover:bg-teal-light text-white">
+                  保存术语
+                </Button>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
       </div>
 
       {/* ---- User entries ---- */}
@@ -612,9 +641,10 @@ export default function GlossaryPage() {
                           variant="ghost"
                           size="sm"
                           onClick={() => handleDeleteUserEntry(entry.id)}
+                          disabled={deletingId === entry.id}
                           className="text-red-500 hover:text-red-700"
                         >
-                          删除
+                          {deletingId === entry.id ? "删除中..." : "删除"}
                         </Button>
                       </div>
                     </div>
